@@ -1,0 +1,9 @@
+#deck {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 150px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
