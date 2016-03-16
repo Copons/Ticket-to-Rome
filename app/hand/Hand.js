@@ -1,22 +1,48 @@
-import { rules } from '../constants/rules';
+import './hand.css';
+
+import { create } from '../utils/dom';
+import { RULES } from '../constants/rules';
 
 export default class Hand {
 
-  constructor (deck) {
+  constructor(deck, playerId) {
     this.cards = [];
     let i = 0;
-    for (; i < rules.startingHand; i++) {
+    for (; i < RULES.startingHand; i++) {
       this.cards.push(deck.draw());
     }
-    console.log(this.cards);
+
+    this.element = create('div', 'hand', { id : `player-${playerId}` });
+    this.playerContainer = document.getElementById(playerId);
+    this.render();
   }
 
-  draw (card) {
+  render() {
+    for (const card of this.cards) {
+      this.element.appendChild(card.element);
+    }
+    this.playerContainer.appendChild(this.element);
+  }
+
+  renderUpdate() {
+    while (this.element.firstChild) {
+      this.element.removeChild(this.element.firstChild);
+    }
+    this.cards.sort((a, b) => a.type.localeCompare(b.type));
+    for (const card of this.cards) {
+      if (card) {
+        this.element.appendChild(card.element);
+      }
+    }
+  }
+
+  addCard(card) {
     this.cards = this.cards.concat(card);
+    this.renderUpdate();
   }
 
-  discard (discardedCard) {
-    this.cards = this.cards.filter(card => card.id !== discardedCard.id);
+  discard(card) {
+    this.cards = this.cards.filter(filterCard => filterCard.id !== card.id);
   }
 
 }

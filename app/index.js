@@ -1,5 +1,5 @@
-import Deck from './deck/Deck';
+import './main.css';
 
-const deck = new Deck();
+import Game from './game/Game';
 
-deck.render();
+const game = new Game(2);

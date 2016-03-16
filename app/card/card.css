@@ -1,0 +1,33 @@
+.card {
+  width: 100px;
+  height: 150px;
+  border: 1px solid #000;
+}
+
+.card.red {
+  background: red;
+}
+.card.orange {
+  background: orange;
+}
+.card.yellow {
+  background: yellow;
+}
+.card.green {
+  background: green;
+}
+.card.blue {
+  background: blue;
+}
+.card.purple {
+  background: purple;
+}
+.card.black {
+  background: black;
+}
+.card.white {
+  background: white;
+}
+.card.jolly {
+  background: magenta;
+}

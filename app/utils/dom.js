@@ -1,15 +1,8 @@
-export const appContainer = document.querySelector('#ttr');
-
-export function select (selector) {
-  return document.querySelector(selector);
-}
-
-export function append (container, child) {
-  container.insertAdjacentHTML('beforeend', child);
-}
-
-export function create (tag, id) {
+export function create(tag, className, args = {}) {
   const element = document.createElement(tag);
-  element.setAttribute('id', id);
+  element.classList.add(className);
+  for (const arg in args) {
+    element.setAttribute(arg, args[arg]);
+  }
   return element;
 }
