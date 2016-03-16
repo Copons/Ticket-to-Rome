@@ -7,8 +7,7 @@ export default class Hand {
 
   constructor(deck, playerId) {
     this.cards = [];
-    let i = 0;
-    for (; i < RULES.startingHand; i++) {
+    for (let i = 0; i < RULES.startingHand; i++) {
       this.cards.push(deck.draw());
     }
 

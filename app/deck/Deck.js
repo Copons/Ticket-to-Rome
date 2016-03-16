@@ -10,8 +10,7 @@ export default class Deck {
   constructor() {
     this.cards = [];
     for (const card of deckComposition) {
-      let i = 0;
-      for (; i < card.amount; i++) {
+      for (let i = 0; i < card.amount; i++) {
         this.cards.push(new Card(card.type));
       }
     }

@@ -14,8 +14,7 @@ export default class Game {
     this.deck = new Deck();
 
     this.players = [];
-    let i = 0;
-    for (; i < numberOfPlayers; i++) {
+    for (let i = 0; i < numberOfPlayers; i++) {
       this.players.push(new Player(`P${i + 1}`, this.deck));
     }
     this.players[Math.floor(Math.random() * this.players.length)].active = true;
