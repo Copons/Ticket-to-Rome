@@ -49,7 +49,7 @@ export default class Game {
 
   playerTurn(e) {
     if (this.turnActions > 0) {
-      if (e.target === this.deck.element) {
+      if (e.target === this.deck.element && this.deck.cards.length) {
         console.log('deck');
         this.players[this.activePlayer].drawFromDeck(this.deck);
         this.turnActions--;

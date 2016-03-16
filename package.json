@@ -4,11 +4,10 @@
   "description": "Ticket to Rome",
   "repository": {
     "type": "git",
-    "private": true
+    "private": "https://github.com/Copons/Ticket-to-Rome.git"
   },
   "keywords": [
-    "es2015",
-    "scss"
+    "es2015"
   ],
   "author": "Copons",
   "license": "MIT",
