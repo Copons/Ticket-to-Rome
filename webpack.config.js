@@ -14,19 +14,20 @@ process.env.BABEL_ENV = TARGET;
 const PATHS = {
   app: path.join(__dirname, 'app'),
   build: path.join(__dirname, 'build'),
+  //style: path.join(__dirname, 'app/main.css'),
 };
 
 const common = {
   entry: {
     app: PATHS.app,
+    //style: PATHS.style,
   },
   resolve: {
     extensions: ['', '.js'],
   },
   output: {
     path: PATHS.build,
-    //filename: '[name].[chunkhash].js',
-    //chunkFilename: '[chunkhash].js',
+    filename: '[name].js',
   },
   module: {
     loaders: [
@@ -79,9 +80,14 @@ if (TARGET === 'start' || !TARGET) {
 
 if (TARGET === 'build') {
   module.exports = merge(common, {
-    /*entry: {
+    entry: {
       vendor: Object.keys(pkg.dependencies),
-    },*/
+    },
+    output: {
+      path: PATHS.build,
+      filename: '[name].[chunkhash].js',
+      chunkFilename: '[chunkhash].js',
+    },
     module: {
       loaders: [
         {
