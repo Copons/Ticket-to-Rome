@@ -1,9 +1,14 @@
 .deck {
   display: flex;
+  flex-flow: column;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 150px;
-  background-color: #eee;
-  border: 1px solid #ccc;
+  background-color: #607d8b;
+  border: 1px solid #37474f;
+}
+
+.deck.empty {
+  background-color: #cfd8dc;
 }

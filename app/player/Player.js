@@ -21,6 +21,7 @@ export default class Player {
   }
 
   render() {
+    this.element.insertAdjacentHTML('afterbegin', `<div class="player-name">${this.name}</div>`);
     APP_CONTAINER.appendChild(this.element);
   }
 

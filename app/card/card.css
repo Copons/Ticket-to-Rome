@@ -5,29 +5,29 @@
 }
 
 .card.red {
-  background: red;
+  background: #f44336;
 }
 .card.orange {
-  background: orange;
+  background: #ff9800;
 }
 .card.yellow {
-  background: yellow;
+  background: #ffeb3b;
 }
 .card.green {
-  background: green;
+  background: #4caf50;
 }
 .card.blue {
-  background: blue;
+  background: #2196f3;
 }
 .card.purple {
-  background: purple;
+  background: #9c27b0;
 }
 .card.black {
-  background: black;
+  background: #212121;
 }
 .card.white {
-  background: white;
+  background: #f5f5f5;
 }
 .card.jolly {
-  background: magenta;
+  background: linear-gradient(123deg, #fff8e1 0%, #ffa000 50%, #ff8f00 51%, #fff8e1 100%);
 }

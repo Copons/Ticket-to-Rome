@@ -25,11 +25,17 @@ export default class Deck {
   render() {
     this.deckCounter.textContent = this.cards.length;
     APP_CONTAINER.appendChild(this.element);
+    this.element.insertAdjacentHTML('afterbegin', '<b>Deck</b>');
     this.element.appendChild(this.deckCounter);
   }
 
   renderUpdate() {
     this.deckCounter.textContent = this.cards.length;
+    if (!this.cards.length) {
+      this.element.classList.add('empty');
+    } else {
+      this.element.classList.remove('empty');
+    }
   }
 
   draw() {

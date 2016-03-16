@@ -1,4 +1,14 @@
 .player {
+  position: relative;
   width: 100%;
-  background: #aaa;
+  margin: 10px 0;
+  background: #bdbdbd;
+}
+
+.player-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 5px 10px;
+  background-color: #bdbdbd;
 }
