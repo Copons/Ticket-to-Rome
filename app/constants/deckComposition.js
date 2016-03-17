@@ -1,4 +1,4 @@
-export const deckComposition = [
+export const DECK_COMPOSITION = [
   {
     type: 'red',
     amount: 12,

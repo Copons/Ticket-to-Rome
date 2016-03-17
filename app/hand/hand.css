@@ -1,8 +1,17 @@
 .hand {
   display: flex;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   border: 1px solid #bdbdbd;
   background: #e0e0e0;
   padding: 10px;
+}
+
+.hand .group {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
 }

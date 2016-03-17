@@ -2,14 +2,14 @@ import './deck.css';
 
 import { create } from '../utils/dom';
 import { APP_CONTAINER } from '../constants/layout';
-import { deckComposition } from '../constants/deckComposition';
+import { DECK_COMPOSITION } from '../constants/deckComposition';
 import Card from '../card/Card';
 
 export default class Deck {
 
   constructor() {
     this.cards = [];
-    for (const card of deckComposition) {
+    for (const card of DECK_COMPOSITION) {
       for (let i = 0; i < card.amount; i++) {
         this.cards.push(new Card(card.type));
       }
