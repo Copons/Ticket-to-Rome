@@ -1,6 +1,7 @@
 import './deck.css';
 
 import { create } from '../utils/dom';
+import { random } from '../utils/helpers';
 import { APP_CONTAINER } from '../constants/layout';
 import { DECK_COMPOSITION } from '../constants/deckComposition';
 import Card from '../card/Card';
@@ -39,7 +40,7 @@ export default class Deck {
   }
 
   draw() {
-    const drawnCard = this.cards[Math.floor(Math.random() * this.cards.length)];
+    const drawnCard = this.cards[random(this.cards.length)];
     this.cards = this.cards.filter(card => card.id !== drawnCard.id);
     this.renderUpdate();
     return drawnCard;

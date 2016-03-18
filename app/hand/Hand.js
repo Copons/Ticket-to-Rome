@@ -17,7 +17,7 @@ export default class Hand {
       this.groups.find(group => group.type === card.type).cards.push(card);
     }
 
-    this.element = create('div', 'hand', { id : `player-${playerId}` });
+    this.element = create('div', 'hand', { id: `player-${playerId}` });
     this.playerContainer = document.getElementById(playerId);
     this.render();
   }

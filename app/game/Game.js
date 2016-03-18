@@ -2,6 +2,7 @@ import './game.css';
 
 import { create } from '../utils/dom';
 import { listen } from '../utils/events';
+import { random } from '../utils/helpers';
 import { APP_CONTAINER } from '../constants/layout';
 import { RULES } from '../constants/rules';
 
@@ -17,7 +18,7 @@ export default class Game {
     for (let i = 0; i < numberOfPlayers; i++) {
       this.players.push(new Player(`P${i + 1}`, this.deck));
     }
-    this.players[Math.floor(Math.random() * this.players.length)].active = true;
+    this.players[random(this.players.length)].active = true;
     this.activePlayer = this.players.findIndex(player => player.active);
 
     this.turn = 1;
