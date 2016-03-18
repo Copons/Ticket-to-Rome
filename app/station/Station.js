@@ -1,7 +1,7 @@
 import './station.css';
 
-import { create } from '../utils/dom';
-import { SIZES } from '../constants/layout';
+import uuid from 'node-uuid';
+import { create, setStyle } from '../utils/dom';
 import { STATIONS, ROUTES } from '../constants/railway';
 
 export default class Station {
@@ -22,8 +22,12 @@ export default class Station {
 
     this.boardContainer = board.element;
     this.element = create('div', 'station', {
-      id: `station-${this.slug}`,
-      style: `top: ${station.y}%; left: ${station.x}%;`,
+      id: uuid.v4(),
+      'data-station': `${this.slug}`,
+    });
+    setStyle(this.element, {
+      top: `${station.y}%`,
+      left: `${station.x}%`,
     });
     this.render();
   }

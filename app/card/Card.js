@@ -3,7 +3,6 @@ import './card.css';
 import uuid from 'node-uuid';
 import { create } from '../utils/dom';
 
-
 export default class Card {
 
   constructor(type) {

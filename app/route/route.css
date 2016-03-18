@@ -1,0 +1,8 @@
+.route {
+  position: absolute;
+  height: 10px;
+}
+
+.route.red {
+  background: #f44336;
+}

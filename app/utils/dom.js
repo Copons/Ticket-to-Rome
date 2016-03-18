@@ -6,3 +6,10 @@ export function create(tag, className, args = {}) {
   }
   return element;
 }
+
+export function setStyle(elem, args = {}) {
+  const element = elem;
+  for (const arg in args) {
+    element.style[arg] = args[arg];
+  }
+}
