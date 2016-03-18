@@ -13,3 +13,7 @@ export function setStyle(elem, args = {}) {
     element.style[arg] = args[arg];
   }
 }
+
+export function correctPosition(percentPosition, size) {
+  return `calc(${percentPosition}% - ${size / 2}px)`;
+}

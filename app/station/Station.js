@@ -1,7 +1,8 @@
 import './station.css';
 
 import uuid from 'node-uuid';
-import { create, setStyle } from '../utils/dom';
+import { create, setStyle, correctPosition } from '../utils/dom';
+import { SIZES } from '../constants/layout';
 import { STATIONS, ROUTES } from '../constants/railway';
 
 export default class Station {
@@ -26,9 +27,10 @@ export default class Station {
       'data-station': `${this.slug}`,
     });
     setStyle(this.element, {
-      top: `${station.y}%`,
-      left: `${station.x}%`,
+      top: correctPosition(station.y, SIZES.stationRadius),
+      left: correctPosition(station.x, SIZES.stationRadius),
     });
+    this.computedStyle = {};
     this.render();
   }
 
