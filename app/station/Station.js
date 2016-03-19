@@ -2,7 +2,6 @@ import './station.css';
 
 import uuid from 'node-uuid';
 import { createSvg } from '../utils/dom';
-import { SIZES } from '../constants/layout';
 import { STATIONS, ROUTES } from '../constants/railway';
 
 export default class Station {
@@ -28,9 +27,7 @@ export default class Station {
       'data-station': `${this.slug}`,
       cx: station.x,
       cy: station.y,
-      r: SIZES.stationRadius,
       stroke: 'red',
-      'stroke-width': 2,
       fill: 'green',
     });
 

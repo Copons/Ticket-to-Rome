@@ -1,3 +1,5 @@
 .route.red {
   stroke: #f44336;
+  stroke-width: 7;
+  fill: transparent;
 }

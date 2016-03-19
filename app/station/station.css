@@ -1,4 +1,6 @@
 .station {
-  stroke: #8bc34a;
-  fill: #64dd17;
+  r: 8;
+  stroke: #000000;
+  stroke-width: 3;
+  fill: #ffffff;
 }
