@@ -2,13 +2,12 @@ import './station.css';
 
 import uuid from 'node-uuid';
 import { createSvg } from '../utils/dom';
-import { STATIONS, ROUTES } from '../constants/railway';
+import { ROUTES } from '../constants/railway';
 
 export default class Station {
 
-  constructor(slug, board) {
-    const station = STATIONS.find(item => item.slug === slug);
-    this.slug = slug;
+  constructor(station, board) {
+    this.slug = station.slug;
     this.name = station.name;
 
     this.connections = [];

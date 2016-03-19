@@ -1,5 +1,32 @@
-.route.red {
-  stroke: #f44336;
+.route {
   stroke-width: 7;
   fill: transparent;
+}
+
+.route.red {
+  stroke: #f44336;
+}
+.route.orange {
+  stroke: #ff9800;
+}
+.route.yellow {
+  stroke: #ffeb3b;
+}
+.route.green {
+  stroke: #4caf50;
+}
+.route.blue {
+  stroke: #2196f3;
+}
+.route.purple {
+  stroke: #9c27b0;
+}
+.route.black {
+  stroke: #424242;
+}
+.route.white {
+  stroke: #f5f5f5;
+}
+.route.jolly {
+  stroke: #9e9e9e;
 }

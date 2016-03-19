@@ -5,6 +5,8 @@ import { APP_CONTAINER, SIZES } from '../constants/layout';
 import { STATIONS, ROUTES } from '../constants/railway';
 import Station from '../station/Station';
 import Route from '../route/Route';
+import RouteStraight from '../route/RouteStraight';
+import RouteCurved from '../route/RouteCurved';
 
 export default class Board {
 
@@ -15,8 +17,13 @@ export default class Board {
     });
 
     this.railway = {
-      routes: ROUTES.map(route => new Route(route.start, route.end, this)),
-      stations: STATIONS.map(station => new Station(station.slug, this)),
+      routes: ROUTES.map(route => {
+        if (route.qx && route.qy) {
+          return new RouteCurved(route, this);
+        }
+        new RouteStraight(route, this);
+      }),
+      stations: STATIONS.map(station => new Station(station, this)),
     };
 
     this.render();
