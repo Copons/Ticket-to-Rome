@@ -9,9 +9,16 @@ export default class Route {
 
   constructor(route, board) {
     this.stations = {
-      start: STATIONS.find(station => station.slug === route.start),
-      end: STATIONS.find(station => station.slug === route.end),
+      start: Object.assign({}, STATIONS.find(station => station.slug === route.start)),
+      end: Object.assign({}, STATIONS.find(station => station.slug === route.end)),
     };
+
+    if (route.displace) {
+      this.stations.start.x += route.displace.x1;
+      this.stations.end.x += route.displace.x2;
+      this.stations.start.y += route.displace.y1;
+      this.stations.end.y += route.displace.y2;
+    }
 
     this.boardContainer = board.svg;
     this.element = createSvg('path', {

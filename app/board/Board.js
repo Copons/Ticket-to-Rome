@@ -4,7 +4,6 @@ import { create, createSvg } from '../utils/dom';
 import { APP_CONTAINER, SIZES } from '../constants/layout';
 import { STATIONS, ROUTES } from '../constants/railway';
 import Station from '../station/Station';
-import Route from '../route/Route';
 import RouteStraight from '../route/RouteStraight';
 import RouteCurved from '../route/RouteCurved';
 

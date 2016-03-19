@@ -17,7 +17,7 @@ export const STATIONS = [
   {
     name: 'Circo Massimo',
     slug: 'circo-massimo',
-    x: 210, y: 80,
+    x: 230, y: 80,
   },
 ];
 
@@ -26,19 +26,51 @@ export const ROUTES = [
     start: 'termini',
     end: 'cavour',
     color: 'red',
-    parts: 4, double: true,
-    qx: 115, qy: 40,
+    parts: 4,
+    qx: 110, qy: 50,
+    displace: {
+      x1: -4, y1: -4.5,
+      x2: 4, y2: 0,
+      qx: 0, qy: -4.5,
+    },
+  },
+  {
+    start: 'termini',
+    end: 'cavour',
+    color: 'orange',
+    parts: 4,
+    qx: 110, qy: 50,
+    displace: {
+      x1: -3, y1: 4.5,
+      x2: 3, y2: 9,
+      qx: -4, qy: 4,
+    },
   },
   {
     start: 'cavour',
     end: 'colosseo',
     color: 'blue',
-    parts: 3,
+    parts: 2,
   },
   {
     start: 'cavour',
     end: 'circo-massimo',
     color: 'jolly',
-    parts: 2, double: true,
+    parts: 3,
+    dx: -4.5, dy: -4.5,
+    displace: {
+      x1: -4.5, y1: -4.5,
+      x2: 4.5, y2: -4.5,
+    },
+  },
+  {
+    start: 'cavour',
+    end: 'circo-massimo',
+    color: 'jolly',
+    parts: 3,
+    displace: {
+      x1: -4.5, y1: 4.5,
+      x2: 4.5, y2: 4.5,
+    },
   },
 ];
