@@ -1,8 +1,4 @@
 .station {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #8bc34a;
-  background-color: #64dd17;
+  stroke: #8bc34a;
+  fill: #64dd17;
 }

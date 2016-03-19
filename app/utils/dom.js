@@ -1,8 +1,15 @@
-export function create(tag, className, args = {}) {
+export function create(tag, args = {}) {
   const element = document.createElement(tag);
-  element.classList.add(className);
   for (const arg in args) {
     element.setAttribute(arg, args[arg]);
+  }
+  return element;
+}
+
+export function createSvg(tag, args = {}) {
+  const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const arg in args) {
+    element.setAttributeNS(null, arg, args[arg]);
   }
   return element;
 }
@@ -12,8 +19,4 @@ export function setStyle(elem, args = {}) {
   for (const arg in args) {
     element.style[arg] = args[arg];
   }
-}
-
-export function correctPosition(percentPosition, size) {
-  return `calc(${percentPosition}% - ${size / 2}px)`;
 }

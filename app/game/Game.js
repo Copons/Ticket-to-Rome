@@ -27,9 +27,9 @@ export default class Game {
     this.playerTurn = this.playerTurn.bind(this);
 
     this.elements = {
-      state: create('div', 'state'),
-      turn: create('div', 'turn'),
-      activePlayer: create('div', 'active-player'),
+      state: create('div', { class: 'state' }),
+      turn: create('div', { class: 'turn' }),
+      activePlayer: create('div', { class: 'active-player' }),
     };
     this.render();
   }

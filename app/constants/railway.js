@@ -1,6 +1,6 @@
 export const STATIONS = [
   { name: 'Termini', slug: 'termini', x: 50, y: 50 },
-  { name: 'Cavour', slug: 'cavour', x: 60, y: 60 },
+  { name: 'Cavour', slug: 'cavour', x: 150, y: 80 },
 ];
 
 export const ROUTES = [

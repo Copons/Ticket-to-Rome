@@ -14,7 +14,10 @@ export default class Player {
     this.pieces = RULES.startingPieces;
     this.active = false;
 
-    this.element = create('div', 'player', { id : this.id });
+    this.element = create('div', {
+      id: this.id,
+      class: 'player'
+    });
     this.render(deck);
 
     this.hand = new Hand(deck, this.id);

@@ -1,7 +1,7 @@
 import './station.css';
 
 import uuid from 'node-uuid';
-import { create, setStyle, correctPosition } from '../utils/dom';
+import { createSvg } from '../utils/dom';
 import { SIZES } from '../constants/layout';
 import { STATIONS, ROUTES } from '../constants/railway';
 
@@ -21,16 +21,19 @@ export default class Station {
       }
     }
 
-    this.boardContainer = board.element;
-    this.element = create('div', 'station', {
+    this.boardContainer = board.svg;
+    this.element = createSvg('circle', {
       id: uuid.v4(),
+      class: 'station',
       'data-station': `${this.slug}`,
+      cx: station.x,
+      cy: station.y,
+      r: SIZES.stationRadius,
+      stroke: 'red',
+      'stroke-width': 2,
+      fill: 'green',
     });
-    setStyle(this.element, {
-      top: correctPosition(station.y, SIZES.stationRadius),
-      left: correctPosition(station.x, SIZES.stationRadius),
-    });
-    this.computedStyle = {};
+
     this.render();
   }
 

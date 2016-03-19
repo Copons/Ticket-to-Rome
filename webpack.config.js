@@ -40,7 +40,8 @@ const common = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'node_modules/html-webpack-template/index.ejs',
+      //template: 'node_modules/html-webpack-template/index.ejs',
+      template: 'app/index.ejs',
       title: 'Ticket to Rome',
       appMountId: 'ttr',
       inject: false,

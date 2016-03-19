@@ -1,6 +1,8 @@
 export const APP_CONTAINER = document.getElementById('ttr');
 
 export const SIZES = {
-  stationRadius: 20,
-  routeSize: 10,
+  boardWidth: 500,
+  boardHeight: 250,
+  stationRadius: 10,
+  routeSize: 5,
 };

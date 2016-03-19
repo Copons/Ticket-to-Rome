@@ -10,14 +10,17 @@ export default class Hand {
     this.groups = DECK_COMPOSITION.map(item => ({
       type : item.type,
       cards : [],
-      element : create('div', 'group'),
+      element : create('div', { class: 'group' }),
     }));
     for (let i = 0; i < RULES.startingHand; i++) {
       const card = deck.draw();
       this.groups.find(group => group.type === card.type).cards.push(card);
     }
 
-    this.element = create('div', 'hand', { id: `player-${playerId}` });
+    this.element = create('div', {
+      id: `player-${playerId}`,
+      class: 'hand',
+    });
     this.playerContainer = document.getElementById(playerId);
     this.render();
   }

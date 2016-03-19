@@ -9,7 +9,10 @@ export default class Card {
     this.id = uuid.v4();
     this.type = type;
 
-    this.element = create('div', 'card', { id : this.id });
+    this.element = create('div', {
+      id: this.id,
+      class: 'card',
+    });
     this.element.classList.add(this.type);
   }
 

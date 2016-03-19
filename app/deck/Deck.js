@@ -18,8 +18,8 @@ export default class Deck {
 
     this.draw = this.draw.bind(this);
 
-    this.element = create('div', 'deck');
-    this.deckCounter = create('div', 'deck-counter');
+    this.element = create('div', { class: 'deck' });
+    this.deckCounter = create('div', { class: 'deck-counter' });
     this.render();
   }
 
