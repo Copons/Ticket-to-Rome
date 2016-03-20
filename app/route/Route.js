@@ -2,6 +2,7 @@ import './route.css';
 
 import uuid from 'node-uuid';
 import { createSvg } from '../utils/dom';
+import { listen } from '../utils/events';
 import { STATIONS } from '../constants/railway';
 import { SIZES } from '../constants/layout';
 
@@ -11,6 +12,7 @@ export default class Route {
     this.stations = {
       start: Object.assign({}, STATIONS.find(station => station.slug === route.start)),
       end: Object.assign({}, STATIONS.find(station => station.slug === route.end)),
+      elements: [],
     };
 
     if (route.displace) {
@@ -20,15 +22,26 @@ export default class Route {
       this.stations.end.y += route.displace.y2;
     }
 
-    this.boardContainer = board.svg;
+    this.boardContainer = board.elements;
     this.element = createSvg('path', {
       id: uuid.v4(),
       class: `route ${route.color}`,
     });
+
+    this.mouseEnterRoute = this.mouseEnterRoute.bind(this);
+    this.mouseLeaveRoute = this.mouseLeaveRoute.bind(this);
   }
 
   render() {
-    this.boardContainer.appendChild(this.element);
+    this.stations.elements = [
+      this.boardContainer.stations.querySelector(`[data-station="${this.stations.start.slug}"]`),
+      this.boardContainer.stations.querySelector(`[data-station="${this.stations.end.slug}"]`),
+      this.boardContainer.names.querySelector(`[data-station="${this.stations.start.slug}"]`),
+      this.boardContainer.names.querySelector(`[data-station="${this.stations.end.slug}"]`),
+    ];
+    listen(this.element, 'mouseenter', this.mouseEnterRoute);
+    listen(this.element, 'mouseleave', this.mouseLeaveRoute);
+    this.boardContainer.routes.appendChild(this.element);
   }
 
   pathDashArray(lineLength, parts) {
@@ -51,6 +64,18 @@ export default class Route {
     this.element.setAttributeNS(null, 'd', this.pathD());
     this.element.setAttributeNS(null,
       'stroke-dasharray', this.pathDashArray(this.pathLength(), parts));
+  }
+
+  mouseEnterRoute() {
+    for (const element of this.stations.elements) {
+      element.classList.add('highlight');
+    }
+  }
+
+  mouseLeaveRoute() {
+    for (const element of this.stations.elements) {
+      element.classList.remove('highlight');
+    }
   }
 
 }

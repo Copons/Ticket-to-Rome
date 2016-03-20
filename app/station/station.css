@@ -1,6 +1,29 @@
 .station {
-  r: 8;
+  r: 7;
   stroke: #000000;
-  stroke-width: 3;
+  stroke-width: 2.5;
   fill: #ffffff;
+
+  will-change: fill;
+  transition: fill 0.2s linear;
+}
+
+.station.highlight {
+  fill: #00e676;
+}
+
+.names text {
+  pointer-events: none;
+  font-family: 'Hammersmith One', Arial, sans-serif;
+  font-size: 6pt;
+  letter-spacing: -0.2pt;
+
+  stroke: #424242;
+  stroke-width: 0.1;
+
+  will-change: stroke;
+  transition: stroke 0.2s linear;
+}
+.names text.highlight {
+  stroke: #00e676;
 }

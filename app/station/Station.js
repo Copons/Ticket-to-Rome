@@ -3,6 +3,7 @@ import './station.css';
 import uuid from 'node-uuid';
 import { createSvg } from '../utils/dom';
 import { ROUTES } from '../constants/railway';
+import { SIZES } from '../constants/layout';
 
 export default class Station {
 
@@ -19,7 +20,7 @@ export default class Station {
       }
     }
 
-    this.boardContainer = board.svg;
+    this.boardContainer = board.elements;
     this.element = createSvg('circle', {
       id: uuid.v4(),
       class: 'station',
@@ -30,11 +31,24 @@ export default class Station {
       fill: 'green',
     });
 
+    const nameCoordinates = {
+      x: station.x + SIZES.stationRadius + SIZES.stationNameSize - 2,
+      y: station.y + SIZES.stationRadius - 6,
+    };
+    this.name = createSvg('text', {
+      'data-station': `${this.slug}`,
+      x: nameCoordinates.x,
+      y: nameCoordinates.y,
+      transform: `rotate(-30, ${nameCoordinates.x}, ${nameCoordinates.y})`,
+    });
+    this.name.textContent = station.name;
+
     this.render();
   }
 
   render() {
-    this.boardContainer.appendChild(this.element);
+    this.boardContainer.names.appendChild(this.name);
+    this.boardContainer.stations.appendChild(this.element);
   }
 
 }

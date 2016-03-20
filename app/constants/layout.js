@@ -1,10 +1,11 @@
 export const APP_CONTAINER = document.getElementById('ttr');
 
 export const SIZES = {
-  boardWidth: 250,
-  boardHeight: 200,
-  stationRadius: 8,
-  stationStroke: 3,
-  routeStroke: 7,
-  routeGap: 2,
+  boardWidth: 300, //640,
+  boardHeight: 300, //360,
+  stationRadius: 7,
+  stationStroke: 2.5,
+  stationNameSize: 6,
+  routeStroke: 6,
+  routeGap: 1.5,
 };
