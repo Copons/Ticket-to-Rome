@@ -3,6 +3,7 @@ import './route.css';
 import uuid from 'node-uuid';
 import { createSvg } from '../utils/dom';
 import { listen } from '../utils/events';
+import { sessionGet } from '../utils/storage';
 import { STATIONS } from '../constants/railway';
 import { SIZES } from '../constants/layout';
 
@@ -30,6 +31,8 @@ export default class Route {
 
     this.mouseEnterRoute = this.mouseEnterRoute.bind(this);
     this.mouseLeaveRoute = this.mouseLeaveRoute.bind(this);
+    this.dragEnterRoute = this.dragEnterRoute.bind(this);
+    this.dragLeaveRoute = this.dragLeaveRoute.bind(this);
   }
 
   render() {
@@ -41,6 +44,8 @@ export default class Route {
     ];
     listen(this.element, 'mouseenter', this.mouseEnterRoute);
     listen(this.element, 'mouseleave', this.mouseLeaveRoute);
+    listen(this.element, 'dragenter', this.dragEnterRoute);
+    listen(this.element, 'dragleave', this.dragLeaveRoute);
     this.boardContainer.routes.appendChild(this.element);
   }
 
@@ -76,6 +81,15 @@ export default class Route {
     for (const element of this.stations.elements) {
       element.classList.remove('highlight');
     }
+  }
+
+  dragEnterRoute() {
+    console.log(sessionGet('dragStartGroup'));
+    this.mouseEnterRoute();
+  }
+
+  dragLeaveRoute() {
+    this.mouseLeaveRoute();
   }
 
 }

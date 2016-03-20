@@ -6,12 +6,14 @@ import { random } from '../utils/helpers';
 import { APP_CONTAINER } from '../constants/layout';
 import { RULES } from '../constants/rules';
 
+import Board from '../board/Board';
 import Deck from '../deck/Deck';
 import Player from '../player/Player';
 
 export default class Game {
 
   constructor(numberOfPlayers) {
+    this.board = new Board();
     this.deck = new Deck();
 
     this.players = [];

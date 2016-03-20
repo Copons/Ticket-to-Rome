@@ -16,7 +16,7 @@ export default class Player {
 
     this.element = create('div', {
       id: this.id,
-      class: 'player'
+      class: 'player',
     });
     this.render(deck);
 

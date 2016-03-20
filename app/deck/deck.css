@@ -1,4 +1,6 @@
 .deck {
+  position: fixed;
+  top: calc(70vh - 150px);
   display: flex;
   flex-flow: column;
   justify-content: center;
