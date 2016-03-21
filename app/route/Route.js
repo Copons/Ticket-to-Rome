@@ -3,13 +3,14 @@ import './route.css';
 import uuid from 'node-uuid';
 import { createSvg } from '../utils/dom';
 import { listen } from '../utils/events';
-import { sessionGet } from '../utils/storage';
 import { STATIONS } from '../constants/railway';
 import { SIZES } from '../constants/layout';
 
 export default class Route {
 
   constructor(route, board) {
+    this.type = route.color;
+    this.parts = route.parts;
     this.stations = {
       start: Object.assign({}, STATIONS.find(station => station.slug === route.start)),
       end: Object.assign({}, STATIONS.find(station => station.slug === route.end)),
@@ -26,13 +27,11 @@ export default class Route {
     this.boardContainer = board.elements;
     this.element = createSvg('path', {
       id: uuid.v4(),
-      class: `route ${route.color}`,
+      class: `route unclaimed ${this.type}`,
     });
 
     this.mouseEnterRoute = this.mouseEnterRoute.bind(this);
     this.mouseLeaveRoute = this.mouseLeaveRoute.bind(this);
-    this.dragEnterRoute = this.dragEnterRoute.bind(this);
-    this.dragLeaveRoute = this.dragLeaveRoute.bind(this);
   }
 
   render() {
@@ -49,14 +48,14 @@ export default class Route {
     this.boardContainer.routes.appendChild(this.element);
   }
 
-  pathDashArray(lineLength, parts) {
+  pathDashArray(lineLength) {
     const stationOffset = SIZES.stationRadius;
-    const pathLength = lineLength - stationOffset * 2 - (parts - 1) * SIZES.routeGap;
+    const pathLength = lineLength - stationOffset * 2 - (this.parts - 1) * SIZES.routeGap;
 
     const dashes = [0, stationOffset];
-    for (let i = 0; i < parts; i++) {
-      dashes.push(pathLength / parts);
-      if (i !== parts - 1) {
+    for (let i = 0; i < this.parts; i++) {
+      dashes.push(pathLength / this.parts);
+      if (i !== this.parts - 1) {
         dashes.push(SIZES.routeGap);
       }
     }
@@ -65,10 +64,10 @@ export default class Route {
     return dashes.join(', ');
   }
 
-  setPathAttributes(parts) {
+  setPathAttributes() {
     this.element.setAttributeNS(null, 'd', this.pathD());
     this.element.setAttributeNS(null,
-      'stroke-dasharray', this.pathDashArray(this.pathLength(), parts));
+      'stroke-dasharray', this.pathDashArray(this.pathLength()));
   }
 
   mouseEnterRoute() {
@@ -83,13 +82,34 @@ export default class Route {
     }
   }
 
-  dragEnterRoute() {
-    console.log(sessionGet('dragStartGroup'));
-    this.mouseEnterRoute();
-  }
+  /*isClaimable(hand) {
+    let dragged = '';
+    for (const type in hand) {
+      if (hand[type].isDragging) {
+        dragged = type;
+        break;
+      }
+    }
 
-  dragLeaveRoute() {
-    this.mouseLeaveRoute();
-  }
+    if (
+      (this.type === dragged || this.type === 'jolly' || dragged === 'jolly') &&
+      hand[dragged].cards >= this.parts
+    ) {
+      return true;
+    } else if (
+      this.type === 'jolly' &&
+      dragged !== 'jolly' &&
+      hand[dragged].cards + hand.jolly.cards >= this.parts
+    ) {
+      return true;
+    } else if (
+      this.type === dragged &&
+      hand[dragged].cards + hand.jolly.cards >= this.parts
+    ) {
+      return true;
+    }
+
+    return false;
+  }*/
 
 }

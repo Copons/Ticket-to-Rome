@@ -6,6 +6,6 @@ export function sessionGet(key) {
   return JSON.parse(sessionStorage.getItem(key));
 }
 
-export function sessionClear(key) {
-  sessionStorage.setItem(key, '');
+export function sessionRemove(key) {
+  sessionStorage.removeItem(key);
 }

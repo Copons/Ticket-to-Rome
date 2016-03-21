@@ -2,7 +2,6 @@ import './hand.css';
 
 import { create } from '../utils/dom';
 import { listen } from '../utils/events';
-import { sessionSet } from '../utils/storage';
 import { RULES } from '../constants/rules';
 import { DECK_COMPOSITION } from '../constants/deckComposition';
 
@@ -14,15 +13,13 @@ export default class Hand {
       cards : [],
       element : create('div', {
         class: 'group',
-        draggable: 'true',
+        'data-type': item.type,
       }),
     }));
     for (let i = 0; i < RULES.startingHand; i++) {
       const card = deck.draw();
       this.groups.find(group => group.type === card.type).cards.push(card);
     }
-
-    this.dragStartGroup = this.dragStartGroup.bind(this);
 
     this.element = create('div', {
       id: `player-${playerId}`,
@@ -35,6 +32,7 @@ export default class Hand {
   render() {
     this.renderGroupedCards();
     this.playerContainer.appendChild(this.element);
+    listen(document, 'drop', this.drop);
   }
 
   renderUpdate() {
@@ -57,7 +55,6 @@ export default class Hand {
           group.element.appendChild(card);
         }
         this.element.appendChild(group.element);
-        listen(group.element, 'dragstart', this.dragStartGroup);
       }
     }
   }
@@ -65,10 +62,6 @@ export default class Hand {
   addCard(card) {
     this.groups.find(group => group.type === card.type).cards.push(card);
     this.renderUpdate();
-  }
-
-  dragStartGroup() {
-    sessionSet('dragStartGroup', this);
   }
 
 }

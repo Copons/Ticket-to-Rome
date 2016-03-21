@@ -5,7 +5,7 @@ export default class RouteStraight extends Route {
   constructor(route, board) {
     super(route, board);
 
-    this.setPathAttributes(route.parts);
+    this.setPathAttributes();
 
     this.render();
   }

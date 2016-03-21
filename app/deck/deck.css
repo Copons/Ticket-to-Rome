@@ -7,10 +7,12 @@
   align-items: center;
   width: 100px;
   height: 150px;
+  cursor: pointer;
   background-color: #607d8b;
   border: 1px solid #37474f;
 }
 
 .deck.empty {
+  cursor: not-allowed;
   background-color: #cfd8dc;
 }

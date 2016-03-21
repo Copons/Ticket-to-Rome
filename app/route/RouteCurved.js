@@ -16,7 +16,7 @@ export default class RouteCurved extends Route {
       this.bezier.p1.y += route.displace.qy;
     }
 
-    this.setPathAttributes(route.parts);
+    this.setPathAttributes();
 
     this.render();
   }

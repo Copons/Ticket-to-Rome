@@ -3,6 +3,10 @@
   fill: transparent;
 }
 
+.route.unclaimed {
+  cursor: pointer;
+}
+
 .route.red {
   stroke: #f44336;
 }
