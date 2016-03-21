@@ -3,7 +3,7 @@
 .board {
   position: relative;
   min-width: 100%;
-  min-height: 70vh;
+  min-height: calc(100vh - 115px);
   background-color: #d7ccc8;
 }
 

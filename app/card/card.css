@@ -1,12 +1,12 @@
 .card {
-  width: 100px;
-  height: 150px;
+  width: 65px;
+  height: 100px;
   border: 1px solid #000;
   border-radius: 5px;
 }
 
 .card.stacked {
-  margin-left: -85px;
+  margin-left: -60px;
 }
 
 .card.red {

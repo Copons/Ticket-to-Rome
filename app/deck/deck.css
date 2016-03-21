@@ -1,15 +1,17 @@
 .deck {
   position: fixed;
-  top: calc(70vh - 150px);
+  left: 3px;
+  bottom: 120px;
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
   width: 100px;
-  height: 150px;
+  height: 65px;
   cursor: pointer;
-  background-color: #607d8b;
+  border-radius: 5px;
   border: 1px solid #37474f;
+  background-color: #607d8b;
 }
 
 .deck.empty {
