@@ -5,12 +5,14 @@ import { createSvg } from '../utils/dom';
 import { listen } from '../utils/events';
 import { STATIONS } from '../constants/railway';
 import { SIZES } from '../constants/layout';
+import RoutePopup from './RoutePopup';
 
 export default class Route {
 
   constructor(route, board) {
     this.type = route.color;
     this.parts = route.parts;
+    this.claimed = false;
     this.stations = {
       start: Object.assign({}, STATIONS.find(station => station.slug === route.start)),
       end: Object.assign({}, STATIONS.find(station => station.slug === route.end)),
@@ -46,6 +48,11 @@ export default class Route {
     listen(this.element, 'dragenter', this.dragEnterRoute);
     listen(this.element, 'dragleave', this.dragLeaveRoute);
     this.boardContainer.routes.appendChild(this.element);
+    this.popup = new RoutePopup(this);
+  }
+
+  renderPopup() {
+
   }
 
   pathDashArray(lineLength) {

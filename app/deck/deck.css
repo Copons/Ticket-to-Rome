@@ -2,6 +2,7 @@
   position: fixed;
   left: 3px;
   bottom: 120px;
+  z-index: 1;
   display: flex;
   flex-flow: column;
   justify-content: center;

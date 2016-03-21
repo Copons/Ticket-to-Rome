@@ -2,12 +2,15 @@ import './hand.css';
 
 import { create } from '../utils/dom';
 import { listen } from '../utils/events';
+import { sessionSet } from '../utils/storage';
 import { RULES } from '../constants/rules';
 import { DECK_COMPOSITION } from '../constants/deckComposition';
 
 export default class Hand {
 
   constructor(deck, playerId) {
+    this.changeEvent = new Event('handChanged');
+
     this.groups = DECK_COMPOSITION.map(item => ({
       type : item.type,
       cards : [],
@@ -17,8 +20,7 @@ export default class Hand {
       }),
     }));
     for (let i = 0; i < RULES.startingHand; i++) {
-      const card = deck.draw();
-      this.groups.find(group => group.type === card.type).cards.push(card);
+      this.addCard(deck.draw(), false);
     }
 
     this.element = create('div', {
@@ -59,9 +61,23 @@ export default class Hand {
     }
   }
 
-  addCard(card) {
+  addCard(card, update = true) {
     this.groups.find(group => group.type === card.type).cards.push(card);
-    this.renderUpdate();
+    sessionSet('hand', this.simplifyGroups());
+    window.dispatchEvent(this.changeEvent);
+    if (update) {
+      this.renderUpdate();
+    }
+  }
+
+  simplifyGroups() {
+    const groups = {};
+    for (const group of this.groups) {
+      if (group.cards.length > 0) {
+        groups[group.type] = group.cards.length;
+      }
+    }
+    return JSON.stringify(groups);
   }
 
 }

@@ -34,3 +34,25 @@
 .route.jolly {
   stroke: #90a4ae;
 }
+
+.route-popup.drop-element {
+  display: none;
+  padding: 10px;
+  opacity: 0;
+  border-radius: 5px;
+  background-color: #000;
+  box-shadow: 0 0.15em 0.3em 0 rgba(0, 0, 0, 0.16),
+              0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
+  color: #fff;
+  font-family: 'Hammersmith One', Arial, sans-serif;
+  font-size: 12pt;
+  letter-spacing: -0.2pt;
+  will-change: opacity;
+  transition: opacity 0.1s linear;
+}
+.route-popup.drop-element.drop-open-transitionend {
+  display: block;
+}
+.route-popup.drop-element.drop-after-open {
+  opacity: 1;
+}
