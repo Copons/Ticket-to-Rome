@@ -7,5 +7,5 @@ export const DECK_COMPOSITION = [
   { type: 'purple', amount: 12 },
   { type: 'black', amount: 12 },
   { type: 'white', amount: 12 },
-  { type: 'jolly', amount: 14 },
+  { type: 'wild', amount: 14 },
 ];

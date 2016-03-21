@@ -1,58 +1,104 @@
-.route {
+@import '../constants/colors';
+
+svg .route {
   stroke-width: 6;
   fill: transparent;
+
+  .unclaimed {
+    cursor: pointer;
+  }
+
+  &.red {
+    stroke: $red;
+  }
+  &.orange {
+    stroke: $orange;
+  }
+  &.yellow {
+    stroke: $yellow;
+  }
+  &.green {
+    stroke: $green;
+  }
+  &.blue {
+    stroke: $blue;
+  }
+  &.purple {
+    stroke: $purple;
+  }
+  &.black {
+    stroke: $black;
+  }
+  &.white {
+    stroke: $white;
+  }
+  &.wild {
+    stroke: $wild-route;
+  }
 }
 
-.route.unclaimed {
-  cursor: pointer;
+.route-popup {
+  &.drop-element {
+    display: none;
+    padding: 10px;
+    opacity: 0;
+    border-radius: 5px;
+    background-color: #000;
+    box-shadow: 0 0.15em 0.3em 0 rgba(0, 0, 0, 0.16),
+                0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
+    color: #fff;
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    font-size: 12pt;
+    letter-spacing: -0.2pt;
+    will-change: opacity;
+    transition: opacity 0.1s linear;
+
+    &.drop-open-transitionend {
+      display: block;
+    }
+
+    &.drop-after-open {
+      opacity: 1;
+    }
+  }
 }
 
-.route.red {
-  stroke: #f44336;
-}
-.route.orange {
-  stroke: #ff9800;
-}
-.route.yellow {
-  stroke: #ffeb3b;
-}
-.route.green {
-  stroke: #4caf50;
-}
-.route.blue {
-  stroke: #2196f3;
-}
-.route.purple {
-  stroke: #9c27b0;
-}
-.route.black {
-  stroke: #424242;
-}
-.route.white {
-  stroke: #f5f5f5;
-}
-.route.jolly {
-  stroke: #90a4ae;
-}
+.route-popup .drop-content {
+  .title .start:after {
+    content: ' - ';
+  }
+  .part {
+    display: inline-block;
+    width: 20px;
+    height: 10px;
+    margin-right: 3px;
 
-.route-popup.drop-element {
-  display: none;
-  padding: 10px;
-  opacity: 0;
-  border-radius: 5px;
-  background-color: #000;
-  box-shadow: 0 0.15em 0.3em 0 rgba(0, 0, 0, 0.16),
-              0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
-  color: #fff;
-  font-family: 'Hammersmith One', Arial, sans-serif;
-  font-size: 12pt;
-  letter-spacing: -0.2pt;
-  will-change: opacity;
-  transition: opacity 0.1s linear;
-}
-.route-popup.drop-element.drop-open-transitionend {
-  display: block;
-}
-.route-popup.drop-element.drop-after-open {
-  opacity: 1;
+    &.red {
+      background-color: $red;
+    }
+    &.orange {
+      background-color: $orange;
+    }
+    &.yellow {
+      background-color: $yellow;
+    }
+    &.green {
+      background-color: $green;
+    }
+    &.blue {
+      background-color: $blue;
+    }
+    &.purple {
+      background-color: $purple;
+    }
+    &.black {
+      background-color: $black;
+    }
+    &.white {
+      background-color: $white;
+    }
+    &.wild {
+      background-color: $wild-route;
+    }
+  }
 }

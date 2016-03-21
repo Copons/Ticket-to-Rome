@@ -1,38 +1,40 @@
+@import '../constants/colors';
+
 .card {
   width: 65px;
   height: 100px;
   border: 1px solid #000;
   border-radius: 5px;
-}
 
-.card.stacked {
-  margin-left: -60px;
-}
+  &.stacked {
+    margin-left: -60px;
+  }
 
-.card.red {
-  background: #f44336;
-}
-.card.orange {
-  background: #ff9800;
-}
-.card.yellow {
-  background: #ffeb3b;
-}
-.card.green {
-  background: #4caf50;
-}
-.card.blue {
-  background: #2196f3;
-}
-.card.purple {
-  background: #9c27b0;
-}
-.card.black {
-  background: #424242;
-}
-.card.white {
-  background: #f5f5f5;
-}
-.card.jolly {
-  background: linear-gradient(123deg, #fff8e1 0%, #ffa000 50%, #ff8f00 51%, #fff8e1 100%);
+  &.red {
+    background: $red;
+  }
+  &.orange {
+    background: $orange;
+  }
+  &.yellow {
+    background: $yellow;
+  }
+  &.green {
+    background: $green;
+  }
+  &.blue {
+    background: $blue;
+  }
+  &.purple {
+    background: $purple;
+  }
+  &.black {
+    background: $black;
+  }
+  &.white {
+    background: $white;
+  }
+  &.wild {
+    background: $wild-card;
+  }
 }

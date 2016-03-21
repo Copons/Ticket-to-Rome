@@ -4,12 +4,12 @@
   justify-content: center;
   align-items: center;
   padding: 5px;
-}
 
-.hand .group {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-  margin: 2.5px;
+  .group {
+   display: flex;
+   flex-wrap: nowrap;
+   justify-content: center;
+   align-items: center;
+   margin: 2.5px;
+ }
 }

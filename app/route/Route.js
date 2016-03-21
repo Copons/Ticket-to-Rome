@@ -99,19 +99,19 @@ export default class Route {
     }
 
     if (
-      (this.type === dragged || this.type === 'jolly' || dragged === 'jolly') &&
+      (this.type === dragged || this.type === 'wild' || dragged === 'wild') &&
       hand[dragged].cards >= this.parts
     ) {
       return true;
     } else if (
-      this.type === 'jolly' &&
-      dragged !== 'jolly' &&
-      hand[dragged].cards + hand.jolly.cards >= this.parts
+      this.type === 'wild' &&
+      dragged !== 'wild' &&
+      hand[dragged].cards + hand.wild.cards >= this.parts
     ) {
       return true;
     } else if (
       this.type === dragged &&
-      hand[dragged].cards + hand.jolly.cards >= this.parts
+      hand[dragged].cards + hand.wild.cards >= this.parts
     ) {
       return true;
     }

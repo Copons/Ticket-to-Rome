@@ -13,9 +13,9 @@
   border-radius: 5px;
   border: 1px solid #37474f;
   background-color: #607d8b;
-}
 
-.deck.empty {
-  cursor: not-allowed;
-  background-color: #cfd8dc;
+  &.empty {
+    cursor: not-allowed;
+    background-color: #cfd8dc;
+  }
 }

@@ -52,7 +52,7 @@ export const ROUTES = [
   },
   {
     start: 'termini', end: 'colosseo',
-    color: 'jolly', parts: 2,
+    color: 'wild', parts: 2,
     displace: {
       x1: 3.5, y1: -2,
       x2: 3.5, y2: 3.5,
@@ -69,7 +69,7 @@ export const ROUTES = [
   },
   {
     start: 'spagna', end: 'ottaviano',
-    color: 'jolly', parts: 3,
+    color: 'wild', parts: 3,
     qx: 159, qy: 123,
     displace: {
       x1: 5, y1: 0,

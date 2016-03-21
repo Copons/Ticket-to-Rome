@@ -1,4 +1,4 @@
-.station {
+svg .station {
   r: 7;
   stroke: #000000;
   stroke-width: 2.5;
@@ -6,13 +6,13 @@
 
   will-change: fill;
   transition: fill 0.2s linear;
+
+  &.highlight {
+    fill: #00e676;
+  }
 }
 
-.station.highlight {
-  fill: #00e676;
-}
-
-.names text {
+svg .names text {
   pointer-events: none;
   font-family: 'Hammersmith One', Arial, sans-serif;
   font-size: 6pt;
@@ -23,7 +23,8 @@
 
   will-change: stroke;
   transition: stroke 0.2s linear;
-}
-.names text.highlight {
-  stroke: #00e676;
+
+  &.highlight {
+    stroke: #00e676;
+  }
 }
