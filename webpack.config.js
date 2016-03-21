@@ -93,7 +93,8 @@ if (TARGET === 'build') {
       loaders: [
         {
           test: /\.css$/,
-          loader: ExtractTextPlugin.extract('style', 'css', 'postcss'),
+          //loader: ExtractTextPlugin.extract('style', 'css', 'postcss'),
+          loaders: ['style', 'css', 'postcss'],
           include: PATHS.app,
         },
       ],
@@ -104,7 +105,7 @@ if (TARGET === 'build') {
     plugins: [
       new CleanPlugin([PATHS.build], { verbose: false }),
       new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
-      new ExtractTextPlugin('[name].[chunkhash].css'),
+      //new ExtractTextPlugin('[name].[chunkhash].css'),
       new webpack.optimize.CommonsChunkPlugin({
         names: ['vendor', 'manifest'],
       }),

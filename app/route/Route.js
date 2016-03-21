@@ -45,8 +45,6 @@ export default class Route {
     ];
     listen(this.element, 'mouseenter', this.mouseEnterRoute);
     listen(this.element, 'mouseleave', this.mouseLeaveRoute);
-    listen(this.element, 'dragenter', this.dragEnterRoute);
-    listen(this.element, 'dragleave', this.dragLeaveRoute);
     this.boardContainer.routes.appendChild(this.element);
     this.popup = new RoutePopup(this);
   }
@@ -88,35 +86,5 @@ export default class Route {
       element.classList.remove('highlight');
     }
   }
-
-  /*isClaimable(hand) {
-    let dragged = '';
-    for (const type in hand) {
-      if (hand[type].isDragging) {
-        dragged = type;
-        break;
-      }
-    }
-
-    if (
-      (this.type === dragged || this.type === 'wild' || dragged === 'wild') &&
-      hand[dragged].cards >= this.parts
-    ) {
-      return true;
-    } else if (
-      this.type === 'wild' &&
-      dragged !== 'wild' &&
-      hand[dragged].cards + hand.wild.cards >= this.parts
-    ) {
-      return true;
-    } else if (
-      this.type === dragged &&
-      hand[dragged].cards + hand.wild.cards >= this.parts
-    ) {
-      return true;
-    }
-
-    return false;
-  }*/
 
 }

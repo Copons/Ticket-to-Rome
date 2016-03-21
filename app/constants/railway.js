@@ -20,7 +20,7 @@ export const STATIONS = [
     x: 118, y: 127,
   },
   {
-    slug: 'clodio-mazzini', name: 'Clodio - Mazzini',
+    slug: 'clodio-mazzini', name: 'Clodio-Mazzini',
     x: 118, y: 95,
   },
   {

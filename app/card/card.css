@@ -1,4 +1,4 @@
-@import '../constants/colors';
+@import '../constants/_colors.css';
 
 .card {
   width: 65px;

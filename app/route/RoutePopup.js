@@ -8,7 +8,7 @@ export default class RoutePopup {
   constructor(route) {
     this.route = route;
 
-    this.createHandContent = this.createHandContent.bind(this);
+    this.createClaimsContent = this.createClaimsContent.bind(this);
 
     this.element = {};
     this.dropContent = {
@@ -22,7 +22,7 @@ export default class RoutePopup {
         container: create('div', { class: 'info' }),
         parts: create('span', { class: 'parts' }),
       },
-      hand: create('div', { class: 'hand' }),
+      claims: create('div', { class: 'claims' }),
     };
     this.render();
   }
@@ -30,16 +30,16 @@ export default class RoutePopup {
   render() {
     this.createDropContent();
 
-    listen(window, 'handChanged', this.createHandContent);
+    listen(window, 'handChanged', this.createClaimsContent);
 
     this.element = new Drop({
       target: this.route.element,
       classes: 'route-popup',
       content: this.dropContent.content,
-      position: 'top center',
+      position: 'bottom center',
       openOn: 'click',
       tetherOptions: {
-        offset: '5px 0',
+        offset: '-10px 0',
       },
     });
   }
@@ -51,38 +51,63 @@ export default class RoutePopup {
     this.dropContent.title.container.appendChild(this.dropContent.title.end);
     this.dropContent.content.appendChild(this.dropContent.title.container);
 
-    for (let i = 0; i < this.route.parts; i++) {
-      this.dropContent.info.parts.insertAdjacentHTML('beforeend',
-        `<span class="part ${this.route.type}">x</span>`
-      );
-    }
+    this.dropContent.info.parts.insertAdjacentHTML(
+      'beforeend',
+      this.createParts(this.route.type, this.route.parts)
+    );
     this.dropContent.info.container.appendChild(this.dropContent.info.parts);
     this.dropContent.content.appendChild(this.dropContent.info.container);
 
-    this.createHandContent();
-    this.dropContent.content.appendChild(this.dropContent.hand);
+    this.dropContent.content.appendChild(this.dropContent.claims);
+    this.createClaimsContent();
   }
 
-  createHandContent() {
+  createClaimsContent() {
     const hand = JSON.parse(sessionGet('hand'));
-    let handContent = '';
+    if (!hand) {
+      return;
+    }
+    const wildCards = hand.wild;
+    const routeParts = this.route.parts;
+    const routeType = this.route.type;
+
+    let claimContent = '';
 
     for (const type in hand) {
-      if (type === 'jolly') {
-        if (hand.jolly >= this.route.parts) {
-          handContent += `Claimable by ${this.route.parts} jolly.<br />`;
-        } else if (
-          this.route.type !== 'jolly' &&
-          hand[this.route.type] &&
-          hand[this.route.type] >= this.route.parts - hand.jolly
-        ) {
-          handContent += `Claimable by ${this.route.parts - hand.jolly} ${this.route.type} +
-          ${hand.jolly} jolly.<br />`;
+      if (type !== 'wild') {
+        if (type === routeType || routeType === 'wild') {
+          if (hand[type] >= routeParts) {
+            claimContent += `<div>${this.createParts(type, routeParts)}</div>`;
+          } else if (hand[type] + wildCards >= routeParts) {
+            claimContent += '<div>';
+            claimContent += this.createParts(type, hand[type]);
+            claimContent += this.createParts('wild', routeParts - hand[type]);
+            claimContent += '</div>';
+          }
         }
       }
     }
 
-    this.dropContent.hand.textContent = handContent;
+    if (wildCards >= routeParts) {
+      claimContent += `<div>${this.createParts('wild', routeParts)}</div>`;
+    }
+
+    if (claimContent !== '') {
+      claimContent = `<div class="title">Claim with:</div>${claimContent}`;
+    } else {
+      claimContent = '<div class="title">Unclaimable</div>';
+    }
+
+    this.dropContent.claims.innerHTML = claimContent;
+  }
+
+
+  createParts(type, times = 1) {
+    let parts = `<span class="part ${type}"></span>`;
+    for (let i = 1; i < times; i++) {
+      parts += `<span class="part ${type}"></span>`;
+    }
+    return parts;
   }
 
 }
