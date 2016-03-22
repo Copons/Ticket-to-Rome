@@ -7,8 +7,14 @@ import Station from '../station/Station';
 import RouteStraight from '../route/RouteStraight';
 import RouteCurved from '../route/RouteCurved';
 
+
+/** Class representing the game board. */
 export default class Board {
 
+
+  /**
+   * Create the game board.
+   */
   constructor() {
     this.element = create('div', { class: 'board' });
     this.svg = createSvg('svg', {
@@ -36,6 +42,10 @@ export default class Board {
     this.render();
   }
 
+
+  /**
+   * Append the game board elements to the app container.
+   */
   render() {
     this.elements.svg.appendChild(this.elements.routes);
     this.elements.svg.appendChild(this.elements.stations);

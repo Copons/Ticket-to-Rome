@@ -1,7 +1,18 @@
 import Route from './Route';
 
+
+/**
+ * Class representing a straight route.
+ * @extends Route
+ */
 export default class RouteStraight extends Route {
 
+
+  /**
+   * Create the straight route.
+   * @param  {Object} route - The route information.
+   * @param  {Board} board - The game board.
+   */
   constructor(route, board) {
     super(route, board);
 
@@ -10,6 +21,11 @@ export default class RouteStraight extends Route {
     this.render();
   }
 
+
+  /**
+   * Calculate the route's path description attribute.
+   * @return {string} The path description.
+   */
   pathD() {
     const d = [
       'M', this.stations.start.x, this.stations.start.y,
@@ -18,6 +34,11 @@ export default class RouteStraight extends Route {
     return d.join(' ');
   }
 
+
+  /**
+   * Calculate the route's path length.
+   * @return {number} The path length.
+   */
   pathLength() {
     return Math.sqrt(
       Math.pow(this.stations.end.x - this.stations.start.x, 2) +

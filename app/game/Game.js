@@ -5,13 +5,19 @@ import { listen } from '../utils/events';
 import { random } from '../utils/helpers';
 import { APP_CONTAINER } from '../constants/layout';
 import { RULES } from '../constants/rules';
-
 import Board from '../board/Board';
 import Deck from '../deck/Deck';
 import Player from '../player/Player';
 
+
+/** Class representing the main game logic. */
 export default class Game {
 
+
+  /**
+   * Create the main game logic.
+   * @param  {number} numberOfPlayers - The current game's number of players.
+   */
   constructor(numberOfPlayers) {
     this.board = new Board();
     this.deck = new Deck();
@@ -36,6 +42,11 @@ export default class Game {
     this.render();
   }
 
+
+  /**
+   * Append the game state control element to the app container
+   * and listen to turn changes.
+   */
   render() {
     this.elements.turn.textContent = `Turn: ${this.turn}`;
     this.elements.activePlayer.textContent = `Active: ${this.players[this.activePlayer].name}`;
@@ -45,11 +56,20 @@ export default class Game {
     listen(APP_CONTAINER, 'click', this.playerTurn);
   }
 
+
+  /**
+   * Update the game state control element when the turn changes.
+   */
   renderUpdate() {
     this.elements.turn.textContent = `Turn: ${this.turn}`;
     this.elements.activePlayer.textContent = `Active: ${this.players[this.activePlayer].name}`;
   }
 
+
+  /**
+   * Control the game turns.
+   * @param  {Event} e - The event dispatched when a turn changes.
+   */
   playerTurn(e) {
     if (this.turnActions > 0) {
       if (e.target === this.deck.element && this.deck.cards.length) {

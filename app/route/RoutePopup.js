@@ -2,8 +2,15 @@ import Drop from 'tether-drop';
 import { create } from '../utils/dom';
 import { listen, customEvent } from '../utils/events';
 
+
+/** Class representing the route popup */
 export default class RoutePopup {
 
+
+  /**
+   * Create the route popup.
+   * @param  {Route} route - The linked route.
+   */
   constructor(route) {
     this.route = route;
 
@@ -27,6 +34,10 @@ export default class RoutePopup {
     this.render();
   }
 
+
+  /**
+   * Create the Drop.js popup and listen to changes of the player hand.
+   */
   render() {
     this.createDropContent();
 
@@ -44,6 +55,10 @@ export default class RoutePopup {
     });
   }
 
+
+  /**
+   * Create the Drop.js content and append it to the Drop.js element.
+   */
   createDropContent() {
     this.dropContent.title.start.textContent = this.route.stations.start.name;
     this.dropContent.title.end.textContent = this.route.stations.end.name;
@@ -66,6 +81,12 @@ export default class RoutePopup {
     this.createClaimsContent();
   }
 
+
+  /**
+   * Replace the claim section of the popup whenever the hand changes
+   * and listen to any route claiming event.
+   * @param  {Event} e - The changed hand event.
+   */
   createClaimsContent(e) {
     if (!e) {
       return;
@@ -141,6 +162,12 @@ export default class RoutePopup {
     }
   }
 
+
+  /**
+   * Create the part rectangles.
+   * @param  {Array} types - The parts types.
+   * @return {string} The parts HTML string.
+   */
   createParts(types) {
     let parts = '';
     for (const type of types) {
@@ -149,6 +176,11 @@ export default class RoutePopup {
     return parts;
   }
 
+
+  /**
+   * Dispatch a claim route event whenever the claim container is clicked.
+   * @param  {Event} e - The click event.
+   */
   claimRoute(e) {
     customEvent(window, 'routeClaimed', {
       routeId: this.route.id,

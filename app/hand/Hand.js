@@ -5,8 +5,16 @@ import { listen, customEvent } from '../utils/events';
 import { RULES } from '../constants/rules';
 import { DECK_COMPOSITION } from '../constants/deckComposition';
 
+
+/** Class representing the player's hand. */
 export default class Hand {
 
+
+  /**
+   * Create the player's hand.
+   * @param  {Deck} deck - The deck.
+   * @param  {string} playerId - The player owning this hand.
+   */
   constructor(deck, playerId) {
     this.groups = DECK_COMPOSITION.map(item => ({
       type : item.type,
@@ -30,6 +38,11 @@ export default class Hand {
     this.render();
   }
 
+
+  /**
+   * Append the hand to the player container
+   * and listen to events changing the contained cards.
+   */
   render() {
     this.renderGroupedCards();
     this.playerContainer.appendChild(this.element);
@@ -37,6 +50,10 @@ export default class Hand {
     listen(window, 'routeClaimed', this.removeCardsToClaimRoute);
   }
 
+
+  /**
+   * Update the hand when the contained cards change.
+   */
   renderUpdate() {
     while (this.element.firstChild) {
       this.element.removeChild(this.element.firstChild);
@@ -44,6 +61,10 @@ export default class Hand {
     this.renderGroupedCards();
   }
 
+
+  /**
+   * Append the grouped cards to the player's hand.
+   */
   renderGroupedCards() {
     for (const group of this.groups) {
       if (group.cards.length) {
@@ -61,6 +82,12 @@ export default class Hand {
     }
   }
 
+
+  /**
+   * Add a card to the hand.
+   * @param {Card} card - The card to add.
+   * @param {boolean} [update=true] - Control if a render update is needed.
+   */
   addCard(card, update = true) {
     this.groups.find(group => group.type === card.type).cards.push(card);
     customEvent(window, 'handChanged', this.simplifyGroups());
@@ -69,6 +96,11 @@ export default class Hand {
     }
   }
 
+
+  /**
+   * Remove from the hand all the cards needed to claim a route.
+   * @param  {Event} e - The event dispatched when the route is claimed.
+   */
   removeCardsToClaimRoute(e) {
     for (const type of e.detail.cards) {
       this.groups.find(group => group.type === type).cards.pop();
@@ -77,6 +109,10 @@ export default class Hand {
     this.renderUpdate();
   }
 
+
+  /**
+   * Simplify and stringify the grouped cards.
+   */
   simplifyGroups() {
     const groups = {};
     for (const group of this.groups) {

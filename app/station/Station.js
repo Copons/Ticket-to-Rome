@@ -5,8 +5,16 @@ import { createSvg } from '../utils/dom';
 import { ROUTES } from '../constants/railway';
 import { SIZES } from '../constants/layout';
 
+
+/** Class representing a station. */
 export default class Station {
 
+
+  /**
+   * Create a station.
+   * @param  {Object} station - The station information.
+   * @param  {Board} board - The game board.
+   */
   constructor(station, board) {
     this.slug = station.slug;
     this.name = station.name;
@@ -46,6 +54,10 @@ export default class Station {
     this.render();
   }
 
+
+  /**
+   * Append the station elements to the game board.
+   */
   render() {
     this.boardContainer.names.appendChild(this.name);
     this.boardContainer.stations.appendChild(this.element);

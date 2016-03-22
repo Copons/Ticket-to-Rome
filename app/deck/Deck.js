@@ -6,8 +6,14 @@ import { APP_CONTAINER } from '../constants/layout';
 import { DECK_COMPOSITION } from '../constants/deckComposition';
 import Card from '../card/Card';
 
+
+/** Class representing the deck. */
 export default class Deck {
 
+
+  /**
+   * Create the deck.
+   */
   constructor() {
     this.cards = [];
     for (const card of DECK_COMPOSITION) {
@@ -23,6 +29,10 @@ export default class Deck {
     this.render();
   }
 
+
+  /**
+   * Append the deck to the app container.
+   */
   render() {
     this.deckCounter.textContent = this.cards.length;
     APP_CONTAINER.appendChild(this.element);
@@ -30,6 +40,10 @@ export default class Deck {
     this.element.appendChild(this.deckCounter);
   }
 
+
+  /**
+   * Update the deck when the cards count changes.
+   */
   renderUpdate() {
     this.deckCounter.textContent = this.cards.length;
     if (!this.cards.length) {
@@ -39,6 +53,10 @@ export default class Deck {
     }
   }
 
+
+  /**
+   * Draw a card from the deck.
+   */
   draw() {
     const drawnCard = this.cards[random(this.cards.length)];
     this.cards = this.cards.filter(card => card.id !== drawnCard.id);

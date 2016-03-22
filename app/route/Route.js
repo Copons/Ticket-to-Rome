@@ -7,8 +7,16 @@ import { STATIONS } from '../constants/railway';
 import { SIZES } from '../constants/layout';
 import RoutePopup from './RoutePopup';
 
+
+/** Class representing a route. */
 export default class Route {
 
+
+  /**
+   * Create the route.
+   * @param  {Object} route - The route information.
+   * @param  {Board} board - The game board.
+   */
   constructor(route, board) {
     this.id = uuid.v4();
     this.type = route.color;
@@ -37,6 +45,10 @@ export default class Route {
     this.mouseLeaveRoute = this.mouseLeaveRoute.bind(this);
   }
 
+
+  /**
+   * Append the route to the game board.
+   */
   render() {
     this.stations.elements = [
       this.boardContainer.stations.querySelector(`[data-station="${this.stations.start.slug}"]`),
@@ -50,10 +62,12 @@ export default class Route {
     this.popup = new RoutePopup(this);
   }
 
-  renderPopup() {
 
-  }
-
+  /**
+   * Calculate the route dashes and offsets lengths.
+   * @param  {number} lineLength - The route length.
+   * @return {string} The route stroke-dasharray attribute.
+   */
   pathDashArray(lineLength) {
     const stationOffset = SIZES.stationRadius;
     const pathLength = lineLength - stationOffset * 2 - (this.parts - 1) * SIZES.routeGap;
@@ -70,18 +84,30 @@ export default class Route {
     return dashes.join(', ');
   }
 
+
+  /**
+   * Add the attributes to the route element.
+   */
   setPathAttributes() {
     this.element.setAttributeNS(null, 'd', this.pathD());
     this.element.setAttributeNS(null,
       'stroke-dasharray', this.pathDashArray(this.pathLength()));
   }
 
+
+  /**
+   * Highlight the route stations when the mouse hovers on the route.
+   */
   mouseEnterRoute() {
     for (const element of this.stations.elements) {
       element.classList.add('highlight');
     }
   }
 
+
+  /**
+   * Stop highlighting the route stations when the mouse leaves the route.
+   */
   mouseLeaveRoute() {
     for (const element of this.stations.elements) {
       element.classList.remove('highlight');

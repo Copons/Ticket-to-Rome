@@ -1,3 +1,9 @@
+/**
+ * Create a HTML element.
+ * @param  {string} tag - The element tag name.
+ * @param  {Object} [args={}] - The element attributes.
+ * @return {Element} The created element.
+ */
 export function create(tag, args = {}) {
   const element = document.createElement(tag);
   for (const arg in args) {
@@ -6,6 +12,13 @@ export function create(tag, args = {}) {
   return element;
 }
 
+
+/**
+ * Create a SVG element.
+ * @param  {string} tag - The element tag name.
+ * @param  {Object} [args={}] - The element attributes.
+ * @return {Element} The created element.
+ */
 export function createSvg(tag, args = {}) {
   const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
   for (const arg in args) {
@@ -14,6 +27,12 @@ export function createSvg(tag, args = {}) {
   return element;
 }
 
+
+/**
+ * Set an element's CSS style.
+ * @param {Element} elem - The element to style.
+ * @param {Object} [args={}] - The CSS rules.
+ */
 export function setStyle(elem, args = {}) {
   const element = elem;
   for (const arg in args) {

@@ -1,7 +1,18 @@
 import Route from './Route';
 
+
+/**
+ * Class representing a curved route.
+ * @extends Route
+ */
 export default class RouteCurved extends Route {
 
+
+  /**
+   * Create the curved route.
+   * @param  {Object} route - The route information.
+   * @param  {Board} board - The game board.
+   */
   constructor(route, board) {
     super(route, board);
 
@@ -21,6 +32,11 @@ export default class RouteCurved extends Route {
     this.render();
   }
 
+
+  /**
+   * Calculate the route's path description attribute.
+   * @return {string} The path description.
+   */
   pathD() {
     const d = [
       'M', this.bezier.p0.x, this.bezier.p0.y,
@@ -30,6 +46,11 @@ export default class RouteCurved extends Route {
     return d.join(' ');
   }
 
+
+  /**
+   * Calculate the route's path length.
+   * @return {number} The path length.
+   */
   pathLength() {
     const a = {
       x: this.bezier.p0.x - 2 * this.bezier.p1.x + this.bezier.p2.x,
