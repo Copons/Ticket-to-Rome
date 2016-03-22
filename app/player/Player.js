@@ -2,6 +2,7 @@ import './player.css';
 
 import uuid from 'node-uuid';
 import { create } from '../utils/dom';
+import { listen } from '../utils/events';
 import { APP_CONTAINER } from '../constants/layout';
 import { RULES } from '../constants/rules';
 import Hand from '../hand/Hand';
@@ -21,6 +22,9 @@ export default class Player {
     this.name = name;
     this.pieces = RULES.startingPieces;
     this.active = false;
+    this.builtRoutes = [];
+
+    this.claimRoute = this.claimRoute.bind(this);
 
     this.element = create('div', {
       id: this.id,
@@ -28,7 +32,7 @@ export default class Player {
     });
     this.render(deck);
 
-    this.hand = new Hand(deck, this.id);
+    this.hand = new Hand(deck, this);
   }
 
 
@@ -38,6 +42,8 @@ export default class Player {
   render() {
     this.element.insertAdjacentHTML('afterbegin', `<div class="player-name">${this.name}</div>`);
     APP_CONTAINER.appendChild(this.element);
+
+    listen(window, 'routeClaimed', this.claimRoute);
   }
 
 
@@ -47,6 +53,23 @@ export default class Player {
    */
   drawFromDeck(deck) {
     this.hand.addCard(deck.draw());
+  }
+
+
+  /**
+   * Claim and build a route.
+   * @param  {Event} e - The route claiming event.
+   */
+  claimRoute(e) {
+    if (!e) return;
+
+    this.builtRoutes.push({
+      start: e.detail.start,
+      end: e.detail.end,
+    });
+    console.log(
+      `Player ${this.name} claimed route ${e.detail.start.name} - ${e.detail.end.name}`
+    );
   }
 
 }

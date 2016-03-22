@@ -13,9 +13,10 @@ export default class Hand {
   /**
    * Create the player's hand.
    * @param  {Deck} deck - The deck.
-   * @param  {string} playerId - The player owning this hand.
+   * @param  {Player} player - The player owning this hand.
    */
-  constructor(deck, playerId) {
+  constructor(deck, player) {
+    this.player = player;
     this.groups = DECK_COMPOSITION.map(item => ({
       type : item.type,
       cards : [],
@@ -31,10 +32,10 @@ export default class Hand {
     this.removeCardsToClaimRoute = this.removeCardsToClaimRoute.bind(this);
 
     this.element = create('div', {
-      id: `player-${playerId}`,
+      id: `player-${player.id}`,
       class: 'hand',
     });
-    this.playerContainer = document.getElementById(playerId);
+    this.playerContainer = this.player.element;
     this.render();
   }
 
@@ -102,6 +103,8 @@ export default class Hand {
    * @param  {Event} e - The event dispatched when the route is claimed.
    */
   removeCardsToClaimRoute(e) {
+    if (!e) return;
+
     for (const type of e.detail.cards) {
       this.groups.find(group => group.type === type).cards.pop();
     }

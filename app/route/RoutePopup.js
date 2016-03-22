@@ -88,9 +88,8 @@ export default class RoutePopup {
    * @param  {Event} e - The changed hand event.
    */
   createClaimsContent(e) {
-    if (!e) {
-      return;
-    }
+    if (!e) return;
+
     const hand = JSON.parse(e.detail);
 
     while (this.dropContent.claims.hasChildNodes()) {
@@ -184,6 +183,8 @@ export default class RoutePopup {
   claimRoute(e) {
     customEvent(window, 'routeClaimed', {
       routeId: this.route.id,
+      start: this.route.stations.start,
+      end: this.route.stations.end,
       cards: e.target.dataset.claim.split(','),
     });
   }
