@@ -166,7 +166,7 @@ export default class RoutePopup {
   /**
    * Create the part rectangles.
    * @param  {Array} types - The parts types.
-   * @return {string} The parts HTML string.
+   * @return {string}
    */
   createParts(types) {
     let parts = '';

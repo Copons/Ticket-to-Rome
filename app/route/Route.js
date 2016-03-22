@@ -64,9 +64,9 @@ export default class Route {
 
 
   /**
-   * Calculate the route dashes and offsets lengths.
+   * Calculate the route stroke-dasharray attribute.
    * @param  {number} lineLength - The route length.
-   * @return {string} The route stroke-dasharray attribute.
+   * @return {string}
    */
   pathDashArray(lineLength) {
     const stationOffset = SIZES.stationRadius;

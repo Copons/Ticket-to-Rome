@@ -35,7 +35,7 @@ export default class RouteCurved extends Route {
 
   /**
    * Calculate the route's path description attribute.
-   * @return {string} The path description.
+   * @return {string}
    */
   pathD() {
     const d = [
@@ -49,7 +49,7 @@ export default class RouteCurved extends Route {
 
   /**
    * Calculate the route's path length.
-   * @return {number} The path length.
+   * @return {number}
    */
   pathLength() {
     const a = {

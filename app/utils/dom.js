@@ -2,7 +2,7 @@
  * Create a HTML element.
  * @param  {string} tag - The element tag name.
  * @param  {Object} [args={}] - The element attributes.
- * @return {Element} The created element.
+ * @return {Element}
  */
 export function create(tag, args = {}) {
   const element = document.createElement(tag);
@@ -17,7 +17,7 @@ export function create(tag, args = {}) {
  * Create a SVG element.
  * @param  {string} tag - The element tag name.
  * @param  {Object} [args={}] - The element attributes.
- * @return {Element} The created element.
+ * @return {Element}
  */
 export function createSvg(tag, args = {}) {
   const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
