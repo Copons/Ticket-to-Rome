@@ -123,6 +123,15 @@ svg .route {
     background-color: $wild-route;
   }
   .claims .part.wild {
-    background: $wild-card;
+    background: linear-gradient(135deg,
+      $white 0%, $white 12.5%,
+      $yellow 12.5%, $yellow 25%,
+      $orange 25%, $orange 37.5%,
+      $red 37.5%, $red 50%,
+      $purple 50%, $purple 62.5%,
+      $blue 62.5%, $blue 75%,
+      $green 75%, $green 87.5%,
+      $black 87.5%, $black 100%
+    );
   }
 }
