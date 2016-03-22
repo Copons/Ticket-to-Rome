@@ -76,6 +76,16 @@ svg .route {
     letter-spacing: normal;
   }
 
+  .claim {
+    cursor: pointer;
+    &:hover {
+      background: #eceff1;
+    }
+    .part {
+      pointer-events: none;
+    }
+  }
+
   .part {
     display: inline-block;
     width: 20px;

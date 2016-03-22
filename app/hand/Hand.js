@@ -1,16 +1,13 @@
 import './hand.css';
 
 import { create } from '../utils/dom';
-import { listen } from '../utils/events';
-import { sessionSet } from '../utils/storage';
+import { listen, customEvent } from '../utils/events';
 import { RULES } from '../constants/rules';
 import { DECK_COMPOSITION } from '../constants/deckComposition';
 
 export default class Hand {
 
   constructor(deck, playerId) {
-    this.changeEvent = new Event('handChanged');
-
     this.groups = DECK_COMPOSITION.map(item => ({
       type : item.type,
       cards : [],
@@ -23,6 +20,8 @@ export default class Hand {
       this.addCard(deck.draw(), false);
     }
 
+    this.removeCardsToClaimRoute = this.removeCardsToClaimRoute.bind(this);
+
     this.element = create('div', {
       id: `player-${playerId}`,
       class: 'hand',
@@ -34,7 +33,8 @@ export default class Hand {
   render() {
     this.renderGroupedCards();
     this.playerContainer.appendChild(this.element);
-    listen(document, 'drop', this.drop);
+
+    listen(window, 'routeClaimed', this.removeCardsToClaimRoute);
   }
 
   renderUpdate() {
@@ -63,11 +63,18 @@ export default class Hand {
 
   addCard(card, update = true) {
     this.groups.find(group => group.type === card.type).cards.push(card);
-    sessionSet('hand', this.simplifyGroups());
-    window.dispatchEvent(this.changeEvent);
+    customEvent(window, 'handChanged', this.simplifyGroups());
     if (update) {
       this.renderUpdate();
     }
+  }
+
+  removeCardsToClaimRoute(e) {
+    for (const type of e.detail.cards) {
+      this.groups.find(group => group.type === type).cards.pop();
+    }
+    customEvent(window, 'handChanged', this.simplifyGroups());
+    this.renderUpdate();
   }
 
   simplifyGroups() {

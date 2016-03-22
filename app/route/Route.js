@@ -10,6 +10,7 @@ import RoutePopup from './RoutePopup';
 export default class Route {
 
   constructor(route, board) {
+    this.id = uuid.v4();
     this.type = route.color;
     this.parts = route.parts;
     this.claimed = false;
@@ -28,7 +29,7 @@ export default class Route {
 
     this.boardContainer = board.elements;
     this.element = createSvg('path', {
-      id: uuid.v4(),
+      id: this.id,
       class: `route unclaimed ${this.type}`,
     });
 
