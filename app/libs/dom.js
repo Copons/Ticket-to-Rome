@@ -1,7 +1,7 @@
 /**
  * Create a HTML element.
- * @param  {string} tag - The element tag name.
- * @param  {Object} [args={}] - The element attributes.
+ * @param  {string}  tag       The element tag name.
+ * @param  {Object}  [args={}] The element attributes.
  * @return {Element}
  */
 export function create(tag, args = {}) {
@@ -15,8 +15,8 @@ export function create(tag, args = {}) {
 
 /**
  * Create a SVG element.
- * @param  {string} tag - The element tag name.
- * @param  {Object} [args={}] - The element attributes.
+ * @param  {string}  tag       The element tag name.
+ * @param  {Object}  [args={}] The element attributes.
  * @return {Element}
  */
 export function createSvg(tag, args = {}) {
@@ -30,8 +30,8 @@ export function createSvg(tag, args = {}) {
 
 /**
  * Set an element's CSS style.
- * @param {Element} elem - The element to style.
- * @param {Object} [args={}] - The CSS rules.
+ * @param {Element} elem      The element to style.
+ * @param {Object}  [args={}] The CSS rules.
  */
 export function setStyle(elem, args = {}) {
   const element = elem;
