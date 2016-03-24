@@ -1,11 +1,21 @@
 export const RULES = {
-  maxPlayers: 5,
-  startingHand: 3,
-  startingPieces: 45,
-  turnActions: 2,
 
-  actionsDrawFromDeck: 1,
-  actionsDrawFromPile: 1,
-  actionsDrawWildFromPile: 2,
-  actionsClaimRoute: 2,
+  player: {
+    max: 5,
+    startingHand: 3,
+    startingPieces: 45,
+  },
+
+  turn: {
+    actions: 2,
+  },
+
+  action: {
+    drawFromDeck: 1,
+    drawFromPile: 1,
+    drawWildFromPile: 2,
+    claimRoute: 2,
+    newDestination: 2,
+  },
+
 };

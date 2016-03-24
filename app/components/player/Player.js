@@ -1,6 +1,6 @@
 import uuid from 'node-uuid';
-import PubSub from '../../libs/PubSub';
 import { RULES } from '../../constants';
+import PubSub from '../../libs/PubSub';
 
 
 /** Class representing a player. */
@@ -14,7 +14,7 @@ export default class Player {
   constructor(name) {
     this.id = uuid.v4();
     this.name = name;
-    this.pieces = RULES.startingPieces;
+    this.pieces = RULES.player.startingPieces;
     this.active = false;
     this.hand = {}; // TODO Hand class
     this.builtRoutes = [];

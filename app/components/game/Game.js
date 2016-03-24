@@ -1,6 +1,6 @@
-import PubSub from '../../libs/PubSub';
-import { random } from '../../libs/math';
 import { RULES } from '../../constants';
+import { random } from '../../libs/math';
+import PubSub from '../../libs/PubSub';
 import Deck from '../deck';
 import Player from '../player';
 
@@ -48,9 +48,18 @@ export default class Game {
    */
   executeAction = data => {
     if (data.action === 'deck/draw') {
-      this.turnActionsLeft - RULES.actionsDrawFromDeck;
-      console.log(`${this.activePlayer.name} drawn a ${data.card.type} card from deck.`);
+      this.actionDrawFromDeck(data);
     }
+  }
+
+
+  /**
+   * Execute the action "draw card from deck".
+   * @param {Object} data The data published by the 'deck/draw' action.
+   */
+  actionDrawFromDeck = data => {
+    this.turnActionsLeft - RULES.action.drawFromDeck;
+    console.log(`Player ${this.activePlayer.name} drawn a ${data.card.type} card from deck.`);
   }
 
 }

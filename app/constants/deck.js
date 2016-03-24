@@ -1,4 +1,4 @@
-export const DECK_COMPOSITION = [
+export const DECK = [
   { type: 'red', amount: 12 },
   { type: 'orange', amount: 12 },
   { type: 'yellow', amount: 12 },

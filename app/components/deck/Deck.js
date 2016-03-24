@@ -1,9 +1,9 @@
 import './deck.css';
-import PubSub from '../../libs/PubSub';
+import { APP_CONTAINER, DECK } from '../../constants';
 import { create } from '../../libs/dom';
 import { listen } from '../../libs/events';
 import { random } from '../../libs/math';
-import { APP_CONTAINER, DECK_COMPOSITION } from '../../constants';
+import PubSub from '../../libs/PubSub';
 import Card from '../card';
 
 
@@ -51,7 +51,7 @@ export default class Deck {
    */
   setupCards() {
     this.cards = [];
-    for (const card of DECK_COMPOSITION) {
+    for (const card of DECK) {
       for (let i = 0; i < card.amount; i++) {
         this.cards.push(new Card(card.type));
       }
