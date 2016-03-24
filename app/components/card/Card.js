@@ -14,14 +14,14 @@ export default class Card {
   constructor(type) {
     this.id = uuid.v4();
     this.type = type;
-    this.render();
+    this.setupElement();
   }
 
 
   /**
    * Create the card element.
    */
-  render() {
+  setupElement() {
     this.element = create('div', {
       id: this.id,
       class: `card ${this.type}`,

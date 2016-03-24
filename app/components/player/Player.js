@@ -1,7 +1,7 @@
 import uuid from 'node-uuid';
 import { RULES } from '../../constants';
 import PubSub from '../../libs/PubSub';
-
+import Hand from '../hand';
 
 /** Class representing a player. */
 export default class Player {
@@ -16,20 +16,19 @@ export default class Player {
     this.name = name;
     this.pieces = RULES.player.startingPieces;
     this.active = false;
-    this.hand = {}; // TODO Hand class
+    this.hand = new Hand();
     this.builtRoutes = [];
 
+    PubSub.sub('deck/draw', this.draw);
     PubSub.sub('route/claim', this.claimRoute);
   }
 
 
   /**
    * Draw a card.
-   * @param {string} from The drawn card origin, 'deck' or 'pile'.
    */
-  draw(from) {
-    // TODO
-    console.log(from);
+  draw = data => {
+    this.hand.addCard(data.card);
   }
 
 

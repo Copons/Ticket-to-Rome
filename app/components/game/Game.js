@@ -1,6 +1,7 @@
 import { RULES } from '../../constants';
 import { random } from '../../libs/math';
 import PubSub from '../../libs/PubSub';
+import Board from '../board';
 import Deck from '../deck';
 import Player from '../player';
 
@@ -17,6 +18,7 @@ export default class Game {
     this.turnCount = 1;
     this.turnActionsLeft = RULES.turnActions;
 
+    this.board = new Board();
     this.deck = new Deck();
 
     this.setupPlayers(numberOfPlayers);
@@ -59,6 +61,10 @@ export default class Game {
    */
   actionDrawFromDeck = data => {
     this.turnActionsLeft - RULES.action.drawFromDeck;
+    PubSub.pub('deck/draw', {
+      player: this.activePlayer,
+      card: data.card,
+    });
     console.log(`Player ${this.activePlayer.name} drawn a ${data.card.type} card from deck.`);
   }
 

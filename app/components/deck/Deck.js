@@ -16,33 +16,8 @@ export default class Deck {
    */
   constructor() {
     this.setupCards();
+    this.setupElement();
     this.render();
-  }
-
-
-  /**
-   * Create the deck element and append it to the app container.
-   */
-  render() {
-    this.element = create('div', { class: 'deck' });
-    this.deckCounter = create('div', { class: 'deck-counter' });
-    this.deckCounter.textContent = this.cards.length;
-    this.element.appendChild(this.deckCounter);
-    APP_CONTAINER.appendChild(this.element);
-    listen(this.element, 'click', this.draw);
-  }
-
-
-  /**
-   * Update the deck when the cards count changes.
-   */
-  renderUpdate() {
-    this.deckCounter.textContent = this.cards.length;
-    if (!this.cards.length) {
-      this.element.classList.add('empty');
-    } else {
-      this.element.classList.remove('empty');
-    }
   }
 
 
@@ -55,6 +30,39 @@ export default class Deck {
       for (let i = 0; i < card.amount; i++) {
         this.cards.push(new Card(card.type));
       }
+    }
+  }
+
+
+  /**
+   * Create the deck element.
+   */
+  setupElement() {
+    this.element = create('div', { class: 'deck' });
+    this.deckCounter = create('div', { class: 'deck-counter' });
+    this.deckCounter.textContent = this.cards.length;
+    listen(this.element, 'click', this.draw);
+  }
+
+
+  /**
+   * Render the deck into the app container.
+   */
+  render() {
+    this.element.appendChild(this.deckCounter);
+    APP_CONTAINER.appendChild(this.element);
+  }
+
+
+  /**
+   * Update the deck when the cards count changes.
+   */
+  renderUpdate() {
+    this.deckCounter.textContent = this.cards.length;
+    if (!this.cards.length) {
+      this.element.classList.add('empty');
+    } else {
+      this.element.classList.remove('empty');
     }
   }
 
