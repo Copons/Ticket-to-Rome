@@ -1,5 +1,5 @@
 import './board.css';
-import { APP_CONTAINER, SIZES, STATIONS } from '../../constants';
+import { APP_CONTAINER, SIZES, STATIONS } from '../../config';
 import { create, createSvg } from '../../libs/dom';
 import Station from '../station';
 

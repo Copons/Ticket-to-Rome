@@ -9,7 +9,7 @@ export const SIZES = {
 
   station: {
     radius: 7,
-    stroke: 2.5,
+    stroke: 2,
     name: 6,
   },
 

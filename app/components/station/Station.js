@@ -1,6 +1,6 @@
 import './station.css';
 import uuid from 'node-uuid';
-import { SIZES } from '../../constants';
+import { SIZES } from '../../config';
 import { createSvg } from '../../libs/dom';
 
 
@@ -51,7 +51,7 @@ export default class Station {
    */
   adjustNamePosition() {
     return {
-      x: this.x + SIZES.station.name,
+      x: this.x + SIZES.station.radius + SIZES.station.name - SIZES.station.stroke,
       y: this.y + SIZES.station.radius - SIZES.station.name,
     };
   }

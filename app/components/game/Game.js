@@ -1,4 +1,4 @@
-import { RULES } from '../../constants';
+import { RULES } from '../../config';
 import { random } from '../../libs/math';
 import PubSub from '../../libs/PubSub';
 import Board from '../board';
@@ -15,6 +15,8 @@ export default class Game {
    * @param  {number} numberOfPlayers - The current game's number of players.
    */
   constructor(numberOfPlayers) {
+    PubSub.sub('game/action', this.executeAction);
+
     this.turnCount = 1;
     this.turnActionsLeft = RULES.turnActions;
 
@@ -24,8 +26,6 @@ export default class Game {
     this.players = [];
     this.activePlayer = {};
     this.setupPlayers(numberOfPlayers);
-
-    PubSub.sub('game/action', this.executeAction);
   }
 
 
@@ -35,13 +35,15 @@ export default class Game {
    */
   setupPlayers(numberOfPlayers) {
     for (let i = 0; i < numberOfPlayers; i++) {
-      this.players.push(new Player(`P${i + 1}`));
+      this.activePlayer = new Player(`P${i + 1}`);
+      for (let j = 0; j < RULES.player.startingHand; j++) {
+        this.deck.draw();
+      }
+      this.players.push(this.activePlayer);
     }
     const randomIndex = random(numberOfPlayers);
     this.players[randomIndex].active = true;
     this.activePlayer = this.players[randomIndex];
-    PubSub.pub('game/players', this.players);
-    PubSub.pub('game/activePlayer', this.activePlayer);
   }
 
 

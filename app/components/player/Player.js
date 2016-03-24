@@ -1,5 +1,5 @@
 import uuid from 'node-uuid';
-import { RULES } from '../../constants';
+import { RULES } from '../../config';
 import PubSub from '../../libs/PubSub';
 import Hand from '../hand';
 
@@ -28,7 +28,9 @@ export default class Player {
    * Draw a card.
    */
   draw = data => {
-    this.hand.addCard(data.card);
+    if (data.player.id === this.id) {
+      this.hand.addCard(data.card);
+    }
   }
 
 

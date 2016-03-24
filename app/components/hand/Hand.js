@@ -1,5 +1,5 @@
 import './hand.css';
-import { APP_CONTAINER, DECK } from '../../constants';
+import { APP_CONTAINER, DECK } from '../../config';
 import { create } from '../../libs/dom';
 import CardsGroup from './CardsGroup';
 

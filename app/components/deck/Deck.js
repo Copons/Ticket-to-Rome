@@ -1,5 +1,5 @@
 import './deck.css';
-import { APP_CONTAINER, DECK } from '../../constants';
+import { APP_CONTAINER, DECK } from '../../config';
 import { create } from '../../libs/dom';
 import { listen } from '../../libs/events';
 import { random } from '../../libs/math';
