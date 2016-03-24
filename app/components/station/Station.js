@@ -18,16 +18,17 @@ export default class Station {
     this.name = station.name;
     this.x = station.x;
     this.y = station.y;
-    this.setupElement();
+    this.element = this.setupElement();
   }
 
 
   /**
    * Create the station element.
+   * @return {Element}
    */
   setupElement() {
     const nameCoordinates = this.adjustNamePosition();
-    this.element = {
+    const element = {
       station: createSvg('circle', {
         id: this.id,
         class: 'station',
@@ -42,7 +43,8 @@ export default class Station {
         transform: `rotate(-30, ${nameCoordinates.x}, ${nameCoordinates.y})`,
       }),
     };
-    this.element.name.textContent = this.name;
+    element.name.textContent = this.name;
+    return element;
   }
 
 
