@@ -1,6 +1,8 @@
 import './board.css';
-import { APP_CONTAINER, SIZES, STATIONS } from '../../config';
+import { APP_CONTAINER, SIZES, STATIONS, ROUTES } from '../../config';
 import { create, createSvg } from '../../libs/dom';
+import RouteStraight from '../route/RouteStraight';
+import RouteCurved from '../route/RouteCurved';
 import Station from '../station';
 
 
@@ -12,20 +14,34 @@ export default class Board {
    * Create the game board.
    */
   constructor() {
-    this.railway = this.setupRailway();
     this.element = this.setupElement();
+    this.railway = {};
+    this.railway.stations = this.setupRailwayStations();
+    this.railway.routes = this.setupRailwayRoutes();
     this.render();
   }
 
 
   /**
-   * Setup the railway.
+   * Setup the railway stations.
    * @return {Object}
    */
-  setupRailway() {
-    return {
-      stations: STATIONS.map(station => new Station(station)),
-    };
+  setupRailwayStations() {
+    return STATIONS.map(station => new Station(station));
+  }
+
+
+  /**
+   * Setup the railway routes.
+   * @return {Object}
+   */
+  setupRailwayRoutes() {
+    return ROUTES.map(route => {
+      if (route.qx && route.qy) {
+        return new RouteCurved(route, this);
+      }
+      return new RouteStraight(route, this);
+    });
   }
 
 
@@ -53,6 +69,9 @@ export default class Board {
     for (const station of this.railway.stations) {
       this.element.stations.appendChild(station.element.station);
       this.element.stationNames.appendChild(station.element.name);
+    }
+    for (const route of this.railway.routes) {
+      this.element.routes.appendChild(route.element);
     }
 
     this.element.svg.appendChild(this.element.routes);

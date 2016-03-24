@@ -18,7 +18,7 @@ export default class Game {
     PubSub.sub('game/action', this.executeAction);
 
     this.turnCount = 1;
-    this.turnActionsLeft = RULES.turnActions;
+    this.turnActionsLeft = RULES.turn.actions;
 
     this.board = new Board();
     this.deck = new Deck();

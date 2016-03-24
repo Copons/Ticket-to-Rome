@@ -46,6 +46,7 @@ export default class Deck {
       counter: create('div', { class: 'deck-counter' }),
     };
     element.counter.textContent = this.cards.length;
+    listen(element.deck, 'click', this.draw);
     return element;
   }
 
@@ -56,8 +57,6 @@ export default class Deck {
   render() {
     this.element.deck.appendChild(this.element.counter);
     APP_CONTAINER.appendChild(this.element.deck);
-
-    listen(this.element.deck, 'click', this.draw);
   }
 
 

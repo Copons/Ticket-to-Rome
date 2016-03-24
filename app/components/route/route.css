@@ -1,4 +1,4 @@
-@import '../constants/_colors.css';
+@import '../../assets/_colors.css';
 
 svg .route {
   stroke-width: 6;
