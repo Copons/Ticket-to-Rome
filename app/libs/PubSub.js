@@ -20,7 +20,6 @@ class PubSub {
       this.listeners.set(label, []);
     }
     this.listeners.get(label).push(callback);
-    console.log(label);
   }
 
 

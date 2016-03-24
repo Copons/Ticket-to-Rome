@@ -15,33 +15,38 @@ export default class Deck {
    * Create the deck.
    */
   constructor() {
-    this.setupCards();
-    this.setupElement();
+    this.cards = this.setupCards();
+    this.element = this.setupElement();
     this.render();
   }
 
 
   /**
    * Setup the deck cards.
+   * @return {Array}
    */
   setupCards() {
-    this.cards = [];
+    const cards = [];
     for (const card of DECK) {
       for (let i = 0; i < card.amount; i++) {
-        this.cards.push(new Card(card.type));
+        cards.push(new Card(card.type));
       }
     }
+    return cards;
   }
 
 
   /**
    * Create the deck element.
+   * @return {Object}
    */
   setupElement() {
-    this.element = create('div', { class: 'deck' });
-    this.deckCounter = create('div', { class: 'deck-counter' });
-    this.deckCounter.textContent = this.cards.length;
-    listen(this.element, 'click', this.draw);
+    const element = {
+      deck: create('div', { class: 'deck' }),
+      counter: create('div', { class: 'deck-counter' }),
+    };
+    element.counter.textContent = this.cards.length;
+    return element;
   }
 
 
@@ -49,8 +54,10 @@ export default class Deck {
    * Render the deck into the app container.
    */
   render() {
-    this.element.appendChild(this.deckCounter);
-    APP_CONTAINER.appendChild(this.element);
+    this.element.deck.appendChild(this.element.counter);
+    APP_CONTAINER.appendChild(this.element.deck);
+
+    listen(this.element.deck, 'click', this.draw);
   }
 
 
@@ -58,11 +65,11 @@ export default class Deck {
    * Update the deck when the cards count changes.
    */
   renderUpdate() {
-    this.deckCounter.textContent = this.cards.length;
+    this.element.counter.textContent = this.cards.length;
     if (!this.cards.length) {
-      this.element.classList.add('empty');
+      this.element.deck.classList.add('empty');
     } else {
-      this.element.classList.remove('empty');
+      this.element.deck.classList.remove('empty');
     }
   }
 

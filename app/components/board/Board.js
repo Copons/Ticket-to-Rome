@@ -12,17 +12,18 @@ export default class Board {
    * Create the game board.
    */
   constructor() {
-    this.setupRailway();
-    this.setupElement();
+    this.railway = this.setupRailway();
+    this.element = this.setupElement();
     this.render();
   }
 
 
   /**
    * Setup the railway.
+   * @return {Object}
    */
   setupRailway() {
-    this.railway = {
+    return {
       stations: STATIONS.map(station => new Station(station)),
     };
   }
@@ -30,9 +31,10 @@ export default class Board {
 
   /**
    * Create the board elements.
+   * @return {Object}
    */
   setupElement() {
-    this.element = {
+    return {
       board: create('div', { class: 'board' }),
       svg: createSvg('svg', {
         viewBox: `0 0 ${SIZES.board.width} ${SIZES.board.height}`,

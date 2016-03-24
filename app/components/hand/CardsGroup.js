@@ -14,16 +14,17 @@ export default class CardsGroup {
   constructor(type, handContainer) {
     this.type = type;
     this.cards = [];
-    this.setupElement();
+    this.element = this.setupElement();
     this.render(handContainer);
   }
 
 
   /**
    * Create the group element.
+   * @return {Element}
    */
   setupElement() {
-    this.element = create('div', { class: `group ${this.type} empty` });
+    return create('div', { class: `group ${this.type} empty` });
   }
 
 
@@ -80,7 +81,7 @@ export default class CardsGroup {
   removeCard() {
     const card = this.cards.pop();
     this.renderUpdate();
-    return card;
+    return card || {};
   }
 
 }

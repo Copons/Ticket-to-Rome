@@ -21,6 +21,8 @@ export default class Game {
     this.board = new Board();
     this.deck = new Deck();
 
+    this.players = [];
+    this.activePlayer = {};
     this.setupPlayers(numberOfPlayers);
 
     PubSub.sub('game/action', this.executeAction);
@@ -32,7 +34,6 @@ export default class Game {
    * @param {number} numberOfPlayers The number of players.
    */
   setupPlayers(numberOfPlayers) {
-    this.players = [];
     for (let i = 0; i < numberOfPlayers; i++) {
       this.players.push(new Player(`P${i + 1}`));
     }

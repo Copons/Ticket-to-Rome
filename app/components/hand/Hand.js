@@ -11,25 +11,27 @@ export default class Hand {
    * Create the hand.
    */
   constructor() {
-    this.setupElement();
-    this.setupGroups();
+    this.element = this.setupElement();
+    this.groups = this.setupGroups();
     this.render();
   }
 
 
   /**
    * Create the hand element.
+   * @return {Object}
    */
   setupElement() {
-    this.element = create('div', { class: 'hand' });
+    return create('div', { class: 'hand' });
   }
 
 
   /**
    * Create the groups of cards of the same type.
+   * @return {Array}
    */
   setupGroups() {
-    this.groups = DECK.map(group => new CardsGroup(group.type, this.element));
+    return DECK.map(group => new CardsGroup(group.type, this.element));
   }
 
 
