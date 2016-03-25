@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const precss = require('precss');
@@ -12,18 +11,13 @@ const PATHS = {
 
 const config = {
 
-  devtool: 'eval',
+  devtool: 'source-map',
 
-  entry: [
-    'webpack/hot/dev-server',
-    'webpack-dev-server/client?http://localhost:8080',
-    PATHS.app,
-  ],
+  entry: PATHS.app,
 
   output: {
     path: PATHS.build,
     filename: 'bundle.js',
-    publicPath: '/build/',
   },
 
   module: {
@@ -41,10 +35,6 @@ const config = {
   },
 
   postcss: () => [autoprefixer, precss],
-
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-  ],
 
 };
 
