@@ -1,5 +1,5 @@
-import './main.css';
-
-import Game from './game/Game';
+import './assets/main.css';
+import Game from './components/game';
 
 const game = new Game(1);
+console.log(game);

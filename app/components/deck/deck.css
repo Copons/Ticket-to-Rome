@@ -1,0 +1,23 @@
+.deck {
+  position: fixed;
+  left: 3px;
+  bottom: 120px;
+  z-index: 1;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 65px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #37474f;
+  background-color: #607d8b;
+  color: #fff;
+  user-select: none;
+
+  &.empty {
+    cursor: not-allowed;
+    background-color: #cfd8dc;
+  }
+}

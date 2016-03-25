@@ -1,0 +1,31 @@
+svg .station {
+  pointer-events: none;
+  r: 7;
+  stroke: #000000;
+  stroke-width: 2.5;
+  fill: #ffffff;
+
+  will-change: fill;
+  transition: fill 0.2s linear;
+
+  &.highlight {
+    fill: #00e676;
+  }
+}
+
+svg .station-names text {
+  pointer-events: none;
+  font-family: 'Hammersmith One', Arial, sans-serif;
+  font-size: 6pt;
+  letter-spacing: -0.2pt;
+
+  stroke: #424242;
+  stroke-width: 0.1;
+
+  will-change: stroke;
+  transition: stroke 0.2s linear;
+
+  &.highlight {
+    stroke: #00e676;
+  }
+}
