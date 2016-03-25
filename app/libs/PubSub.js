@@ -49,13 +49,12 @@ class PubSub {
    */
   pub(label, ...args) {
     const listeners = this.listeners.get(label);
-    if (listeners && listeners.length) {
-      for (const listener of listeners) {
-        listener(...args);
-      }
-      return true;
+    if (!listeners || listeners.length < 1) return false;
+
+    for (const listener of listeners) {
+      listener(...args);
     }
-    return false;
+    return true;
   }
 
 }

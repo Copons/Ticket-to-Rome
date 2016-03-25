@@ -3,6 +3,7 @@ import uuid from 'node-uuid';
 import { SIZES, STATIONS } from '../../config';
 import { createSvg } from '../../libs/dom';
 import { listen } from '../../libs/events';
+import RoutePopup from './RoutePopup';
 
 
 /** Class representing a route. */
@@ -17,13 +18,15 @@ export default class Route {
     this.id = uuid.v4();
     this.type = route.type;
     this.parts = route.parts;
+    this.claimed = false;
     this.stations = this.setupStations(route, board);
     this.element = this.setupElement();
+    this.element.popup = new RoutePopup(this);
   }
 
 
   /**
-   * [setupStations description]
+   * Setup the route stations.
    * @param  {Object} route The route information.
    * @param  {Board}  board The game board.
    * @return {Object}
@@ -52,16 +55,19 @@ export default class Route {
 
 
   /**
-   * Create the route element.
-   * @return {Element}
+   * Create the route elements.
+   * @return {Object}
    */
   setupElement() {
-    const element = createSvg('path', {
-      id: this.id,
-      class: `route unclaimed ${this.type}`,
-    });
-    listen(element, 'mouseenter', this.mouseEnter);
-    listen(element, 'mouseleave', this.mouseLeave);
+    const element = {
+      path: createSvg('path', {
+        id: this.id,
+        class: `route unclaimed ${this.type}`,
+      }),
+    };
+
+    listen(element.path, 'mouseenter', this.mouseEnter);
+    listen(element.path, 'mouseleave', this.mouseLeave);
     return element;
   }
 
@@ -90,8 +96,8 @@ export default class Route {
    * Add the attributes to the route element.
    */
   setPathAttributes() {
-    this.element.setAttributeNS(null, 'd', this.pathD());
-    this.element.setAttributeNS(null,
+    this.element.path.setAttributeNS(null, 'd', this.pathD());
+    this.element.path.setAttributeNS(null,
       'stroke-dasharray', this.pathDashArray(this.pathLength())
     );
   }
@@ -101,6 +107,7 @@ export default class Route {
    * Highlight the route stations when the mouse enter the route.
    */
   mouseEnter = () => {
+    if (this.claimed) return;
     for (const element of this.stations.elements) {
       element.station.classList.add('highlight');
       element.name.classList.add('highlight');
@@ -112,10 +119,37 @@ export default class Route {
    * Stop highlighting the route stations when the mouse leaves the route.
    */
   mouseLeave = () => {
+    if (this.claimed) return;
     for (const element of this.stations.elements) {
       element.station.classList.remove('highlight');
       element.name.classList.remove('highlight');
     }
+  }
+
+
+  /**
+   * Set the route claimed by a player.
+   * @param {Player} player The player who claimed the route.
+   */
+  setClaimed(player) {
+    this.claimed = true;
+    this.element.path.classList.remove('unclaimed');
+    this.element.path.classList.add('claimed');
+    this.element.path.classList.remove(this.type);
+    this.element.path.classList.add(player.color);
+    this.element.path.removeAttribute('stroke-dasharray');
+    this.element.popup.element.destroy();
+  }
+
+
+  /**
+   * Set the route unclaimable because the player already claimed the parallel one.
+   */
+  setUnclaimable() {
+    this.claimed = true;
+    this.element.path.classList.remove('unclaimed');
+    this.element.path.classList.add('unclaimable');
+    this.element.popup.element.destroy();
   }
 
 }

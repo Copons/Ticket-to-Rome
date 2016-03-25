@@ -9,11 +9,13 @@ export default class Player {
 
   /**
    * Create the player.
-   * @param  {string} name - The player's name.
+   * @param {string} name The player's name.
+   * @param {string} color The player's color.
    */
-  constructor(name) {
+  constructor(name, color) {
     this.id = uuid.v4();
     this.name = name;
+    this.color = color;
     this.pieces = RULES.player.startingPieces;
     this.active = false;
     this.hand = new Hand();
@@ -30,6 +32,10 @@ export default class Player {
   draw = data => {
     if (data.player.id === this.id) {
       this.hand.addCard(data.card);
+      PubSub.pub('hand/changed', {
+        player: this.id,
+        hand: this.hand.groups,
+      });
     }
   }
 
@@ -39,8 +45,18 @@ export default class Player {
    * @param {Object} data The data published when a route is claimed.
    */
   claimRoute = data => {
-    // TODO
-    console.log(data);
+    for (const card of data.cards) {
+      this.hand.groups.find(group => group.type === card).removeCard();
+    }
+    this.builtRoutes.push({
+      start: data.route.stations.start.slug,
+      end: data.route.stations.end.slug,
+    });
+    data.route.setClaimed(this);
+    PubSub.pub('hand/changed', {
+      player: this.id,
+      hand: this.hand.groups,
+    });
   }
 
 }

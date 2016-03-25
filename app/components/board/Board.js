@@ -71,7 +71,7 @@ export default class Board {
       this.element.stationNames.appendChild(station.element.name);
     }
     for (const route of this.railway.routes) {
-      this.element.routes.appendChild(route.element);
+      this.element.routes.appendChild(route.element.path);
     }
 
     this.element.svg.appendChild(this.element.routes);

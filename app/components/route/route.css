@@ -4,8 +4,23 @@ svg .route {
   stroke-width: 6;
   fill: transparent;
 
+  will-change: opacity;
+  transition: opacity 0.2s linear;
+
   &.unclaimed {
+    opacity: 0.4;
     cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &.unclaimable {
+    opacity: 0.4;
+  }
+
+  &.claimed {
+    opacity: 1;
   }
 
   &.red {
