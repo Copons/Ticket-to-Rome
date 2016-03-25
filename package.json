@@ -4,11 +4,15 @@
   "description": "Ticket to Rome",
   "repository": {
     "type": "git",
-    "private": "https://github.com/Copons/Ticket-to-Rome.git"
+    "url": "https://github.com/Copons/Ticket-to-Rome.git"
   },
   "keywords": [
     "es2015"
   ],
+  "engines": {
+    "node" : "^5.8.0",
+    "npm" : "^3.7.3"
+  },
   "author": "Copons",
   "license": "MIT",
   "scripts": {
