@@ -10,8 +10,8 @@
     "es2015"
   ],
   "engines": {
-    "node" : "^5.8.0",
-    "npm" : "^3.7.3"
+    "node": "^5.8.0",
+    "npm": "^3.7.3"
   },
   "author": "Copons",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "build": "set NODE_ENV=production && webpack -p --config webpack.production.config.js",
     "postinstall": "node deploy"
   },
-  "devDependencies": {
+  "dependencies": {
     "autoprefixer": "^6.3.3",
     "babel-core": "^6.7.2",
     "babel-eslint": "^5.0.0",
@@ -38,12 +38,11 @@
     "style-loader": "^0.13.0",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1",
-    "webpack-merge": "^0.8.3"
-  },
-  "dependencies": {
+    "webpack-merge": "^0.8.3",
     "express": "^4.13.4",
+    "http-proxy": "^1.13.2",
     "node-uuid": "^1.4.7",
-    "tether-drop": "^1.4.2",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "tether-drop": "^1.4.2"
   }
 }
