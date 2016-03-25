@@ -12,7 +12,8 @@
   "author": "Copons",
   "license": "MIT",
   "scripts": {
-    "start": "set NODE_ENV=development && node server",
+    "start": "node server",
+    "dev": "set NODE_ENV=development && node server",
     "build": "set NODE_ENV=production && webpack -p --config webpack.production.config.js",
     "postinstall": "node deploy"
   },
