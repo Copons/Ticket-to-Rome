@@ -1,38 +1,39 @@
 'use strict';
 
-const express = require('express');
-const path = require('path');
-const rimraf = require('rimraf');
-const httpProxy = require('http-proxy');
-
-const proxy = httpProxy.createProxyServer();
-const app = express();
-
 const isProduction = process.env.NODE_ENV === 'production';
-const port = isProduction ? process.env.PORT : 3000;
-const publicPath = path.resolve(__dirname, 'public');
+let port = isProduction ? process.env.PORT : 3000;
+if (!port) port = 3000;
 
-app.use(express.static(publicPath));
+const path = require('path');
+const express = require('express');
+const app = express();
+app.use(express.static(path.resolve(__dirname, 'public')));
 
-if (!isProduction) {
-  rimraf(path.resolve(__dirname, 'public', 'build'), err => {
-    if (err) {
-      console.log(err);
-    }
-  });
-  const bundle = require('./server/bundle.js');
-  bundle();
-  app.all('/build/*', (req, res) => {
-    proxy.web(req, res, {
-      target: 'http://localhost:8080',
-    });
-  });
-}
+const http = require('http').Server(app); // eslint-disable-line new-cap
+const io = require('socket.io')(http);
 
-proxy.on('error', () => {
-  console.log('Could not connect to proxy, please try again.');
+io.on('connection', () => {
+  console.log('connection!');
 });
 
-app.listen(port, () => {
+http.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+if (!isProduction) {
+  const webpack = require('webpack');
+  const WebpackDevServer = require('webpack-dev-server');
+  const webpackConfig = require('./webpack.config.js');
+
+  new WebpackDevServer(webpack(webpackConfig), {
+    hot: false,
+    noInfo: true,
+    quiet: false,
+    publicPath: '/build/',
+    proxy: { '*': 'http://localhost:3000' },
+    stats: { colors: true },
+  }).listen(8080, 'localhost', err => {
+    if (err) console.log(err);
+    console.log('Webpack Dev Server listening at 8080');
+  });
+}

@@ -15,15 +15,15 @@ const config = {
   devtool: 'eval',
 
   entry: [
-    'webpack/hot/dev-server',
     'webpack-dev-server/client?http://localhost:8080',
+    'webpack/hot/dev-server',
     PATHS.app,
   ],
 
   output: {
     path: PATHS.build,
     filename: 'bundle.js',
-    publicPath: '/build/',
+    publicPath: 'http://localhost:8080/build/',
   },
 
   module: {
@@ -44,6 +44,7 @@ const config = {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
   ],
 
 };
