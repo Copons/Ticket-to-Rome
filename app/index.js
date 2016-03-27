@@ -2,7 +2,7 @@ import './assets/main.css';
 import Game from './components/game';
 import io from 'socket.io-client';
 
-const socketIo = io.connect('http://localhost:3000', { reconnect: true });
+const socketIo = io.connect('//localhost:3000', { reconnect: true });
 socketIo.on('connect', () => {
   console.log('socket connected');
 });
