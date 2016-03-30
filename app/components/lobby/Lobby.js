@@ -12,9 +12,9 @@ export default class Lobby {
 
   constructor(io) {
     this.io = this.setupSocket(io);
-    this.rooms = [];
-    this.room = {};
+    this.player = {};
     this.element = this.setupElement();
+
     this.setupPlayer();
 
     this.io.emit('Rooms/list', {});
@@ -24,9 +24,9 @@ export default class Lobby {
   setupPlayer() {
     const playerName = sessionGet('ttr_username');
     if (playerName) {
-      this.playerName = playerName;
-      this.element.usernameField.value = this.playerName;
-      this.io.emit('Players/add', { playerName: this.playerName });
+      this.player.name = playerName;
+      this.element.usernameField.value = this.player.name;
+      this.io.emit('Players/add', { name: this.player.name });
     }
   }
 
@@ -38,6 +38,16 @@ export default class Lobby {
 
     io.on('Rooms/list', data => {
       this.renderUpdate(data.list);
+    });
+
+    io.on('Players/add/details', data => {
+      this.player = data;
+      sessionSet('ttr_username', data.name);
+    });
+
+    io.on('Players/add/error', data => {
+      console.log(data);
+      this.element.usernameField.value = this.player.name;
     });
 
     return io;
@@ -77,8 +87,8 @@ export default class Lobby {
       }),
     };
 
-    if (this.playerName) {
-      element.usernameField.value = this.playerName;
+    if (this.player.name) {
+      element.usernameField.value = this.player.name;
     }
 
     listen(element.usernameSubmit, 'click', this.saveUsername);
@@ -114,32 +124,30 @@ export default class Lobby {
     }
 
     for (const room of data) {
-      const newRoom = new Room(room);
+      const newRoom = new Room(room, this.player);
       this.element.roomsList.appendChild(newRoom.element.row);
       listen(newRoom.element.join, 'click', this.joinRoom);
+      listen(newRoom.element.leave, 'click', this.leaveRoom);
     }
   }
 
   saveUsername = e => {
     e.preventDefault();
     if (this.element.usernameField.value !== '') {
-      sessionSet('ttr_username', this.element.usernameField.value);
-      this.playerName = this.element.usernameField.value;
-      this.io.emit('Players/add', { playerName: this.playerName });
+      this.io.emit('Players/add', { name: this.element.usernameField.value });
     }
   }
 
 
   createRoom = e => {
     e.preventDefault();
-    if (!this.playerName) return;
+    if (!this.player) return;
     if (this.element.roomField.value !== '') {
-      this.room = this.element.roomField.value;
-      this.io.emit('Rooms/create', {
-        roomName: this.room,
-        playerName: this.playerName,
-      });
-      console.log(`Created and joined room [${this.room}]`);
+      const room = {
+        name: this.element.roomField.value,
+      };
+      this.io.emit('Rooms/create', { room, player: this.player });
+      console.log(`Created and joined room [${room.name}]`);
       this.element.roomField.value = '';
     }
   }
@@ -147,12 +155,23 @@ export default class Lobby {
 
   joinRoom = e => {
     e.preventDefault();
-    this.room = e.target.dataset.room;
-    this.io.emit('Rooms/join', {
-      roomId: this.room,
-      playerName: this.playerName,
-    });
-    console.log(`Joined room [${this.room}]`);
+    const room = {
+      id: e.target.dataset.roomId,
+      name: e.target.dataset.roomName,
+    };
+    this.io.emit('Rooms/join', { room, player: this.player });
+    console.log(`Joined room [${room.name}]`);
+  }
+
+
+  leaveRoom = e => {
+    e.preventDefault();
+    const room = {
+      id: e.target.dataset.roomId,
+      name: e.target.dataset.roomName,
+    };
+    this.io.emit('Rooms/leave', { room, player: this.player });
+    console.log(`Left room [${room.name}]`);
   }
 
 }

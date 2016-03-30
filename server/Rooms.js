@@ -17,86 +17,71 @@ class Rooms {
 
 
   create(data, client) {
-    const player = this.players.list.find(p => p.name === data.playerName);
-    let room = this.list.find(r => r.name === data.roomName);
+    let room = this.list.find(r => r.name === data.room.name);
     if (!room) {
       room = {
         id: uuid.v4(),
-        name: data.roomName,
-        owner: player,
+        name: data.room.name,
+        owner: data.player,
         players: [],
       };
       this.list.push(room);
     }
-    this.join({
-      roomId: room.id,
-      playerName: player.name,
-    }, client);
+    this.join({ room, player: data.player }, client);
   }
 
 
   join(data, client) {
-    const player = this.players.list.find(p => p.name === data.playerName);
-    const room = this.list.find(r => r.id === data.roomId);
+    const room = this.list.find(r => r.id === data.room.id);
 
     if (!room) {
-      client.emit('Rooms/join', {
-        type: 'error',
-        message: `Room ${data.roomId} does not exists.`,
-      });
-      console.log(`Room ${data.roomId} does not exists.`);
+      // Room does not exist
+      client.emit('Rooms/join/error', `Room [${data.room.name}] does not exists.`);
+      console.log(`Room [${data.room.name}] does not exists.`);
     } else if (room.players.length >= 5) {
-      client.emit('Rooms/join', {
-        type: 'error',
-        message: `Room ${room.id} is full.`,
-      });
-      console.log(`Room ${room.id} is full.`);
-    } else if (room.players.find(p => p.name === player.name)) {
-      client.emit('Rooms/join', {
-        type: 'error',
-        message: `${player.name} is already in room ${room.name}.`,
-      });
-      console.log(`${player.name} is already in room ${room.name}.`);
+      // Room is full
+      client.emit('Rooms/join/error', `Room [${room.name}] is full.`);
+      console.log(`Room ${room.name} is full.`);
+    } else if (room.players.find(p => p.id === data.player.id)) {
+      // Player is already in the room
+      client.emit('Rooms/join/error', `[${data.player.name}] is already in room [${room.name}].`);
+      console.log(`[${data.player.name}] is already in room [${room.name}].`);
     } else {
+      // Player joins the room
       this.leaveAll(data, client);
-      room.players.push(player);
+      room.players.push(data.player);
       client.join(room.id);
-      this.io.sockets.in(room.id).emit('Rooms/join', {
-        type: 'ok',
-        message: `${player.name} joined room ${room.name}.`,
-      });
-      console.log(`${player.name} joined room ${room.name}.`);
+      this.io.sockets.in(room.id)
+        .emit('Rooms/join', `[${data.player.name}] joined room [${room.name}].`);
+      console.log(`[${data.player.name}] joined room [${room.name}].`);
       this.getList();
     }
   }
 
+
   leaveAll(data, client) {
     for (const room of this.list) {
-      if (room.players.find(p => p.name === data.playerName)) {
-        this.leave({
-          roomId: room.id,
-          playerName: data.playerName,
-        }, client);
+      if (room.players.find(p => p.id === data.player.id)) {
+        this.leave({ room, player: data.player }, client);
       }
     }
   }
 
+
   leave(data, client) {
-    const player = this.players.list.find(p => p.name === data.playerName);
-    const room = this.list.find(r => r.id === data.roomId);
-    if (room.owner.name === player.name) {
+    const room = this.list.find(r => r.id === data.room.id);
+    if (room.owner.id === data.player.id) {
       this.list = this.list.filter(r => r.id !== room.id);
     } else {
       const roomIndex = this.list.findIndex(r => r.id === room.id);
-      this.list[roomIndex].players = this.list[roomIndex].players(p => p.name !== player.name);
+      this.list[roomIndex].players = this.list[roomIndex].players.filter(
+        p => p.id !== data.player.id
+      );
     }
-    // this.list.splice(roomIndex, 1);
-    client.leave(data.roomId);
-    this.io.sockets.in(room.id).emit('Rooms/leave', {
-      type: 'ok',
-      message: `${player.name} left room ${room.name}.`,
-    });
-    console.log(`${player.name} left room ${room.name}.`);
+    client.leave(room.id);
+    this.io.sockets.in(room.id)
+      .emit('Rooms/leave', `[${data.player.name}] left room [${room.name}].`);
+    console.log(`[${data.player.name}] left room [${room.name}].`);
     this.getList();
   }
 

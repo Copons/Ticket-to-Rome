@@ -23,10 +23,10 @@
     display: block;
     font-size: 12px;
   }
-  .room-join {
+  .room-actions {
     text-align: center;
   }
-  .join {
+  .join, .leave {
     display: inline-block;
     padding: 2px 5px;
     background-color: #000;

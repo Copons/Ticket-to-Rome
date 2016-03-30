@@ -10,29 +10,26 @@ class Players {
 
 
   getList() {
-    this.io.sockets.emit('players/list', { list: this.list });
+    this.io.sockets.emit('Players/list', { list: this.list });
   }
 
 
   add(data, client) {
-    const existingPlayer = this.list.find(player => player.name === data.playerName);
+    this.remove(client);
+    const existingPlayer = this.list.find(player => player.name === data.name);
     if (!existingPlayer) {
-      this.list.push({
+      const player = {
         id: client.id,
-        name: data.playerName,
-      });
-      this.io.sockets.emit('Players/add', {
-        type: 'ok',
-        message: `Player ${data.playerName} connected.`,
-      });
-      console.log(`Player ${data.playerName} connected.`);
+        name: data.name,
+      };
+      this.list.push(player);
+      client.emit('Players/add/details', player);
+      this.io.sockets.emit('Players/add', `Player [${player.name}] connected.`);
+      console.log(`Player [${player.name}] connected.`);
       this.getList();
     } else if (existingPlayer.id !== client.id) {
-      client.emit('Player/add', {
-        type: 'error',
-        message: `${data.playerName} already exists.`,
-      });
-      console.log(`${data.playerName} already exists.`);
+      client.emit('Players/add/error', `Player [${data.name}] already exists.`);
+      console.log(`Player [${data.name}] already exists.`);
     }
   }
 
@@ -41,11 +38,8 @@ class Players {
     const playerLeaving = this.list.find(player => player.id === client.id);
     if (playerLeaving) {
       this.list = this.list.filter(player => player.id !== client.id);
-      this.io.sockets.emit('Players/remove', {
-        type: 'ok',
-        message: `Player ${playerLeaving.name} disconnected.`,
-      });
-      console.log(`Player ${playerLeaving.name} disconnected.`);
+      this.io.sockets.emit('Players/remove', `Player [${playerLeaving.name}] disconnected.`);
+      console.log(`Player [${playerLeaving.name}] disconnected.`);
       this.getList();
     }
   }

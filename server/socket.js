@@ -12,6 +12,7 @@ module.exports.listen = server => {
   io.on('connection', client => {
     // PLAYERS
     client.on('Players/add', data => {
+      rooms.leaveAll({ player: { id: client.id } }, client);
       players.add(data, client);
     });
 
@@ -32,7 +33,7 @@ module.exports.listen = server => {
     // DISCONNECT
     client.on('disconnect', () => {
       players.remove(client);
-      // leave all rooms
+      rooms.leaveAll({ player: { id: client.id } }, client);
     });
   });
 
