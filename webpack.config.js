@@ -12,7 +12,7 @@ const PATHS = {
 
 const config = {
 
-  devtool: 'eval',
+  devtool: 'eval-source-map',
 
   entry: [
     'webpack-dev-server/client?http://localhost:8080',

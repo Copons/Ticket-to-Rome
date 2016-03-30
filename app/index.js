@@ -1,11 +1,10 @@
 import './assets/main.css';
-import Game from './components/game';
-import io from 'socket.io-client';
+import socket from 'socket.io-client';
+const io = socket.connect(window.location.host, { reconnect: true });
 
-const socketIo = io.connect(window.location.host, { reconnect: true });
-socketIo.on('connect', () => {
-  console.log('socket connected');
-});
+// TESTS START HERE:
 
-const game = new Game(1);
-console.log(game);
+import Lobby from './components/lobby';
+
+const lobby = new Lobby(io);
+lobby.render();

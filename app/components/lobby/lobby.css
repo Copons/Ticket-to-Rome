@@ -1,0 +1,36 @@
+.lobby {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.rooms {
+  width: 80%;
+  margin: 1em;
+  border-collapse: collapse;
+  font-size: 14px;
+  th, td {
+    padding: 5px;
+    border: 1px solid #eee;
+  }
+  th {
+    background-color: #eee;
+  }
+  .room-players span {
+    display: block;
+    font-size: 12px;
+  }
+  .room-join {
+    text-align: center;
+  }
+  .join {
+    display: inline-block;
+    padding: 2px 5px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+  }
+}

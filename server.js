@@ -10,15 +10,13 @@ const app = express();
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 const http = require('http').Server(app); // eslint-disable-line new-cap
-const io = require('socket.io')(http);
 
-io.on('connection', () => {
-  console.log('connection!');
-});
+require('./server/socket').listen(http);
 
 http.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
 
 if (!isProduction) {
   const webpack = require('webpack');

@@ -24,3 +24,31 @@ export function sessionGet(key) {
 export function sessionRemove(key) {
   sessionStorage.removeItem(key);
 }
+
+
+/**
+ * Set a local storage item.
+ * @param {string} key   The local storage item name.
+ * @param {string} value The local storage item content.
+ */
+export function localStorageSet(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+
+/**
+ * Get a local storage item.
+ * @param {string} key The local storage item name.
+ */
+export function localStorageGet(key) {
+  return JSON.parse(localStorage.getItem(key));
+}
+
+
+/**
+ * Delete a local storage item.
+ * @param {string} key The local storage item name.
+ */
+export function localStorageRemove(key) {
+  localStorage.removeItem(key);
+}
