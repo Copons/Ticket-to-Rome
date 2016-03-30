@@ -1,29 +1,38 @@
 'use strict';
 
-// http://www.tamas.io/advanced-chat-using-node-js-and-socket-io-episode-1/
-
-
-
 const socketIo = require('socket.io');
+const Players = require('./Players');
 const Rooms = require('./Rooms');
-//import Room from './Room';
 
 module.exports.listen = server => {
   const io = socketIo.listen(server);
-  const rooms = new Rooms(io);
+  const players = new Players(io);
+  const rooms = new Rooms(io, players);
 
   io.on('connection', client => {
-    client.on('room/list', () => {
+    // PLAYERS
+    client.on('Players/add', data => {
+      players.add(data, client);
+    });
+
+    // ROOMS
+    client.on('Rooms/list', () => {
       rooms.getList(client);
     });
-    client.on('room/create', data => {
+    client.on('Rooms/create', data => {
       rooms.create(data, client);
     });
-    client.on('room/join', data => {
+    client.on('Rooms/join', data => {
       rooms.join(data, client);
     });
-    client.on('room/leave', data => {
+    client.on('Rooms/leave', data => {
       rooms.leave(data, client);
+    });
+
+    // DISCONNECT
+    client.on('disconnect', () => {
+      players.remove(client);
+      // leave all rooms
     });
   });
 

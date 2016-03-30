@@ -14,10 +14,20 @@ export default class Lobby {
     this.io = this.setupSocket(io);
     this.rooms = [];
     this.room = {};
-    this.playerName = sessionGet('ttr_username');
     this.element = this.setupElement();
+    this.setupPlayer();
 
-    this.io.emit('room/list', {});
+    this.io.emit('Rooms/list', {});
+  }
+
+
+  setupPlayer() {
+    const playerName = sessionGet('ttr_username');
+    if (playerName) {
+      this.playerName = playerName;
+      this.element.usernameField.value = this.playerName;
+      this.io.emit('Players/add', { playerName: this.playerName });
+    }
   }
 
 
@@ -26,7 +36,7 @@ export default class Lobby {
       console.log('Socket.io connected.');
     });
 
-    io.on('room/list', data => {
+    io.on('Rooms/list', data => {
       this.renderUpdate(data.list);
     });
 
@@ -36,6 +46,7 @@ export default class Lobby {
 
   setupElement() {
     const element = {
+      container: create('div', { class: 'lobby-container' }),
       lobby: create('div', { class: 'lobby' }),
       usernameForm: create('form', {
         class: 'form-username',
@@ -98,7 +109,6 @@ export default class Lobby {
 
 
   renderUpdate = data => {
-    //this.rooms = data;
     while (this.element.roomsList.childNodes.length > 1) {
       this.element.roomsList.removeChild(this.element.roomsList.lastChild);
     }
@@ -108,21 +118,6 @@ export default class Lobby {
       this.element.roomsList.appendChild(newRoom.element.row);
       listen(newRoom.element.join, 'click', this.joinRoom);
     }
-
-    /*for (const room of this.rooms) {
-      const roomElement = create('li', {
-        class: 'room',
-        'data-room': room.id,
-      });
-      const roomLink = create('a', {
-        href: '#',
-        'data-room': room.id,
-      });
-      roomLink.textContent = `${room.name} (${room.players.length})`;
-      roomElement.appendChild(roomLink);
-      listen(roomLink, 'click', this.joinRoom);
-      this.element.roomsList.appendChild(roomElement);
-    }*/
   }
 
   saveUsername = e => {
@@ -130,6 +125,7 @@ export default class Lobby {
     if (this.element.usernameField.value !== '') {
       sessionSet('ttr_username', this.element.usernameField.value);
       this.playerName = this.element.usernameField.value;
+      this.io.emit('Players/add', { playerName: this.playerName });
     }
   }
 
@@ -139,11 +135,12 @@ export default class Lobby {
     if (!this.playerName) return;
     if (this.element.roomField.value !== '') {
       this.room = this.element.roomField.value;
-      this.io.emit('room/create', {
+      this.io.emit('Rooms/create', {
         roomName: this.room,
         playerName: this.playerName,
       });
       console.log(`Created and joined room [${this.room}]`);
+      this.element.roomField.value = '';
     }
   }
 
@@ -151,7 +148,7 @@ export default class Lobby {
   joinRoom = e => {
     e.preventDefault();
     this.room = e.target.dataset.room;
-    this.io.emit('room/join', {
+    this.io.emit('Rooms/join', {
       roomId: this.room,
       playerName: this.playerName,
     });
