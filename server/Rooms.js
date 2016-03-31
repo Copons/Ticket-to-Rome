@@ -1,19 +1,34 @@
 'use strict';
 
 
+/** Class representing the rooms list stored in the server memory. */
 class Rooms {
 
+
+  /**
+   * Create the rooms list.
+   * @param {Socket} io The Socket.io server.
+   */
   constructor(io) {
     this.io = io;
     this.list = [];
   }
 
 
+  /**
+   * Emit the rooms list to the client.
+   */
   getList() {
     this.io.sockets.emit('Rooms/list', { list: this.list });
   }
 
 
+  /**
+   * Add a new room to the list and join it.
+   * @param  {Object} newRoom The new room information.
+   * @param  {Socket} client  The Socket.io client requesting the creation.
+   * @return {string}
+   */
   create(newRoom, client) {
     let room = this.list.find(r => r.name === newRoom.name);
     if (!room) {
@@ -24,6 +39,13 @@ class Rooms {
   }
 
 
+  /**
+   * Join a room in the list, if possible.
+   * @param  {Object} roomToJoin The room to join.
+   * @param  {Object} player     The player requesting to join.
+   * @param  {Socket} client     The Socket.io client requesting to join.
+   * @return {string}
+   */
   join(roomToJoin, player, client) {
     const room = this.list.find(r => r.id === roomToJoin.id);
     if (!room) {
@@ -46,6 +68,10 @@ class Rooms {
   }
 
 
+  /**
+   * Leave all the joined rooms.
+   * @param {Socket} client The Socket.io client requesting to leave.
+   */
   leaveAll(client) {
     const player = {
       id: client.id,
@@ -58,6 +84,14 @@ class Rooms {
   }
 
 
+  /**
+   * Leave a room in the list, if possible,
+   * and close the game if the room is in status "playing".
+   * @param  {Object} roomToLeave The room to leave.
+   * @param  {Object} player      The player requesting to leave.
+   * @param  {Socket} client      The Socket.io client requesting to leave.
+   * @return {string}
+   */
   leave(roomToLeave, player, client) {
     const room = this.list.find(r => r.id === roomToLeave.id);
     if (!room) {
@@ -87,6 +121,11 @@ class Rooms {
   }
 
 
+  /**
+   * Start a new game, if possible.
+   * @param  {Object} roomToStart The room in which to start the game.
+   * @return {string}
+   */
   start(roomToStart) {
     const roomIndex = this.list.findIndex(r => r.id === roomToStart.id);
     if (roomIndex === -1) {
@@ -105,5 +144,6 @@ class Rooms {
   }
 
 }
+
 
 module.exports = Rooms;

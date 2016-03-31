@@ -4,7 +4,7 @@
  * @param {Element}  target             The target element.
  * @param {string}   eventType          The event type to register.
  * @param {Function} callback           The event callback function.
- * @param {boolean}  [useCapture=false] Forces the event to activate at the beginning.
+ * @param {boolean}  [useCapture=false] Force the event to activate at the beginning.
  */
 export function listen(target, eventType, callback, useCapture = false) {
   if (target) {

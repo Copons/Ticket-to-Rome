@@ -1,6 +1,6 @@
 import './assets/main.css';
 import socket from 'socket.io-client';
-import User from './components/player/User';
+import User from './components/lobby/User';
 import Menu from './components/menu';
 import Lobby from './components/lobby';
 import Game from './components/game';
@@ -23,13 +23,11 @@ io.on('connect', () => {
   const game = new Game();
 
   io.on('Game/started', room => {
-    console.log('GAME STARTED!');
     lobby.hide();
-    game.start(room.players.length);
+    game.start(room.players);
   });
 
   io.on('Game/closed', () => {
-    console.log('GAME CLOSED!');
     lobby.show();
     game.kill();
   });

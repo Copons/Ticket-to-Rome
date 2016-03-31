@@ -6,9 +6,15 @@ import Message from '../message';
 import PubSub from '../../libs/PubSub';
 
 
+/** Class representing the lobby. */
 export default class Lobby {
 
 
+  /**
+   * Create the lobby.
+   * @param {Socket} io   The Socket.io client.
+   * @param {User}   user The current user.
+   */
   constructor(io, user) {
     this.io = io;
     this.user = {
@@ -28,6 +34,9 @@ export default class Lobby {
   }
 
 
+  /**
+   * Render the lobby into the app container.
+   */
   render() {
     APP_CONTAINER.insertAdjacentHTML('afterbegin', `
       <div class="lobby hidden">
@@ -76,6 +85,10 @@ export default class Lobby {
   }
 
 
+  /**
+   * Update the lobby when a user is changed.
+   * @param {Object} data The data emitted when a user is changed.
+   */
   renderUpdateUser = data => {
     this.user = {
       id: data.id,
@@ -93,6 +106,9 @@ export default class Lobby {
   }
 
 
+  /**
+   * Update the lobby when the rooms are changed.
+   */
   renderUpdateRooms = () => {
     while (this.element.roomsList.firstChild) {
       this.element.roomsList.removeChild(this.element.roomsList.firstChild);
@@ -165,6 +181,10 @@ export default class Lobby {
   }
 
 
+  /**
+   * Dispatch a change username event.
+   * @param {Event} e The click event.
+   */
   changeUsername = e => {
     e.preventDefault();
     if (this.element.usernameInput.value !== '') {
@@ -174,6 +194,10 @@ export default class Lobby {
   }
 
 
+  /**
+   * Create a room.
+   * @param {Event} e The click event.
+   */
   createRoom = e => {
     e.preventDefault();
     if (this.user.name === '') return;
@@ -202,7 +226,10 @@ export default class Lobby {
     }
   }
 
-
+  /**
+   * Join a room.
+   * @param {Event} e The click event.
+   */
   joinRoom = e => {
     e.preventDefault();
     if (this.user.name === '') return;
@@ -229,6 +256,10 @@ export default class Lobby {
   }
 
 
+  /**
+   * Leave a room.
+   * @param {Event} e The click event.
+   */
   leaveRoom = e => {
     e.preventDefault();
     if (this.user.name === '') return;
@@ -255,6 +286,10 @@ export default class Lobby {
   }
 
 
+  /**
+   * Start a game.
+   * @param {Event} e The click event.
+   */
   startGame = e => {
     e.preventDefault();
     if (this.user.name === '') return;
@@ -279,11 +314,17 @@ export default class Lobby {
   }
 
 
+  /**
+   * Show the lobby.
+   */
   show() {
     this.element.lobby.classList.remove('hidden');
   }
 
 
+  /**
+   * Hide the lobby.
+   */
   hide() {
     this.element.lobby.classList.add('hidden');
   }

@@ -1,4 +1,4 @@
-import { RULES, DECK } from '../../config';
+import { APP_CONTAINER, RULES, DECK } from '../../config';
 import { random } from '../../libs/math';
 import PubSub from '../../libs/PubSub';
 import Board from '../board';
@@ -12,9 +12,9 @@ export default class Game {
 
   /**
    * Create the main game logic.
-   * @param  {number} numberOfPlayers - The current game's number of players.
+   * @param {Array} players The current game players.
    */
-  start(numberOfPlayers) {
+  start(players) {
     PubSub.sub('game/action', this.executeAction);
 
     this.turnCount = 1;
@@ -25,23 +25,26 @@ export default class Game {
 
     this.players = [];
     this.activePlayer = {};
-    this.setupPlayers(numberOfPlayers);
+    this.setupPlayers(players);
   }
 
 
   /**
    * Setup this game players.
-   * @param {number} numberOfPlayers The number of players.
+   * @param {Array} players The current game players.
    */
-  setupPlayers(numberOfPlayers) {
-    for (let i = 0; i < numberOfPlayers; i++) {
-      this.activePlayer = new Player(`P${i + 1}`, DECK[i].type);
+  setupPlayers(players) {
+    let i = 0;
+    for (const player of players) {
+      this.activePlayer = new Player(player.id, player.name, DECK[i].type);
       for (let j = 0; j < RULES.player.startingHand; j++) {
         this.deck.draw();
       }
       this.players.push(this.activePlayer);
+      i++;
     }
-    const randomIndex = random(numberOfPlayers);
+
+    const randomIndex = random(players.length);
     this.players[randomIndex].active = true;
     this.activePlayer = this.players[randomIndex];
   }
@@ -103,6 +106,18 @@ export default class Game {
       `claimed the route [${data.route.stations.start.name} - ${data.route.stations.end.name}] ` +
       `with the cards [${data.cards.join(', ')}].`
     );
+  }
+
+
+  kill() {
+    const elementsToRemove = APP_CONTAINER.querySelectorAll('.board, .deck, .hand');
+    for (const elem of [...elementsToRemove]) {
+      APP_CONTAINER.removeChild(elem);
+    }
+    this.board = {};
+    this.deck = {};
+    this.players = [];
+    this.activePlayer = {};
   }
 
 }

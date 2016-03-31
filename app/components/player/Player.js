@@ -1,4 +1,3 @@
-import uuid from 'node-uuid';
 import { RULES } from '../../config';
 import PubSub from '../../libs/PubSub';
 import Hand from '../hand';
@@ -9,11 +8,12 @@ export default class Player {
 
   /**
    * Create the player.
-   * @param {string} name The player's name.
+   * @param {string} id    The player's id.
+   * @param {string} name  The player's name.
    * @param {string} color The player's color.
    */
-  constructor(name, color) {
-    this.id = uuid.v4();
+  constructor(id, name, color) {
+    this.id = id;
     this.name = name;
     this.color = color;
     this.pieces = RULES.player.startingPieces;
@@ -28,6 +28,7 @@ export default class Player {
 
   /**
    * Draw a card.
+   * @param {Object} data The Data published when a card is drawn.
    */
   draw = data => {
     if (data.player.id === this.id) {

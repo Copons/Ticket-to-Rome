@@ -17,7 +17,6 @@ http.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-
 if (!isProduction) {
   const webpack = require('webpack');
   const WebpackDevServer = require('webpack-dev-server');

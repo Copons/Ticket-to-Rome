@@ -3,9 +3,14 @@ import Message from '../message';
 import PubSub from '../../libs/PubSub';
 
 
+/** Class representing a user. */
 export default class User {
 
 
+  /**
+   * Create the user.
+   * @param {Socket} io The Socket.io client.
+   */
   constructor(io) {
     this.io = io;
     this.id = io.io.engine.id;
@@ -15,6 +20,11 @@ export default class User {
   }
 
 
+  /**
+   * Helper function to update a user property.
+   * @param {string} key   The user property.
+   * @param {string} value The new value.
+   */
   update = (key, value) => {
     this[key] = value;
     if (key === 'name') {
@@ -27,6 +37,9 @@ export default class User {
   }
 
 
+  /**
+   * Try to obtain the username from the session storage.
+   */
   setupName() {
     const name = sessionGet('ttr_username');
     if (name) {
@@ -37,6 +50,11 @@ export default class User {
   }
 
 
+  /**
+   * Update the username.
+   * @param {string}  name           The new username.
+   * @param {boolean} [message=true] Prevent the Message popup.
+   */
   updateName = (name, message = true) => {
     if (name === '') return;
     const user = {

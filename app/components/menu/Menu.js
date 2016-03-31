@@ -4,9 +4,13 @@ import { listen } from '../../libs/events';
 import PubSub from '../../libs/PubSub';
 
 
+/** Class representing the menu. */
 export default class Menu {
 
 
+  /**
+   * Create the menu.
+   */
   constructor() {
     this.element = {};
 
@@ -16,6 +20,9 @@ export default class Menu {
   }
 
 
+  /**
+   * Render the menu into the app container.
+   */
   render() {
     APP_CONTAINER.insertAdjacentHTML('afterbegin', `
       <div class="menu">
@@ -48,11 +55,19 @@ export default class Menu {
   }
 
 
+  /**
+   * Update the menu when the current user is changed.
+   * @param {Object} data The data emitted when the current user is changed.
+   */
   renderUpdateUser = data => {
     this.element.username.textContent = data.name;
   }
 
 
+  /**
+   * Update the menu when a game is started.
+   * @param {Object} room The data emitted when a game is started.
+   */
   renderUpdateStartGame = room => {
     this.element.usernameForm.classList.add('hidden');
     this.element.room.classList.remove('hidden');
@@ -63,12 +78,19 @@ export default class Menu {
   }
 
 
+  /**
+   * Update the menu when the current user leaves the game.
+   */
   renderUpdateLeaveGame = () => {
     this.element.usernameForm.classList.remove('hidden');
     this.element.room.classList.add('hidden');
   }
 
 
+  /**
+   * Dispatch a change username event.
+   * @param {Event} e The click event.
+   */
   changeUsername = e => {
     e.preventDefault();
     if (this.element.usernameInput.value !== '') {
@@ -78,6 +100,10 @@ export default class Menu {
   }
 
 
+  /**
+   * Leave the game.
+   * @param {Event} e The click event.
+   */
   leaveGame = e => {
     e.preventDefault();
     PubSub.pub('Game/leave', e);
