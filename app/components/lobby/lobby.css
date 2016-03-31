@@ -8,7 +8,8 @@
 
   .usernameForm,
   .roomForm,
-  .rooms {
+  .rooms,
+  & {
     &.hidden {
       display: none;
     }
@@ -22,23 +23,32 @@
   font-size: 14px;
   th, td {
     padding: 5px;
-    border: 1px solid #eee;
+    border: 1px solid #cfd8dc;
   }
   th {
-    background-color: #eee;
+    background-color: #cfd8dc;
+  }
+  .room-name {
+    font-weight: bold;
   }
   .room-players span {
     display: block;
-    font-size: 12px;
+    /*font-size: 12px;*/
+  }
+  .room-status {
+    text-transform: capitalize;
   }
   .room-actions {
     text-align: center;
   }
-  .join, .leave {
+  .join, .leave, .start {
     display: inline-block;
     padding: 2px 5px;
-    background-color: #000;
+    background-color: #37474f;
     color: #fff;
     text-decoration: none;
+    &:hover {
+      background-color: #546e7a;
+    }
   }
 }

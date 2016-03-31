@@ -14,7 +14,6 @@ export default class Lobby {
     this.user = {
       id: user.id,
       name: user.name,
-      room: user.room,
     };
     this.rooms = [];
 
@@ -25,33 +24,33 @@ export default class Lobby {
     });
 
     PubSub.sub('User/changed', this.renderUpdateUser);
+    PubSub.sub('Game/leave', this.leaveRoom);
   }
 
 
   render() {
     APP_CONTAINER.insertAdjacentHTML('afterbegin', `
-      <div class="lobby-overlay">
-        <div class="lobby">
-          <form class="usernameForm hidden">
-            <input name="username" type="text" placeholder="Change name">
-            <input type="submit" value="Save">
-          </form>
-          <table class="rooms hidden">
-            <thead>
-              <tr>
-                <th>Room</th>
-                <th>Owner</th>
-                <th>Players</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <form class="roomForm hidden">
-            <input name="room" type="text" placeholder="New room">
-            <input type="submit" value="Create">
-          </form>
-        </div>
+      <div class="lobby hidden">
+        <form class="usernameForm hidden">
+          <input name="username" type="text" placeholder="Change name">
+          <input type="submit" value="Save">
+        </form>
+        <table class="rooms hidden">
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>Owner</th>
+              <th>Players</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <form class="roomForm hidden">
+          <input name="room" type="text" placeholder="New room">
+          <input type="submit" value="Create">
+        </form>
       </div>
     `);
     const lobby = APP_CONTAINER.querySelector('.lobby');
@@ -72,6 +71,8 @@ export default class Lobby {
     if (this.user.name === '') {
       this.element.usernameForm.classList.remove('hidden');
     }
+
+    this.show();
   }
 
 
@@ -129,14 +130,28 @@ export default class Lobby {
         >Leave</a>`;
       }
 
+      let start = '';
+      if (room.status === 'open' && room.owner.id === this.user.id) {
+        start = `<a
+          href="#" class="start"
+          data-room-id="${room.id}" data-room-name="${room.name}"
+        >Start Game</a>`;
+      }
+
       this.element.roomsList.insertAdjacentHTML('afterbegin',`
         <tr>
-          <td class="room-name">${room.name}</td>
+          <td class="room-name">${start} ${room.name}</td>
           <td class="room-owner">${room.owner.name}</td>
           <td class="room-players">${players}</td>
+          <td class="room-status">${room.status}</td>
           <td class="room-actions">${actions}</td>
         </tr>
       `);
+
+      if (start !== '') {
+        const startButton = this.element.roomsList.querySelector('.start');
+        listen(startButton, 'click', this.startGame);
+      }
     }
 
     const joinButtons = this.element.roomsList.querySelectorAll('.join');
@@ -172,7 +187,6 @@ export default class Lobby {
       };
       this.io.emit('Rooms/create', room, response => {
         if (response === 'ok') {
-          PubSub.pub('Room/join', room);
           Message.show({
             type: 'success',
             message: 'Room created!',
@@ -201,7 +215,6 @@ export default class Lobby {
       player: this.user,
     }, response => {
       if (response === 'ok') {
-        PubSub.pub('Room/join', room);
         Message.show({
           type: 'success',
           message: `Joined room <b>${room.name}</b>!`,
@@ -228,7 +241,6 @@ export default class Lobby {
       player: this.user,
     }, response => {
       if (response === 'ok') {
-        PubSub.pub('Room/leave', room);
         Message.show({
           type: 'success',
           message: `Left room <b>${room.name}</b>!`,
@@ -240,6 +252,40 @@ export default class Lobby {
         });
       }
     });
+  }
+
+
+  startGame = e => {
+    e.preventDefault();
+    if (this.user.name === '') return;
+    const room = {
+      id: e.target.dataset.roomId,
+      name: e.target.dataset.roomName,
+    };
+    this.io.emit('Rooms/start', room, response => {
+      if (response === 'ok') {
+        PubSub.pub('Game/started', room);
+        Message.show({
+          type: 'success',
+          message: `Starting game in room <b>${room.name}</b>!`,
+        });
+      } else {
+        Message.show({
+          type: 'error',
+          message: response,
+        });
+      }
+    });
+  }
+
+
+  show() {
+    this.element.lobby.classList.remove('hidden');
+  }
+
+
+  hide() {
+    this.element.lobby.classList.add('hidden');
   }
 
 }

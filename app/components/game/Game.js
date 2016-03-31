@@ -14,7 +14,7 @@ export default class Game {
    * Create the main game logic.
    * @param  {number} numberOfPlayers - The current game's number of players.
    */
-  constructor(numberOfPlayers) {
+  start(numberOfPlayers) {
     PubSub.sub('game/action', this.executeAction);
 
     this.turnCount = 1;

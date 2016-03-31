@@ -3,6 +3,7 @@ import socket from 'socket.io-client';
 import User from './components/player/User';
 import Menu from './components/menu';
 import Lobby from './components/lobby';
+import Game from './components/game';
 
 
 const io = socket.connect(window.location.host, { reconnect: true });
@@ -18,4 +19,18 @@ io.on('connect', () => {
 
   const lobby = new Lobby(io, user);
   lobby.render();
+
+  const game = new Game();
+
+  io.on('Game/started', room => {
+    console.log('GAME STARTED!');
+    lobby.hide();
+    game.start(room.players.length);
+  });
+
+  io.on('Game/closed', () => {
+    console.log('GAME CLOSED!');
+    lobby.show();
+    game.kill();
+  });
 });

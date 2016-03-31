@@ -65,17 +65,42 @@ class Rooms {
       return `Room <b>${roomToLeave.name}</b> does not exist.`;
     }
 
+    const roomIndex = this.list.findIndex(r => r.id === room.id);
+
+    if (room.status === 'playing') {
+      this.list[roomIndex].status = 'open';
+      console.log(`Game in room [${room.name}] closed because owner left.`);
+      this.io.sockets.in(room.id).emit('Game/closed', room);
+    }
+
     if (player.id.includes(room.owner.id)) {
       this.list = this.list.filter(r => r.id !== room.id);
     } else {
-      const roomIndex = this.list.findIndex(r => r.id === room.id);
       this.list[roomIndex].players = this.list[roomIndex].players.filter(
         p => !player.id.includes(p.id)
       );
     }
     client.leave(room.id);
-    this.getList();
     console.log(`[${player.name}] left room [${room.name}].`);
+    this.getList();
+    return 'ok';
+  }
+
+
+  start(roomToStart) {
+    const roomIndex = this.list.findIndex(r => r.id === roomToStart.id);
+    if (roomIndex === -1) {
+      console.log(`Room [${roomToStart.name}] does not exist.`);
+      return `Room <b>${roomToStart.name}</b> does not exist.`;
+    } else if (this.list[roomIndex].players.length < 1) {
+      console.log(`Room [${roomToStart.name}] is empty.`);
+      return `Room <b>${roomToStart.name}</b> is empty.`;
+    }
+
+    this.list[roomIndex].status = 'playing';
+    this.getList();
+    this.io.sockets.in(roomToStart.id).emit('Game/started', this.list[roomIndex]);
+    console.log(`Started game in room [${roomToStart.name}].`);
     return 'ok';
   }
 

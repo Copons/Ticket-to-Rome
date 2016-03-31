@@ -11,6 +11,8 @@ export default class Menu {
     this.element = {};
 
     PubSub.sub('User/changed', this.renderUpdateUser);
+    PubSub.sub('Game/started', this.renderUpdateStartGame);
+    PubSub.sub('Game/leave', this.renderUpdateLeaveGame);
   }
 
 
@@ -18,14 +20,16 @@ export default class Menu {
     APP_CONTAINER.insertAdjacentHTML('afterbegin', `
       <div class="menu">
         <div class="menu-title">TTR</div>
-        <div class="menu-item">
-          <a href="#" class="menu-username">
-            <span></span>
-            <form class="submenu">
-              <input name="username" type="text" placeholder="Change name">
-              <input type="submit" value="Save">
-            </form>
-          </a>
+        <div class="menu-item menu-username">
+          <span></span>
+          <form class="submenu">
+            <input name="username" type="text" placeholder="Change name">
+            <input type="submit" value="Save">
+          </form>
+        </div>
+        <div class="menu-item menu-room hidden">
+          <span></span>
+          <a href="#">(Leave)</a>
         </div>
       </div>
     `);
@@ -33,8 +37,12 @@ export default class Menu {
     this.element = {
       menu,
       username: menu.querySelector('.menu-username span'),
+      usernameForm: menu.querySelector('.menu-username form'),
       usernameInput: menu.querySelector('.menu-username input[type="text"]'),
       usernameSubmit: menu.querySelector('.menu-username input[type="submit"]'),
+      room: menu.querySelector('.menu-room'),
+      roomName: menu.querySelector('.menu-room span'),
+      roomLeave: menu.querySelector('.menu-room a'),
     };
     listen(this.element.usernameSubmit, 'click', this.changeUsername);
   }
@@ -45,12 +53,34 @@ export default class Menu {
   }
 
 
+  renderUpdateStartGame = room => {
+    this.element.usernameForm.classList.add('hidden');
+    this.element.room.classList.remove('hidden');
+    this.element.roomName.innerHTML = `Room: <b>${room.name}</b>`;
+    this.element.roomLeave.dataset.roomId = room.id;
+    this.element.roomLeave.dataset.roomName = room.name;
+    listen(this.element.roomLeave, 'click', this.leaveGame);
+  }
+
+
+  renderUpdateLeaveGame = () => {
+    this.element.usernameForm.classList.remove('hidden');
+    this.element.room.classList.add('hidden');
+  }
+
+
   changeUsername = e => {
     e.preventDefault();
     if (this.element.usernameInput.value !== '') {
       PubSub.pub('User/name', this.element.usernameInput.value);
       this.element.usernameInput.value = '';
     }
+  }
+
+
+  leaveGame = e => {
+    e.preventDefault();
+    PubSub.pub('Game/leave', e);
   }
 
 }

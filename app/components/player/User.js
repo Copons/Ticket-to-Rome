@@ -10,11 +10,8 @@ export default class User {
     this.io = io;
     this.id = io.io.engine.id;
     this.name = '';
-    this.room = false;
 
     PubSub.sub('User/name', this.updateName);
-    PubSub.sub('Room/join', this.joinRoom);
-    PubSub.sub('Room/leave', this.leaveRoom);
   }
 
 
@@ -26,7 +23,6 @@ export default class User {
     PubSub.pub('User/changed', {
       id: this.id,
       name: this.name,
-      room: this.room,
     });
   }
 
@@ -46,7 +42,6 @@ export default class User {
     const user = {
       name,
       id: this.id,
-      room: this.room,
     };
     this.io.emit('Players/changeName', user, response => {
       if (response === 'ok') {
@@ -65,16 +60,6 @@ export default class User {
         });
       }
     });
-  }
-
-
-  joinRoom = room => {
-    this.update('room', room.id);
-  }
-
-
-  leaveRoom = () => {
-    this.update('room', false);
   }
 
 }

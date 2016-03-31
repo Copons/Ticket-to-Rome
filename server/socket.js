@@ -32,6 +32,10 @@ module.exports.listen = server => {
       const response = rooms.leave(data.room, data.player, client);
       callback(response);
     });
+    client.on('Rooms/start', (room, callback) => {
+      const response = rooms.start(room, client);
+      callback(response);
+    });
 
     // DISCONNECT
     client.on('disconnect', () => {
