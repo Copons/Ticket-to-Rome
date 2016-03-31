@@ -5,6 +5,14 @@
   align-items: center;
   width: 100%;
   height: 100vh;
+
+  .usernameForm,
+  .roomForm,
+  .rooms {
+    &.hidden {
+      display: none;
+    }
+  }
 }
 
 .rooms {

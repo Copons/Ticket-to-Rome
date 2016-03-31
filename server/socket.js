@@ -7,33 +7,36 @@ const Rooms = require('./Rooms');
 module.exports.listen = server => {
   const io = socketIo.listen(server);
   const players = new Players(io);
-  const rooms = new Rooms(io, players);
+  const rooms = new Rooms(io);
 
   io.on('connection', client => {
     // PLAYERS
-    client.on('Players/add', data => {
-      rooms.leaveAll({ player: { id: client.id } }, client);
-      players.add(data, client);
+    client.on('Players/changeName', (player, callback) => {
+      const response = players.add(player);
+      callback(response);
     });
 
     // ROOMS
     client.on('Rooms/list', () => {
-      rooms.getList(client);
+      rooms.getList();
     });
-    client.on('Rooms/create', data => {
-      rooms.create(data, client);
+    client.on('Rooms/create', (room, callback) => {
+      const response = rooms.create(room, client);
+      callback(response);
     });
-    client.on('Rooms/join', data => {
-      rooms.join(data, client);
+    client.on('Rooms/join', (data, callback) => {
+      const response = rooms.join(data.room, data.player, client);
+      callback(response);
     });
-    client.on('Rooms/leave', data => {
-      rooms.leave(data, client);
+    client.on('Rooms/leave', (data, callback) => {
+      const response = rooms.leave(data.room, data.player, client);
+      callback(response);
     });
 
     // DISCONNECT
     client.on('disconnect', () => {
+      rooms.leaveAll(client);
       players.remove(client);
-      rooms.leaveAll({ player: { id: client.id } }, client);
     });
   });
 

@@ -1,10 +1,21 @@
 import './assets/main.css';
 import socket from 'socket.io-client';
-const io = socket.connect(window.location.host, { reconnect: true });
-
-// TESTS START HERE:
-
+import User from './components/player/User';
+import Menu from './components/menu';
 import Lobby from './components/lobby';
 
-const lobby = new Lobby(io);
-lobby.render();
+
+const io = socket.connect(window.location.host, { reconnect: true });
+
+io.on('connect', () => {
+  console.log(`Client ${io.io.engine.id} connected to Socket.io.`);
+
+  const user = new User(io);
+  user.setupName();
+
+  const menu = new Menu();
+  menu.render();
+
+  const lobby = new Lobby(io, user);
+  lobby.render();
+});
