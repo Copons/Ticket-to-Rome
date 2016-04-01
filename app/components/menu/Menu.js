@@ -10,13 +10,21 @@ export default class Menu {
 
   /**
    * Create the menu.
+   * @param {Socket} io   The Socket.io client.
+   * @param {User}   user The current user.
    */
-  constructor() {
+  constructor(io, user) {
+    this.io = io;
+    this.user = {
+      id: user.id,
+      name: user.name,
+    };
     this.element = {};
 
     PubSub.sub('User/changed', this.renderUpdateUser);
-    PubSub.sub('Game/started', this.renderUpdateStartGame);
     PubSub.sub('Game/leave', this.renderUpdateLeaveGame);
+
+    this.io.on('Game/started', this.renderUpdateStartGame);
   }
 
 
@@ -37,6 +45,7 @@ export default class Menu {
         <div class="menu-item menu-room hidden">
           <span></span>
           <a href="#">(Leave)</a>
+          <div class="submenu"></div>
         </div>
       </div>
     `);
@@ -50,6 +59,7 @@ export default class Menu {
       room: menu.querySelector('.menu-room'),
       roomName: menu.querySelector('.menu-room span'),
       roomLeave: menu.querySelector('.menu-room a'),
+      roomSubmenu: menu.querySelector('.menu-room .submenu'),
     };
     listen(this.element.usernameSubmit, 'click', this.changeUsername);
   }
@@ -60,6 +70,7 @@ export default class Menu {
    * @param {Object} data The data emitted when the current user is changed.
    */
   renderUpdateUser = data => {
+    this.user.name = data.name;
     this.element.username.textContent = data.name;
   }
 
@@ -69,11 +80,27 @@ export default class Menu {
    * @param {Object} room The data emitted when a game is started.
    */
   renderUpdateStartGame = room => {
+    console.log(room);
     this.element.usernameForm.classList.add('hidden');
     this.element.room.classList.remove('hidden');
     this.element.roomName.innerHTML = `Room: <b>${room.name}</b>`;
     this.element.roomLeave.dataset.roomId = room.id;
     this.element.roomLeave.dataset.roomName = room.name;
+
+    let players = '';
+    for (const player of room.players) {
+      players += '<div class="room-player">';
+      players += player.name;
+      if (player.id === room.owner.id) {
+        players += ' <span class="room-owner">(Owner)</span>';
+      }
+      if (player.id === this.user.id) {
+        players += ' <span class="room-you">(You)</span>';
+      }
+      players += '</div>';
+    }
+    this.element.roomSubmenu.innerHTML = players;
+
     listen(this.element.roomLeave, 'click', this.leaveGame);
   }
 

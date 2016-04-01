@@ -14,7 +14,7 @@ io.on('connect', () => {
   const user = new User(io);
   user.setupName();
 
-  const menu = new Menu();
+  const menu = new Menu(io, user);
   menu.render();
 
   const lobby = new Lobby(io, user);

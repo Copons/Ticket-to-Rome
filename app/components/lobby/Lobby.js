@@ -299,7 +299,6 @@ export default class Lobby {
     };
     this.io.emit('Rooms/start', room, response => {
       if (response === 'ok') {
-        PubSub.pub('Game/started', room);
         Message.show({
           type: 'success',
           message: `Starting game in room <b>${room.name}</b>!`,
