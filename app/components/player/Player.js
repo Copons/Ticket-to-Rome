@@ -21,7 +21,7 @@ export default class Player {
     this.hand = new Hand();
     this.builtRoutes = [];
 
-    PubSub.sub('deck/draw', this.draw);
+    PubSub.sub('Deck/draw', this.draw);
     PubSub.sub('route/claim', this.claimRoute);
   }
 

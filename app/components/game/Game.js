@@ -11,21 +11,32 @@ export default class Game {
 
 
   /**
-   * Create the main game logic.
-   * @param {Array} players The current game players.
+   * Create the rooms list.
+   * @param {Socket} io The Socket.io server.
    */
-  start(players) {
-    PubSub.sub('game/action', this.executeAction);
+  constructor(io) {
+    this.io = io;
+  }
+
+
+  /**
+   * Create the main game logic.
+   * @param {Object} game The current game emitted by the server.
+   */
+  start(game) {
+    PubSub.sub('Game/action', this.executeAction);
+
+    this.room = game.room;
 
     this.turnCount = 1;
     this.turnActionsLeft = RULES.turn.actions;
 
     this.board = new Board();
-    this.deck = new Deck();
+    this.deck = new Deck(game.deck, this.io);
 
     this.players = [];
     this.activePlayer = {};
-    this.setupPlayers(players);
+    this.setupPlayers(game.room.players);
   }
 
 
@@ -38,7 +49,7 @@ export default class Game {
     for (const player of players) {
       this.activePlayer = new Player(player.id, player.name, DECK[i].type);
       for (let j = 0; j < RULES.player.startingHand; j++) {
-        this.deck.draw();
+        this.deck.draw(this.room);
       }
       this.players.push(this.activePlayer);
       i++;
@@ -55,7 +66,7 @@ export default class Game {
    * @param {Object} data The data published when an action changes.
    */
   executeAction = data => {
-    if (data.action === 'deck/draw') {
+    if (data.action === 'Deck/draw') {
       this.actionDrawFromDeck(data);
     } else if (data.action === 'route/claim') {
       this.actionRouteClaimed(data);
@@ -69,7 +80,7 @@ export default class Game {
    */
   actionDrawFromDeck = data => {
     this.turnActionsLeft - RULES.action.drawFromDeck;
-    PubSub.pub('deck/draw', {
+    PubSub.pub('Deck/draw', {
       player: this.activePlayer,
       card: data.card,
     });

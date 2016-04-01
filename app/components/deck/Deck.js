@@ -1,8 +1,8 @@
 import './deck.css';
-import { APP_CONTAINER, DECK } from '../../config';
+import { APP_CONTAINER } from '../../config';
 import { create } from '../../libs/dom';
 import { listen } from '../../libs/events';
-import { random } from '../../libs/math';
+import Message from '../message';
 import PubSub from '../../libs/PubSub';
 import Card from '../card';
 
@@ -13,24 +13,28 @@ export default class Deck {
 
   /**
    * Create the deck.
+   * @param {Object} deck The current game's deck emitted by the server.
+   * @param {Socket} io   The Socket.io server.
    */
-  constructor() {
-    this.cards = this.setupCards();
+  constructor(deck, io) {
+    this.io = io;
+    this.cards = this.setupCards(deck.cards);
     this.element = this.setupElement();
     this.render();
+
+    this.io.on('Deck/remove', this.remove);
   }
 
 
   /**
    * Setup the deck cards.
+   * @param  {Object} deck The current game's deck emitted by the server.
    * @return {Array}
    */
-  setupCards() {
+  setupCards(deckCards) {
     const cards = [];
-    for (const card of DECK) {
-      for (let i = 0; i < card.amount; i++) {
-        cards.push(new Card(card.type));
-      }
+    for (const card of deckCards) {
+      cards.push(new Card(card));
     }
     return cards;
   }
@@ -75,16 +79,38 @@ export default class Deck {
 
   /**
    * Draw a card from the deck.
+   * @param {Object} room The current game room.
    */
-  draw = () => {
-    const drawnCard = this.cards[random(this.cards.length)];
+  draw = room => {
+    /*const drawnCard = this.cards[cardIndex];
     this.cards = this.cards.filter(card => card.id !== drawnCard.id);
     this.renderUpdate();
     PubSub.pub('game/action', {
       action: 'deck/draw',
       card: drawnCard,
     });
-    return drawnCard;
+    return drawnCard;*/
+    this.io.emit('Deck/draw', room, response => {
+      if (response === 'Deck is empty') {
+        Message.show({
+          type: 'error',
+          message: response,
+        });
+      } else {
+        this.cards = this.cards.filter(card => card.id !== response.id);
+        this.renderUpdate();
+        PubSub.pub('Game/action', {
+          action: 'Deck/draw',
+          card: response,
+        });
+      }
+    });
+  }
+
+
+  remove = card => {
+    this.cards = this.cards.filter(c => c.id !== card.id);
+    this.renderUpdate();
   }
 
 }

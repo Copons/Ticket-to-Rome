@@ -1,4 +1,5 @@
 'use strict';
+const CONFIG = require('./config');
 
 
 /** Class representing the rooms list stored in the server memory. */
@@ -51,7 +52,7 @@ class Rooms {
     if (!room) {
       console.log(`Room [${roomToJoin.name}] does not exist.`);
       return `Room <b>${roomToJoin.name}</b> does not exist.`;
-    } else if (room.players.length >= 5) {
+    } else if (room.players.length >= CONFIG.RULES.player.max) {
       console.log(`Room [${room.name}] is full.`);
       return `Room <b>${room.name}</b> is full.`;
     } else if (room.players.find(p => p.id === player.id)) {
@@ -89,10 +90,11 @@ class Rooms {
    * and close the game if the room is in status "playing".
    * @param  {Object} roomToLeave The room to leave.
    * @param  {Object} player      The player requesting to leave.
+   * @param  {Object} games       The list of games.
    * @param  {Socket} client      The Socket.io client requesting to leave.
    * @return {string}
    */
-  leave(roomToLeave, player, client) {
+  leave(roomToLeave, player, games, client) {
     const room = this.list.find(r => r.id === roomToLeave.id);
     if (!room) {
       console.log(`Room [${roomToLeave.name}] does not exist.`);
@@ -103,8 +105,9 @@ class Rooms {
 
     if (room.status === 'playing') {
       this.list[roomIndex].status = 'open';
-      console.log(`Game in room [${room.name}] closed because owner left.`);
-      this.io.sockets.in(room.id).emit('Game/closed', room);
+      //console.log(`Game in room [${room.name}] closed because owner left.`);
+      //this.io.sockets.in(room.id).emit('Game/closed', room);
+      games.close(this.list[roomIndex]);
     }
 
     if (player.id.includes(room.owner.id)) {
@@ -124,9 +127,10 @@ class Rooms {
   /**
    * Start a new game, if possible.
    * @param  {Object} roomToStart The room in which to start the game.
+   * @param  {Object} games       The list of games.
    * @return {string}
    */
-  start(roomToStart) {
+  start(roomToStart, games) {
     const roomIndex = this.list.findIndex(r => r.id === roomToStart.id);
     if (roomIndex === -1) {
       console.log(`Room [${roomToStart.name}] does not exist.`);
@@ -138,9 +142,9 @@ class Rooms {
 
     this.list[roomIndex].status = 'playing';
     this.getList();
-    this.io.sockets.in(roomToStart.id).emit('Game/started', this.list[roomIndex]);
-    console.log(`Started game in room [${roomToStart.name}].`);
-    return 'ok';
+    //this.io.sockets.in(roomToStart.id).emit('Game/started', this.list[roomIndex]);
+    //console.log(`Started game in room [${roomToStart.name}].`);
+    return games.start(this.list[roomIndex]);
   }
 
 }

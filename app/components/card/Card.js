@@ -1,5 +1,4 @@
 import './card.css';
-import uuid from 'node-uuid';
 import { create } from '../../libs/dom';
 
 
@@ -9,11 +8,11 @@ export default class Card {
 
   /**
    * Create a card.
-   * @param {string} type The card type.
+   * @param {Object} card The card from the deck emitted by the server.
    */
-  constructor(type) {
-    this.id = uuid.v4();
-    this.type = type;
+  constructor(card) {
+    this.id = card.id;
+    this.type = card.type;
     this.element = this.setupElement();
   }
 
