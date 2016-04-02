@@ -1,63 +1,75 @@
-import { RULES } from '../../config';
-import PubSub from '../../libs/PubSub';
-import Hand from '../hand';
+import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import PubSub from '../communications/PubSub';
 
-/** Class representing a player. */
+
 export default class Player {
 
 
-  /**
-   * Create the player.
-   * @param {string} id    The player's id.
-   * @param {string} name  The player's name.
-   * @param {string} color The player's color.
-   */
-  constructor(id, name, color) {
+  constructor(id) {
     this.id = id;
-    this.name = name;
-    this.color = color;
-    this.pieces = RULES.player.startingPieces;
+    this.name = '';
+
+    sessionSet('ttr_username', Date.now());
+
+    this.reset();
+    this.getNameFromStorage();
+  }
+
+
+  simplify() {
+    return {
+      id: this.id,
+      name: this.name,
+    };
+  }
+
+
+  reset() {
+    this.color = '';
+    this.pieces = 0;
     this.active = false;
-    this.hand = new Hand();
+    this.hand = {};
     this.builtRoutes = [];
-
-    PubSub.sub('Deck/draw', this.draw);
-    PubSub.sub('route/claim', this.claimRoute);
   }
 
 
-  /**
-   * Draw a card.
-   * @param {Object} data The Data published when a card is drawn.
-   */
-  draw = data => {
-    if (data.player.id === this.id) {
-      this.hand.addCard(data.card);
-      PubSub.pub('hand/changed', {
-        player: this.id,
-        hand: this.hand.groups,
+  getNameFromStorage() {
+    const name = sessionGet('ttr_username');
+    if (name) {
+      this.changeName(name, false);
+    }
+  }
+
+
+  changeName = (name, message = true) => {
+    if (name === '') return;
+    IO.emit('Player.changeName', { name, id: this.id })
+      .then(() => {
+        this.name = name;
+        sessionSet('ttr_username', name);
+        if (message) {
+          Message.success('Username changed!');
+        }
+        console.log(this.simplify());
+      })
+      .catch(response => {
+        this.name = '';
+        sessionRemove('ttr_username');
+        Message.error(response.message);
       });
-    }
+    PubSub.pub('Player.changeName', this.simplify());
   }
 
 
-  /**
-   * Claim and build a route.
-   * @param {Object} data The data published when a route is claimed.
-   */
-  claimRoute = data => {
-    for (const card of data.cards) {
-      this.hand.groups.find(group => group.type === card).removeCard();
-    }
-    this.builtRoutes.push({
-      start: data.route.stations.start.slug,
-      end: data.route.stations.end.slug,
-    });
-    data.route.setClaimed(this);
-    PubSub.pub('hand/changed', {
-      player: this.id,
-      hand: this.hand.groups,
-    });
+  startGame(color) {
+    this.color = color;
+  }
+
+
+  endGame() {
+    this.reset();
   }
 
 }

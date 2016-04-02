@@ -1,0 +1,33 @@
+.message {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 200;
+  width: 250px;
+  padding: 10px;
+  visibility: visible;
+  opacity: 1;
+  background-color: #cfd8dc;
+  box-shadow: 0 0.15em 0.3em 0 rgba(0, 0, 0, 0.16),
+              0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
+  color: #000;
+  font-size: 14px;
+  cursor: pointer;
+
+  will-change: opacity;
+  transition: visibility 0.1s linear, opacity 0.1s linear;
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  &[data-type='success'] {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  &[data-type='error'] {
+    background-color: #f44336;
+    color: #fff;
+  }
+}
