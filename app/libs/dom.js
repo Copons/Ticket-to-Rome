@@ -1,4 +1,34 @@
 /**
+ * querySelector alias
+ * Returns the first element within the document that matches the specified group of selectors.
+ * @param  {string}  selector                  The CSS selector to search.
+ * @param  {Element} [container=document.body] The container in which to search.
+ * @return {Element}
+ */
+export function qs(selector, container = document.body) {
+  if (!container) {
+    return null;
+  }
+  return container.querySelector(selector);
+}
+
+
+/**
+ * querySelectorAll alias
+ * Returns a list of the elements within the document that match the specified group of selectors.
+ * @param  {string}   selector                  The CSS selector to search.
+ * @param  {Element}  [container=document.body] The container in which to search.
+ * @return {NodeList} The matched element.
+ */
+export function qsa(selector, container = document.body) {
+  if (!container) {
+    return [];
+  }
+  return container.querySelectorAll(selector);
+}
+
+
+/**
  * Create a HTML element.
  * @param  {string}  tag       The element tag name.
  * @param  {Object}  [args={}] The element attributes.
@@ -38,4 +68,45 @@ export function setStyle(elem, args = {}) {
   for (const arg in args) {
     element.style[arg] = args[arg];
   }
+}
+
+
+/**
+ * Determines whether the element has the given class name.
+ * @param  {Element} element   The target element.
+ * @param  {string}  className The class name to search.
+ * @return {boolean}
+ */
+export function hasClass(element, className) {
+  return element.classList.contains(className);
+}
+
+
+/**
+ * Adds a class to an element.
+ * @param {Element} element   The target element.
+ * @param {string}  className The class name to add.
+ */
+export function addClass(element, className) {
+  element.classList.add(className);
+}
+
+
+/**
+ * Removes a class from an element.
+ * @param {Element} element   The target element.
+ * @param {string}  className The class name to remove.
+ */
+export function removeClass(element, className) {
+  element.classList.remove(className);
+}
+
+
+/**
+ * Toggles a class from an element.
+ * @param {Element} element   The target element.
+ * @param {string}  className The class name to toggle.
+ */
+export function toggleClass(element, className) {
+  element.classList.toggle(className);
 }

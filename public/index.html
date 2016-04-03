@@ -5,7 +5,98 @@
     <title>Ticket to Rome</title>
   </head>
   <body>
-    <div id="ttr"></div>
+    <div id="ttr">
+
+
+      <div id="message" class="hidden"></div>
+
+
+      <nav id="menu">
+
+        <h1>TTR</h1>
+
+        <div class="menu-item menu-username hidden">
+          <span></span>
+          <form class="submenu">
+            <input name="username" type="text" placeholder="Change name">
+            <input type="submit" value="Change">
+          </form>
+        </div>
+
+        <div class="menu-item menu-room hidden">
+          <span></span>
+          <a href="#">Leave</a>
+          <div class="submenu">
+            <div class="room-player">
+              [Player] <span class="room-owner">Owner</span>
+            </div>
+            <div class="room-player">
+              [Player] <span class="room-you">You</span>
+            </div>
+            <div class="room-player">
+              [Player]
+            </div>
+          </div>
+        </div>
+
+      </nav>
+
+
+      <div id="lobby">
+
+        <form class="lobby-username hidden">
+          <input name="username" type="text" placeholder="Insert your name">
+          <input type="submit" value="Save">
+        </form>
+
+        <table class="rooms hidden">
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>Owner</th>
+              <th>Players</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <form class="lobby-room hidden">
+          <input name="room" type="text" placeholder="Write a room name">
+          <input type="submit" value="Create">
+        </form>
+
+      </div>
+
+
+      <div id="game" class="hidden">
+
+        <div id="board">
+          <svg>
+            <g id="routes"></g>
+            <g id="stations"></g>
+            <g id="stations-names"></g>
+          </svg>
+        </div>
+
+        <div id="table">
+          <div id="deck"></div>
+          <div id="pile"></div>
+          <div id="deck-destinations"></div>
+        </div>
+
+        <div id="player">
+          <div id="hand"></div>
+          <div id="destinations"></div>
+        </div>
+
+        <div id="players"></div>
+
+      </div>
+
+
+    </div>
     <script src="/build/bundle.js"></script>
   </body>
 </html>

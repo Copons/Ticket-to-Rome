@@ -10,13 +10,21 @@ module.exports.listen = server => {
   io.on('connection', client => {
     console.log(`Client ${client.id} connected.`);
 
+
     // PLAYERS
-    client.on('Player.changeName', (player, callback) => {
+    client.on('Player.setName', (player, callback) => {
       const response = playersList.add(player, client);
       if (response.type === 'success') {
-        playersList.emitList(io.sockets);
+        io.sockets.emit(playersList.getList());
       }
       callback(response);
+    });
+
+
+    // DISCONNECT
+    client.on('disconnect', () => {
+      playersList.remove(client);
+      io.sockets.emit(playersList.getList());
     });
   });
 

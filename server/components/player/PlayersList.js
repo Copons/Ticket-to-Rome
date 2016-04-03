@@ -11,9 +11,8 @@ class PlayersList {
   }
 
 
-  emitList(recipients) {
-    const list = this.list.map(p => p.simplify());
-    recipients.emit('PlayersList.emitList', { players: list });
+  getList() {
+    return this.list.map(p => p.simplify());
   }
 
 

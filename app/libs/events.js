@@ -1,3 +1,6 @@
+import { qsa } from './dom.js';
+
+
 /**
  * addEventListener alias
  * Registers the specified listener on the target it's called on.
@@ -11,6 +14,28 @@ export function listen(target, eventType, callback, useCapture = false) {
     target.addEventListener(eventType, callback, !!useCapture);
   }
 }
+
+
+/**
+ * Delegates an event listener.
+ * @param  {string}   targetSelector The target selector.
+ * @param  {Element}  container      The container of the target selector.
+ * @param  {string}   eventType      The event type to register.
+ * @param  {Function} callback       The event callback function.
+ */
+export function delegate(targetSelector, container, eventType, callback) {
+  const dispatchEvent = event => {
+    const targetElement = event.target;
+    const potentialElements = qsa(targetSelector, container);
+    const hasMatch = Array.from(potentialElements).includes(targetElement);
+    if (hasMatch) {
+      callback.call(targetElement, event);
+    }
+  };
+  const useCapture = eventType === 'blur' || eventType === 'focus';
+  listen(container, eventType, dispatchEvent, useCapture);
+}
+
 
 /**
  * Create and dispatch a custom event.

@@ -1,6 +1,5 @@
 import './message.css';
-import { APP_CONTAINER } from '../../config';
-import { create } from '../../libs/dom';
+import { addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
 
 
@@ -12,10 +11,9 @@ class Message {
    * Create the message popup.
    */
   constructor() {
-    this.element = create('div', { class: 'message hidden' });
-    APP_CONTAINER.appendChild(this.element);
+    this.el = document.getElementById('message');
 
-    listen(this.element, 'click', this.hide);
+    listen(this.el, 'click', this.hide);
   }
 
 
@@ -25,9 +23,9 @@ class Message {
    * @param {string} message The message.
    */
   show = (type, message) => {
-    this.element.classList.remove('hidden');
-    this.element.dataset.type = type;
-    this.element.innerHTML = message;
+    removeClass(this.el, 'hidden');
+    this.el.dataset.type = type;
+    this.el.innerHTML = message.replace(/\[/g, '<b>').replace(/\]/g, '</b>');
   }
 
 
@@ -35,10 +33,10 @@ class Message {
    * Hide the message popup when clicked.
    */
   hide = () => {
-    this.element.classList.add('hidden');
+    addClass(this.el, 'hidden');
     setTimeout(() => {
-      this.element.dataset.type = '';
-      this.element.innerHTML = '';
+      this.el.dataset.type = '';
+      this.el.innerHTML = '';
     }, 200);
   }
 

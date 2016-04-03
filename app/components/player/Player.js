@@ -11,10 +11,11 @@ export default class Player {
     this.id = id;
     this.name = '';
 
-    sessionSet('ttr_username', Date.now());
-
     this.reset();
     this.getNameFromStorage();
+
+    PubSub.sub('Menu.changeUsername', this.setName);
+    PubSub.sub('Lobby.changeUsername', this.setName);
   }
 
 
@@ -38,38 +39,33 @@ export default class Player {
   getNameFromStorage() {
     const name = sessionGet('ttr_username');
     if (name) {
-      this.changeName(name, false);
+      this.setName(name, false);
     }
   }
 
 
-  changeName = (name, message = true) => {
+  setName = (name, message = true) => {
     if (name === '') return;
-    IO.emit('Player.changeName', { name, id: this.id })
+    IO.emit('Player.setName', { name, id: this.id })
       .then(() => {
         this.name = name;
         sessionSet('ttr_username', name);
         if (message) {
           Message.success('Username changed!');
         }
-        console.log(this.simplify());
+        PubSub.pub('Player.setName', this.simplify());
       })
       .catch(response => {
         this.name = '';
         sessionRemove('ttr_username');
         Message.error(response.message);
+        PubSub.pub('Player.setName', this.simplify());
       });
-    PubSub.pub('Player.changeName', this.simplify());
   }
 
 
-  startGame(color) {
+  setColor(color) {
     this.color = color;
-  }
-
-
-  endGame() {
-    this.reset();
   }
 
 }
