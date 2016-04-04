@@ -22,7 +22,6 @@ export default class Lobby {
     this.el.roomInput = qs('input[type="text"]', this.el.roomForm);
     this.el.roomSubmit = qs('input[type="submit"]', this.el.roomForm);
 
-    IO.io.on('Rooms.getList', this.renderUpdateRooms);
     PubSub.sub('Player.setName', this.renderUpdateUser);
     PubSub.sub('Menu.leaveRoom', this.leaveRoom);
     listen(this.el.usernameSubmit, 'click', this.changeUsername);
@@ -30,8 +29,6 @@ export default class Lobby {
     delegate('.join', this.el.roomsList, 'click', this.joinRoom);
     delegate('.leave', this.el.roomsList, 'click', this.leaveRoom);
     delegate('.start', this.el.roomsList, 'click', this.startGame);
-
-    IO.emit('Lobby.getRoomsList', {});
   }
 
 

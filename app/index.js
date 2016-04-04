@@ -6,9 +6,11 @@ import Player from './components/player/Player';
 
 
 IO.connect().then(clientId => {
+  // Initialize the current player
   Player.init(clientId);
 
   // Initialize the basic layout components
   new Menu();
-  new Lobby();
+  const lobby = new Lobby();
+  lobby.show();
 });

@@ -57,15 +57,16 @@
     }
     input[type='text'] {
       border: none;
+      border-bottom: 2px solid #90a4ae;
       width: 120px;
-      padding: 3px;
+      padding: 3px 3px 1px 3px;
     }
     input[type='submit'] {
       border: none;
       width: 55px;
       padding: 3px;
       background-color: #b0bec5;
-      color: #37474f;
+      color: #fff;
       cursor: pointer;
       &:hover,
       &:focus {

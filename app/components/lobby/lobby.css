@@ -34,6 +34,7 @@
     background-color: #90a4ae;
     color: #fff;
     font-size: 18px;
+    cursor: pointer;
     &:hover,
     &:focus {
       background-color: #37474f;
@@ -54,6 +55,13 @@
     th {
       padding: 5px;
       border: 1px solid #90a4ae;
+    }
+    .room-name {
+      font-weight: 700;
+    }
+    .room-status {
+      font-style: italic;
+      text-transform: capitalize;
     }
 
     a {
