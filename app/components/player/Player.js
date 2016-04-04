@@ -1,21 +1,16 @@
+import uuid from 'node-uuid';
 import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import PubSub from '../communications/PubSub';
 
 
-export default class Player {
+class Player {
 
 
-  constructor(id) {
-    this.id = id;
+  constructor() {
+    this.id = '';
     this.name = '';
-
-    this.reset();
-    this.getNameFromStorage();
-
-    PubSub.sub('Menu.changeUsername', this.setName);
-    PubSub.sub('Lobby.changeUsername', this.setName);
   }
 
 
@@ -24,6 +19,13 @@ export default class Player {
       id: this.id,
       name: this.name,
     };
+  }
+
+
+  init(id) {
+    this.id = id;
+    this.reset();
+    this.getNameFromStorage();
   }
 
 
@@ -69,3 +71,6 @@ export default class Player {
   }
 
 }
+
+
+export default new Player();
