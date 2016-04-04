@@ -37,6 +37,9 @@
     &:hover .submenu {
       display: block;
     }
+    &:hover .submenu.hidden {
+      display: none;
+    }
   }
 
   .submenu {

@@ -3,9 +3,11 @@ import socket from 'socket.io-client';
 
 class IO {
 
+
   constructor() {
     this.io = socket.connect(window.location.host, { reconnect: true });
   }
+
 
   connect() {
     return new Promise(resolve => {
@@ -14,6 +16,7 @@ class IO {
       });
     });
   }
+
 
   emit(name, data) {
     return new Promise((resolve, reject) => {
