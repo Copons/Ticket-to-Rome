@@ -56,12 +56,16 @@
       padding: 5px;
       border: 1px solid #90a4ae;
     }
+
     .room-name {
       font-weight: 700;
     }
     .room-status {
       font-style: italic;
       text-transform: capitalize;
+    }
+    .room-players span {
+      display: block;
     }
 
     a {

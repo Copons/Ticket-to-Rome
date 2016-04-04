@@ -1,4 +1,3 @@
-import uuid from 'node-uuid';
 import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';

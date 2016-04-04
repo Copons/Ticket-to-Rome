@@ -4,7 +4,7 @@ const Response = require('../communications/Response');
 const Room = require('./Room');
 
 
-class RoomsList {
+class Rooms {
 
 
   constructor() {
@@ -69,6 +69,10 @@ class RoomsList {
       return Response.error(`Room [${roomToLeave.name}] does not exist.`);
     }
 
+    if (room.status === 'playing') {
+      room.status = 'open';
+    }
+
     if (player.id.includes(room.owner.id)) {
       this.list = this.list.filter(r => r.id !== room.id);
     } else {
@@ -79,7 +83,7 @@ class RoomsList {
   }
 
 
-  startGame(roomToStart) {
+  startGame(roomToStart, games) {
     const room = this.list.find(r => r.id === roomToStart.id);
     if (!room) {
       return Response.error(`Room [${roomToStart.name}] does not exist.`);
@@ -88,10 +92,10 @@ class RoomsList {
     }
 
     room.status = 'playing';
-    return Response.success(`Starting game in room [${room.name}].`, room);
+    return games.start(room);
   }
 
 }
 
 
-module.exports = RoomsList;
+module.exports = Rooms;

@@ -110,6 +110,7 @@ export default class Lobby {
     if (this.el.usernameInput.value !== '') {
       Player.setName(this.el.usernameInput.value);
       this.el.usernameInput.value = '';
+      IO.emit('Lobby.getRoomsList', {});
     }
   }
 

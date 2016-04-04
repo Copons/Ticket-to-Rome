@@ -22,6 +22,7 @@ export default class Menu {
     this.el.roomSubmenu = qs('.submenu', this.el.room);
 
     IO.io.on('Game.start', this.renderUpdateStartGame);
+    IO.io.on('Game.closed', this.renderUpdateClosedGame);
     PubSub.sub('Player.setName', this.renderUpdateUser);
     listen(this.el.usernameSubmit, 'click', this.changeUsername);
     delegate('.leave', this.el.room, 'click', this.leaveRoom);
@@ -39,7 +40,7 @@ export default class Menu {
 
 
   renderUpdateStartGame = response => {
-    const room = response.body;
+    const room = response.body.room;
     this.el.roomName.textContent = room.name;
     this.el.roomLeave.dataset.roomId = room.id;
     this.el.roomLeave.dataset.roomName = room.name;
@@ -60,6 +61,12 @@ export default class Menu {
     this.el.roomSubmenu.innerHTML = players;
     removeClass(this.el.room, 'hidden');
     addClass(this.el.usernameSubmenu, 'hidden');
+  }
+
+
+  renderUpdateClosedGame = () => {
+    addClass(this.el.room, 'hidden');
+    removeClass(this.el.usernameSubmenu, 'hidden');
   }
 
 

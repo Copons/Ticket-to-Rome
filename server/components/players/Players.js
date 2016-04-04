@@ -3,7 +3,7 @@ const Response = require('../communications/Response');
 const Player = require('./Player');
 
 
-class PlayersList {
+class Players {
 
 
   constructor() {
@@ -41,4 +41,4 @@ class PlayersList {
 }
 
 
-module.exports = PlayersList;
+module.exports = Players;
