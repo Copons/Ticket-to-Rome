@@ -1,6 +1,7 @@
 import './message.css';
-import { addClass, removeClass } from '../../libs/dom';
-import { listen } from '../../libs/events';
+import { create, addClass } from '../../libs/dom';
+import { delegate } from '../../libs/events';
+import IO from './IO';
 
 
 /** Class representing the messages popup. */
@@ -11,9 +12,13 @@ class Message {
    * Create the message popup.
    */
   constructor() {
-    this.el = document.getElementById('message');
+    this.el = document.getElementById('messages');
 
-    listen(this.el, 'click', this.hide);
+    // Listen to generic events NOT listened anywhere else
+    IO.io.on('Message.Player.joinRoom', this.success);
+    IO.io.on('Message.Player.leaveRoom', this.error);
+
+    delegate('.message', this.el, 'click', this.hide);
   }
 
 
@@ -23,21 +28,31 @@ class Message {
    * @param {string} message The message.
    */
   show = (type, message) => {
-    removeClass(this.el, 'hidden');
-    this.el.dataset.type = type;
-    this.el.innerHTML = message.replace(/\[/g, '<b>').replace(/\]/g, '</b>');
+    const formattedMessage = message.replace(/\[/g, '<b>').replace(/\]/g, '</b>');
+    const newMessage = create('div', {
+      class: 'message',
+      'data-type': type,
+    });
+    newMessage.insertAdjacentHTML('afterbegin', formattedMessage);
+    this.el.appendChild(newMessage);
+    setTimeout(() => {
+      this.hide({ target: newMessage });
+    }, 3000);
   }
 
 
   /**
    * Hide the message popup when clicked.
    */
-  hide = () => {
-    addClass(this.el, 'hidden');
+  hide = e => {
+    addClass(e.target, 'hidden');
     setTimeout(() => {
-      this.el.dataset.type = '';
-      this.el.innerHTML = '';
-    }, 200);
+      try {
+        this.el.removeChild(e.target);
+      } catch (err) {
+        // Don't do anything, who cares!
+      }
+    }, 500);
   }
 
 

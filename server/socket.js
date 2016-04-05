@@ -37,6 +37,9 @@ module.exports.listen = server => {
 
     client.on('Lobby.joinRoom', (data, callback) => {
       const response = rooms.join(data.room, data.player, client);
+      if (response.type === 'success') {
+        io.in(data.room.id).broadcast('Message.Player.joinRoom', response.message);
+      }
       io.sockets.emit('Rooms.getList', rooms.emitList());
       callback(response);
     });
@@ -44,7 +47,9 @@ module.exports.listen = server => {
     client.on('Lobby.leaveRoom', (data, callback) => {
       const response = rooms.leave(data.room, data.player, client);
       io.sockets.emit('Rooms.getList', rooms.emitList());
-
+      if (response.type === 'success') {
+        io.in(data.room.id).emit('Message.Player.leaveRoom', response.message);
+      }
       const gameClosed = games.closeOnLeaving(client);
       if (gameClosed.body) {
         io.in(gameClosed.body.id).emit('Game.closed', gameClosed);
