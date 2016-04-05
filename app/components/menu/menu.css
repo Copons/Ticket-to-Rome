@@ -5,8 +5,8 @@
   z-index: 10;
   display: flex;
   flex-flow: row;
-  justify-content: left;
-  align-items: top;
+  justify-content: flex-start;
+  align-items: flex-start;
   width: 100%;
   height: 30px;
   background-color: #37474f;
@@ -57,9 +57,13 @@
     }
     input[type='text'] {
       border: none;
-      border-bottom: 2px solid #90a4ae;
+      border-bottom: 2px solid #b0bec5;
       width: 120px;
       padding: 3px 3px 1px 3px;
+      &:hover,
+      &:focus {
+        border-bottom-color: #90a4ae;
+      }
     }
     input[type='submit'] {
       border: none;

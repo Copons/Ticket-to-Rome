@@ -1,0 +1,73 @@
+#game {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #fff;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+#info {
+  position: fixed;
+  bottom: 150px;
+  left: 0;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  height: 30px;
+  background-color: #b0bec5;
+  color: #fff;
+  font-size: 12px;
+  line-height: 30px;
+
+  .turn,
+  .players,
+  .player {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0 10px;
+  }
+
+  .turn {
+    .count {
+      margin-left: 5px;
+      font-weight: 700;
+    }
+  }
+
+  .players {
+    padding: 0;
+  }
+
+  .player {
+    > div {
+      padding-right: 5px;
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+    &.active {
+      background-color: #90a4ae;
+    }
+
+    .name {
+      font-weight: 700;
+    }
+    .icon {
+      display: inline-block;
+      vertical-align: text-top;
+      width: 10px;
+      height: 14px;
+      border-radius: 2px;
+      background: #37474f;
+    }
+  }
+}
