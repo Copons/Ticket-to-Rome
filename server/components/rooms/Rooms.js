@@ -12,13 +12,8 @@ class Rooms {
   }
 
 
-  getList() {
-    return this.list;
-  }
-
-
   emitList() {
-    return Response.success('Rooms.emitList', this.getList());
+    return Response.success('Rooms.emitList', this.list);
   }
 
 

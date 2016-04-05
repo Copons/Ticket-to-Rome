@@ -1,4 +1,5 @@
 'use strict';
+const Deck = require('../deck/Deck');
 
 
 class Game {
@@ -11,6 +12,7 @@ class Game {
     this.activePlayer = this.room.players[
       Math.floor(Math.random() * this.room.players.length)
     ];
+    this.deck = new Deck();
   }
 
 }

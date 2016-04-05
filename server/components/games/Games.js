@@ -12,13 +12,13 @@ class Games {
   }
 
 
-  getList() {
-    return this.list;
+  game(id) {
+    return this.list.find(g => g.id === id);
   }
 
 
   start(room) {
-    if (this.list.find(g => g.id === room.id)) {
+    if (this.game(room.id)) {
       return Response.error(`A game in room [${room.name}] is already running.`);
     }
 

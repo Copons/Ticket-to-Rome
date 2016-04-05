@@ -13,6 +13,8 @@ export default class Game {
   constructor() {
     this.room = {};
     this.turn = 0;
+    this.activePlayer = {};
+    this.deck = [];
 
     this.el = {
       game: document.getElementById('game'),
@@ -31,12 +33,12 @@ export default class Game {
     this.room = response.body.room;
     this.turn = 0;
     this.activePlayer = response.body.activePlayer;
+    this.deck = response.body.deck.cards;
     this.render();
   }
 
 
   close = response => {
-    console.log(response);
     addClass(this.el.game, 'hidden');
     this.room = {};
     this.turn = 0;
