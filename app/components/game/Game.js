@@ -1,11 +1,11 @@
 import './game.css';
 //import { RULES } from '../../config';
-import { qs, addClass, removeClass } from '../../libs/dom';
+import { qs, qsa, addClass, removeClass } from '../../libs/dom';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import PubSub from '../communications/PubSub';
 import Deck from '../deck/Deck';
-//import Player from '../player/Player';
+import Player from '../player/Player';
 
 
 export default class Game {
@@ -50,7 +50,7 @@ export default class Game {
     this.el.turn.textContent = this.turn;
     for (const player of this.room.players) {
       this.el.players.insertAdjacentHTML('beforeend', `
-        <div class="player">
+        <div class="player" data-player-id="${player.id}">
           <div class="name ${player.color}">${player.name}</div>
           <div class="pieces">
             <span class="count"></span>
@@ -68,6 +68,22 @@ export default class Game {
       `);
     }
     removeClass(this.el.game, 'hidden');
+    this.toggleTurnActivation();
+  }
+
+
+  toggleTurnActivation = () => {
+    const players = qsa('.player', this.el.players);
+    console.log(players);
+    [...players].forEach(player => {
+      removeClass(player, 'active');
+    });
+    if (Player.id === this.activePlayer.id) {
+      addClass(this.el.game, 'active');
+      addClass(qs(`[data-player-id="${Player.id}"]`), 'active');
+    } else {
+      removeClass(this.el.game, 'active');
+    }
   }
 
 }

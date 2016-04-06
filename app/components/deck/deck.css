@@ -6,11 +6,22 @@
   height: 65px;
   border-radius: 5px;
   border: 3px solid #795548;
-  background-color: #8D6E63;
-  cursor: pointer;
+  background-color: #8d6e63;
 
   span {
-    color: #BCAAA4;
+    color: #bcaaa4;
     font-weight: 700;
+    user-select: none;
+  }
+
+  &.empty {
+    cursor: not-allowed;
+  }
+
+
+  @at-root {
+    #game.active #deck {
+      cursor: pointer;
+    }
   }
 }
