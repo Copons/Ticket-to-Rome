@@ -8,6 +8,7 @@ class Player {
     this.client = client;
     this.id = player.id;
     this.name = player.name;
+    this.color = '';
   }
 
 
@@ -15,6 +16,7 @@ class Player {
     return {
       id: this.id,
       name: this.name,
+      color: this.color,
     };
   }
 

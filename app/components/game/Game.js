@@ -1,10 +1,10 @@
 import './game.css';
 //import { RULES } from '../../config';
-//import { random } from '../../libs/math';
 import { qs, addClass, removeClass } from '../../libs/dom';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import PubSub from '../communications/PubSub';
+import Deck from '../deck/Deck';
 //import Player from '../player/Player';
 
 
@@ -33,7 +33,7 @@ export default class Game {
     this.room = response.body.room;
     this.turn = 0;
     this.activePlayer = response.body.activePlayer;
-    this.deck = response.body.deck.cards;
+    this.deck = new Deck(response.body.deck.cards.length);
     this.render();
   }
 
@@ -51,7 +51,7 @@ export default class Game {
     for (const player of this.room.players) {
       this.el.players.insertAdjacentHTML('beforeend', `
         <div class="player">
-          <div class="name">${player.name}</div>
+          <div class="name ${player.color}">${player.name}</div>
           <div class="pieces">
             <span class="count"></span>
             <span class="icon"></span>

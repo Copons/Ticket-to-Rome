@@ -1,0 +1,16 @@
+#deck {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 65px;
+  border-radius: 5px;
+  border: 3px solid #795548;
+  background-color: #8D6E63;
+  cursor: pointer;
+
+  span {
+    color: #BCAAA4;
+    font-weight: 700;
+  }
+}
