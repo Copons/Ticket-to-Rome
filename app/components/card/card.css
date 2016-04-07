@@ -1,0 +1,49 @@
+@import '../../assets/_colors.css';
+
+.card {
+  width: 65px;
+  height: 100px;
+  border: 1px solid #000;
+  border-radius: 5px;
+
+  &.stacked {
+    margin-left: -60px;
+  }
+
+  &.red {
+    background: $red;
+  }
+  &.orange {
+    background: $orange;
+  }
+  &.yellow {
+    background: $yellow;
+  }
+  &.green {
+    background: $green;
+  }
+  &.blue {
+    background: $blue;
+  }
+  &.purple {
+    background: $purple;
+  }
+  &.black {
+    background: $black;
+  }
+  &.white {
+    background: $white;
+  }
+  &.wild {
+    background: linear-gradient(122deg,
+      $white 0%, $white 12.5%,
+      $yellow 12.5%, $yellow 25%,
+      $orange 25%, $orange 37.5%,
+      $red 37.5%, $red 50%,
+      $purple 50%, $purple 62.5%,
+      $blue 62.5%, $blue 75%,
+      $green 75%, $green 87.5%,
+      $black 87.5%, $black 100%
+    );
+  }
+}

@@ -2,6 +2,7 @@ import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import PubSub from '../communications/PubSub';
+import Hand from '../hand/Hand';
 
 
 class Player {
@@ -28,11 +29,16 @@ class Player {
   }
 
 
+  initHand() {
+    this.hand = new Hand();
+  }
+
+
   reset() {
     this.color = '';
     this.pieces = 0;
     this.active = false;
-    this.hand = {};
+    this.hand = [];
     this.builtRoutes = [];
   }
 
@@ -67,6 +73,11 @@ class Player {
 
   setColor(color) {
     this.color = color;
+  }
+
+
+  setActive(active) {
+    this.active = active;
   }
 
 }

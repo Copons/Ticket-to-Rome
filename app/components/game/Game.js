@@ -33,7 +33,10 @@ export default class Game {
     this.room = response.body.room;
     this.turn = 0;
     this.activePlayer = response.body.activePlayer;
-    this.deck = new Deck(response.body.deck.cards.length);
+    this.deck = new Deck(this.room.id, response.body.deck.cards.length);
+
+    Player.initHand();
+
     this.render();
   }
 
@@ -74,14 +77,18 @@ export default class Game {
 
   toggleTurnActivation = () => {
     const players = qsa('.player', this.el.players);
-    console.log(players);
     [...players].forEach(player => {
-      removeClass(player, 'active');
+      if (player.dataset.playerId === this.activePlayer.id) {
+        addClass(player, 'active');
+      } else {
+        removeClass(player, 'active');
+      }
     });
     if (Player.id === this.activePlayer.id) {
+      Player.setActive(true);
       addClass(this.el.game, 'active');
-      addClass(qs(`[data-player-id="${Player.id}"]`), 'active');
     } else {
+      Player.setActive(false);
       removeClass(this.el.game, 'active');
     }
   }

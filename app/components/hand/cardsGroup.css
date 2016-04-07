@@ -1,0 +1,14 @@
+#hand .group {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin: 2.5px;
+  border-radius: 5px;
+  box-shadow: 0 0.15em 0.3em 0 rgba(0, 0, 0, 0.16),
+              0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
+
+  &.empty {
+    margin: 0;
+  }
+}

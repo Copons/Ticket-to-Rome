@@ -68,6 +68,18 @@ module.exports.listen = server => {
       callback(response);
     });
 
+    client.on('Deck.draw', (game, callback) => {
+      const response = games.game(game.id).deck.draw();
+      if (response.type === 'success') {
+        io.in(game.id).emit('Deck.draw', {
+          type: 'success',
+          message: 'A card was drawn.',
+          body: {},
+        });
+      }
+      callback(response);
+    });
+
 
     // DISCONNECT
 

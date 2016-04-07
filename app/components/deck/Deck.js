@@ -1,15 +1,18 @@
 import './deck.css';
 import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
-//import IO from '../communications/IO';
-//import Message from '../communications/Message';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
 //import PubSub from '../communications/PubSub';
+import Card from '../card/Card';
+import Player from '../player/Player';
 
 
 export default class Deck {
 
 
-  constructor(cardsCount) {
+  constructor(gameId, cardsCount) {
+    this.game = gameId;
     this.counter = cardsCount;
 
     this.el = { deck: document.getElementById('deck') };
@@ -32,8 +35,21 @@ export default class Deck {
 
 
   draw = () => {
-    if (this.counter > 1) {
-      this.update(this.counter - 1);
+    if (Player.active && this.counter > 1) {
+      Player.setActive(false);
+      IO.emit('Deck.draw', { id: this.game })
+        .then(response => {
+          this.update(this.counter - 1);
+          console.log(response.body);
+          Player.hand.addCard(new Card(response.body));
+          console.log(Player.hand);
+          Message.success(response.message);
+          Player.setActive(true);
+        })
+        .catch(response => {
+          Message.error(response.error);
+          Player.setActive(true);
+        });
     }
   }
 
