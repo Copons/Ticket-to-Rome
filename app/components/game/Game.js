@@ -8,7 +8,8 @@ import Deck from '../deck/Deck';
 import Player from '../player/Player';
 
 
-export default class Game {
+class Game {
+
 
   constructor() {
     this.room = {};
@@ -22,7 +23,10 @@ export default class Game {
     };
     this.el.turn = qs('.turn .count', this.el.info);
     this.el.players = qs('.players', this.el.info);
+  }
 
+
+  listen() {
     IO.io.on('Game.start', this.start);
     IO.io.on('Game.closed', this.close);
     PubSub.sub('Menu.leaveRoom', this.close);
@@ -30,10 +34,11 @@ export default class Game {
 
 
   start = response => {
+    console.log(response);
     this.room = response.body.room;
     this.turn = 0;
     this.activePlayer = response.body.activePlayer;
-    this.deck = new Deck(this.room.id, response.body.deck.cards.length);
+    this.deck = new Deck(response.body.deck.cards.length);
 
     Player.initHand();
 
@@ -51,6 +56,10 @@ export default class Game {
 
   render = () => {
     this.el.turn.textContent = this.turn;
+
+    while (this.el.players.firstChild) {
+      this.el.players.removeChild(this.el.players.firstChild);
+    }
     for (const player of this.room.players) {
       this.el.players.insertAdjacentHTML('beforeend', `
         <div class="player" data-player-id="${player.id}">
@@ -71,6 +80,7 @@ export default class Game {
       `);
     }
     removeClass(this.el.game, 'hidden');
+
     this.toggleTurnActivation();
   }
 
@@ -94,3 +104,6 @@ export default class Game {
   }
 
 }
+
+
+export default new Game();

@@ -5,14 +5,14 @@ import IO from '../communications/IO';
 import Message from '../communications/Message';
 //import PubSub from '../communications/PubSub';
 import Card from '../card/Card';
+import Game from '../game/Game';
 import Player from '../player/Player';
 
 
 export default class Deck {
 
 
-  constructor(gameId, cardsCount) {
-    this.game = gameId;
+  constructor(cardsCount) {
     this.counter = cardsCount;
 
     this.el = { deck: document.getElementById('deck') };
@@ -37,7 +37,7 @@ export default class Deck {
   draw = () => {
     if (Player.active && this.counter > 1) {
       Player.setActive(false);
-      IO.emit('Deck.draw', { id: this.game })
+      IO.emit('Deck.draw', { id: Game.room.id })
         .then(response => {
           this.update(this.counter - 1);
           console.log(response.body);

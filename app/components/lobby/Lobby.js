@@ -9,7 +9,7 @@ import PubSub from '../communications/PubSub';
 import Player from '../player/Player';
 
 
-export default class Lobby {
+class Lobby {
 
   constructor() {
     this.el = { lobby: document.getElementById('lobby') };
@@ -21,7 +21,10 @@ export default class Lobby {
     this.el.roomForm = qs('.lobby-room', this.el.lobby);
     this.el.roomInput = qs('input[type="text"]', this.el.roomForm);
     this.el.roomSubmit = qs('input[type="submit"]', this.el.roomForm);
+  }
 
+
+  listen() {
     PubSub.sub('Player.setName', this.renderUpdateUser);
     PubSub.sub('Menu.leaveRoom', this.leaveRoom);
     listen(this.el.usernameSubmit, 'click', this.changeUsername);
@@ -210,3 +213,6 @@ export default class Lobby {
   }
 
 }
+
+
+export default new Lobby();

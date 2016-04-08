@@ -6,7 +6,7 @@ import PubSub from '../communications/PubSub';
 import Player from '../player/Player';
 
 
-export default class Menu {
+class Menu {
 
 
   constructor() {
@@ -20,7 +20,10 @@ export default class Menu {
     this.el.roomName = qs('.menu-room > span', this.el.menu);
     this.el.roomLeave = qs('.leave', this.el.room);
     this.el.roomSubmenu = qs('.submenu', this.el.room);
+  }
 
+
+  listen() {
     IO.io.on('Game.start', this.renderUpdateStartGame);
     IO.io.on('Game.closed', this.renderUpdateClosedGame);
     PubSub.sub('Player.setName', this.renderUpdateUser);
@@ -88,3 +91,5 @@ export default class Menu {
   }
 
 }
+
+export default new Menu();
