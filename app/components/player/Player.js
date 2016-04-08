@@ -1,8 +1,9 @@
 import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
-import PubSub from '../communications/PubSub';
 import Hand from '../hand/Hand';
+import Lobby from '../lobby/Lobby';
+import Menu from '../menu/Menu';
 
 
 class Player {
@@ -60,13 +61,15 @@ class Player {
         if (message) {
           Message.success('Username changed!');
         }
-        PubSub.pub('Player.setName', this.simplify());
+        Menu.renderUpdateUser(this.name);
+        Lobby.renderUpdateUser(this.name);
       })
       .catch(response => {
         this.name = '';
         sessionRemove('ttr_username');
         Message.error(response.message);
-        PubSub.pub('Player.setName', this.simplify());
+        Menu.renderUpdateUser(this.name);
+        Lobby.renderUpdateUser(this.name);
       });
   }
 

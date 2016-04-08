@@ -5,7 +5,7 @@ import { qs, addClass, removeClass, hasClass } from '../../libs/dom';
 import { listen, delegate } from '../../libs/events';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
-import PubSub from '../communications/PubSub';
+import Game from '../game/Game';
 import Player from '../player/Player';
 
 
@@ -25,8 +25,6 @@ class Lobby {
 
 
   listen() {
-    PubSub.sub('Player.setName', this.renderUpdateUser);
-    PubSub.sub('Menu.leaveRoom', this.leaveRoom);
     listen(this.el.usernameSubmit, 'click', this.changeUsername);
     listen(this.el.roomSubmit, 'click', this.createRoom);
     delegate('.join', this.el.roomsList, 'click', this.joinRoom);
@@ -35,8 +33,8 @@ class Lobby {
   }
 
 
-  renderUpdateUser = user => {
-    if (user.name === '') {
+  renderUpdateUser(username) {
+    if (username === '') {
       removeClass(this.el.usernameForm, 'hidden');
       addClass(this.el.rooms, 'hidden');
       addClass(this.el.roomForm, 'hidden');
@@ -174,6 +172,7 @@ class Lobby {
         if (hasClass(this.el.lobby, 'hidden')) {
           this.show();
         }
+        Game.close(response);
         Message.success(response.message);
       })
       .catch(response => {

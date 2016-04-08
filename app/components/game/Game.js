@@ -1,9 +1,7 @@
 import './game.css';
-//import { RULES } from '../../config';
 import { qs, qsa, addClass, removeClass } from '../../libs/dom';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
-import PubSub from '../communications/PubSub';
 import Deck from '../deck/Deck';
 import Player from '../player/Player';
 
@@ -29,12 +27,10 @@ class Game {
   listen() {
     IO.io.on('Game.start', this.start);
     IO.io.on('Game.closed', this.close);
-    PubSub.sub('Menu.leaveRoom', this.close);
   }
 
 
   start = response => {
-    console.log(response);
     this.room = response.body.room;
     this.turn = 0;
     this.activePlayer = response.body.activePlayer;

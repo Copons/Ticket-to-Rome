@@ -3,7 +3,6 @@ import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
-//import PubSub from '../communications/PubSub';
 import Card from '../card/Card';
 import Game from '../game/Game';
 import Player from '../player/Player';
@@ -40,9 +39,7 @@ export default class Deck {
       IO.emit('Deck.draw', { id: Game.room.id })
         .then(response => {
           this.update(this.counter - 1);
-          console.log(response.body);
           Player.hand.addCard(new Card(response.body));
-          console.log(Player.hand);
           Message.success(response.message);
           Player.setActive(true);
         })

@@ -2,7 +2,7 @@ import './menu.css';
 import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen, delegate } from '../../libs/events';
 import IO from '../communications/IO';
-import PubSub from '../communications/PubSub';
+import Lobby from '../lobby/Lobby';
 import Player from '../player/Player';
 
 
@@ -26,15 +26,14 @@ class Menu {
   listen() {
     IO.io.on('Game.start', this.renderUpdateStartGame);
     IO.io.on('Game.closed', this.renderUpdateClosedGame);
-    PubSub.sub('Player.setName', this.renderUpdateUser);
     listen(this.el.usernameSubmit, 'click', this.changeUsername);
     delegate('.leave', this.el.room, 'click', this.leaveRoom);
   }
 
 
-  renderUpdateUser = user => {
-    this.el.usernameName.textContent = user.name;
-    if (user.name === '') {
+  renderUpdateUser(username) {
+    this.el.usernameName.textContent = username;
+    if (username === '') {
       addClass(this.el.username, 'hidden');
     } else {
       removeClass(this.el.username, 'hidden');
@@ -84,7 +83,7 @@ class Menu {
 
   leaveRoom = e => {
     e.preventDefault();
-    PubSub.pub('Menu.leaveRoom', e);
+    Lobby.leaveRoom(e);
     this.el.roomSubmenu.innerHTML = '';
     addClass(this.el.room, 'hidden');
     removeClass(this.el.usernameSubmenu, 'hidden');
