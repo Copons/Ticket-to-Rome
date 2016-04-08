@@ -12,6 +12,8 @@ class Player {
   constructor() {
     this.id = '';
     this.name = '';
+
+    this.reset();
   }
 
 
@@ -25,7 +27,6 @@ class Player {
 
   init(id) {
     this.id = id;
-    this.reset();
     this.getNameFromStorage();
   }
 

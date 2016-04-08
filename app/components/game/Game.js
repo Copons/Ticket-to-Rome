@@ -30,6 +30,15 @@ class Game {
   }
 
 
+  simplify() {
+    return {
+      id: this.room.id,
+      turn: this.turn,
+      activePlayer: this.activePlayer,
+    };
+  }
+
+
   start = response => {
     this.room = response.body.room;
     this.turn = 0;

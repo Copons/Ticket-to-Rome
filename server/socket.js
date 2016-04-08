@@ -38,7 +38,7 @@ module.exports.listen = server => {
     client.on('Lobby.joinRoom', (data, callback) => {
       const response = rooms.join(data.room, data.player, client);
       if (response.type === 'success') {
-        io.in(data.room.id).broadcast('Message.Player.joinRoom', response.message);
+        client.broadcast.in(data.room.id).emit('Message.Player.joinRoom', response.message);
       }
       io.sockets.emit('Rooms.getList', rooms.emitList());
       callback(response);
@@ -71,11 +71,13 @@ module.exports.listen = server => {
     client.on('Deck.draw', (game, callback) => {
       const response = games.game(game.id).deck.draw();
       if (response.type === 'success') {
-        io.in(game.id).emit('Deck.draw', {
-          type: 'success',
-          message: 'A card was drawn.',
-          body: {},
-        });
+        client.broadcast.in(game.id).emit('Message.Deck.draw',
+          `Player [${game.activePlayer.name}] drew a card.`
+        );
+        client.broadcast.in(game.id).emit(
+          'Deck.count',
+          games.game(game.id).deck.cards.length
+        );
       }
       callback(response);
     });

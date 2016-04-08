@@ -23,11 +23,12 @@ export default class Deck {
 
 
   listen() {
+    IO.io.on('Deck.count', this.update);
     listen(this.el.deck, 'click', this.draw);
   }
 
 
-  update(cardsCount) {
+  update = cardsCount => {
     this.counter = cardsCount;
     this.el.counter.textContent = this.counter;
     if (this.counter) {
@@ -38,10 +39,10 @@ export default class Deck {
   }
 
 
-  draw() {
+  draw = () => {
     if (Player.active && this.counter > 1) {
       Player.setActive(false);
-      IO.emit('Deck.draw', { id: Game.room.id })
+      IO.emit('Deck.draw', Game.simplify())
         .then(response => {
           this.update(this.counter - 1);
           Player.hand.addCard(new Card(response.body));
