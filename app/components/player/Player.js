@@ -52,7 +52,7 @@ class Player {
   }
 
 
-  setName = (name, message = true) => {
+  setName(name, message = true) {
     if (name === '') return;
     IO.emit('Player.setName', { name, id: this.id })
       .then(() => {

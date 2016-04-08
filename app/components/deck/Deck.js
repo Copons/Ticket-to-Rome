@@ -18,11 +18,16 @@ export default class Deck {
     this.el.counter = qs('span', this.el.deck);
     this.el.counter.textContent = this.counter;
 
+    this.listen();
+  }
+
+
+  listen() {
     listen(this.el.deck, 'click', this.draw);
   }
 
 
-  update = cardsCount => {
+  update(cardsCount) {
     this.counter = cardsCount;
     this.el.counter.textContent = this.counter;
     if (this.counter) {
@@ -33,7 +38,7 @@ export default class Deck {
   }
 
 
-  draw = () => {
+  draw() {
     if (Player.active && this.counter > 1) {
       Player.setActive(false);
       IO.emit('Deck.draw', { id: Game.room.id })

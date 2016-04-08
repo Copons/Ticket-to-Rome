@@ -173,7 +173,9 @@ class Lobby {
           this.show();
         }
         Game.close(response);
-        Message.success(response.message);
+        if (Object.keys(Game.room).length) {
+          Message.success(response.message);
+        }
       })
       .catch(response => {
         Message.error(response.message);

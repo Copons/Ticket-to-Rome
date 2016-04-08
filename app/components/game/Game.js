@@ -43,14 +43,16 @@ class Game {
 
 
   close = response => {
+    if (Object.keys(this.room).length) {
+      Message.error(response.message);
+    }
     addClass(this.el.game, 'hidden');
     this.room = {};
     this.turn = 0;
-    Message.error(response.message);
   }
 
 
-  render = () => {
+  render() {
     this.el.turn.textContent = this.turn;
 
     while (this.el.players.firstChild) {
@@ -81,7 +83,7 @@ class Game {
   }
 
 
-  toggleTurnActivation = () => {
+  toggleTurnActivation() {
     const players = qsa('.player', this.el.players);
     [...players].forEach(player => {
       if (player.dataset.playerId === this.activePlayer.id) {

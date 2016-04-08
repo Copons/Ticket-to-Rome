@@ -13,6 +13,7 @@ export default class CardsGroup {
       hand: document.getElementById('hand'),
       group: create('div', { class: `group ${this.type} empty` }),
     };
+
     this.render();
   }
 

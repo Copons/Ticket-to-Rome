@@ -13,12 +13,16 @@ class Message {
    */
   constructor() {
     this.el = document.getElementById('messages');
+    this.listen();
+  }
+
+
+  listen() {
+    delegate('.message', this.el, 'click', this.hide);
 
     // Listen to generic events NOT listened anywhere else
     IO.io.on('Message.Player.joinRoom', this.success);
     IO.io.on('Message.Player.leaveRoom', this.error);
-
-    delegate('.message', this.el, 'click', this.hide);
   }
 
 
@@ -27,7 +31,7 @@ class Message {
    * @param {string} type    The type of message.
    * @param {string} message The message.
    */
-  show = (type, message) => {
+  show(type, message) {
     const formattedMessage = message.replace(/\[/g, '<b>').replace(/\]/g, '</b>');
     const newMessage = create('div', {
       class: 'message',
