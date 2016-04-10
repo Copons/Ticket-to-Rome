@@ -9,6 +9,9 @@ class Player {
     this.id = player.id;
     this.name = player.name;
     this.color = '';
+    this.cards = 0;
+    this.pieces = 0;
+    this.destinations = 0;
   }
 
 
@@ -17,6 +20,9 @@ class Player {
       id: this.id,
       name: this.name,
       color: this.color,
+      cards: this.cards,
+      pieces: this.pieces,
+      destinations: this.destinations,
     };
   }
 

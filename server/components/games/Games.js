@@ -17,6 +17,17 @@ class Games {
   }
 
 
+  info(id) {
+    const game = this.game(id);
+    return {
+      active: game.activePlayer,
+      deck: game.deck.length,
+      players: game.room.players,
+      turn: game.turn,
+    };
+  }
+
+
   start(room) {
     if (this.game(room.id)) {
       return Response.error(`A game in room [${room.name}] is already running.`);

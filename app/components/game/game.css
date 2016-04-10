@@ -52,7 +52,7 @@
 
   .player {
     > div {
-      padding-right: 5px;
+      padding-right: 8px;
       &:last-child {
         padding-right: 0;
       }
@@ -70,13 +70,24 @@
       &.orange { color: $orange; }
       &.purple { color: $purple; }
     }
+
     .icon {
       display: inline-block;
       vertical-align: text-top;
       width: 10px;
       height: 14px;
       border-radius: 2px;
-      background: #37474f;
+      background-position: center center;
+    }
+
+    .cards .icon {
+      background-image: url('../../assets/ic_crop_portrait_white_18px.svg');
+    }
+    .pieces .icon {
+      background-image: url('../../assets/ic_directions_subway_white_18px.svg');
+    }
+    .destinations .icon {
+      background-image: url('../../assets/ic_place_white_18px.svg');
     }
   }
 }

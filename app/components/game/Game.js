@@ -27,6 +27,7 @@ class Game {
   listen() {
     IO.io.on('Game.start', this.start);
     IO.io.on('Game.closed', this.close);
+    IO.io.on('Game.updated', this.update);
   }
 
 
@@ -61,6 +62,34 @@ class Game {
   }
 
 
+  update = response => {
+    const game = response;
+    console.log(response);
+
+    if (game.turn !== this.turn) {
+      this.turn = game.turn;
+      this.el.turn.textContent = this.turn;
+    }
+
+    for (const player of this.room.players) {
+      const gamePlayer = game.players.find(p => p.id === player.id);
+      const playerElem = qs(`.player[data-player-id="${player.id}"]`);
+      if (player.cards !== gamePlayer.cards) {
+        player.cards = gamePlayer.cards;
+        qs('.cards .count', playerElem).textContent = player.cards;
+      }
+      if (player.pieces !== gamePlayer.pieces) {
+        player.pieces = gamePlayer.pieces;
+        qs('.pieces .count', playerElem).textContent = player.pieces;
+      }
+      if (player.destinations !== gamePlayer.destinations) {
+        player.destinations = gamePlayer.destinations;
+        qs('.destinations .count', playerElem).textContent = player.destinations;
+      }
+    }
+  }
+
+
   render() {
     this.el.turn.textContent = this.turn;
 
@@ -72,15 +101,15 @@ class Game {
         <div class="player" data-player-id="${player.id}">
           <div class="name ${player.color}">${player.name}</div>
           <div class="pieces">
-            <span class="count"></span>
+            <span class="count">${player.pieces}</span>
             <span class="icon"></span>
           </div>
           <div class="cards">
-            <span class="count"></span>
+            <span class="count">${player.cards}</span>
             <span class="icon"></span>
           </div>
           <div class="destinations">
-            <span class="count"></span>
+            <span class="count">${player.destinations}</span>
             <span class="icon"></span>
           </div>
         </div>

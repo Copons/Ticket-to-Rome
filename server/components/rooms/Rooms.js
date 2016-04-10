@@ -17,14 +17,14 @@ class Rooms {
   }
 
 
-  create(newRoom, client) {
+  create(newRoom, player, client) {
     if (this.list.find(r => r.name === newRoom.name)) {
       return Response.error(`Room [${newRoom.name}] already exists.`);
     }
     const room = new Room(newRoom);
 
     this.list.push(room);
-    return this.join(room, room.owner, client);
+    return this.join(room, player, client);
   }
 
 
