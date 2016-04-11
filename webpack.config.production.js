@@ -17,6 +17,7 @@ const config = {
 
   output: {
     path: PATHS.build,
+    publicPath: '/build/',
     filename: 'bundle.js',
   },
 
