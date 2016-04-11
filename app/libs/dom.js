@@ -58,6 +58,23 @@ export function createSvg(tag, args = {}) {
 }
 
 
+export function getDataset(elem) {
+  if ('dataset' in elem) {
+    return elem.dataset;
+  }
+  const dataset = {};
+  for (let i = 0; i < elem.attributes.length; i++) {
+    const split = elem.attributes[i].name.split('-');
+    if (split.shift() === 'data') {
+      const join = split.join('-');
+      const camelJoin = join.replace(/-(.)/g, (match, group) => group.toUpperCase());
+      dataset[camelJoin] = elem.getAttribute(`data-${join}`);
+    }
+  }
+  return dataset;
+}
+
+
 /**
  * Set an element's CSS style.
  * @param {Element} elem      The element to style.

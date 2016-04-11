@@ -2,6 +2,7 @@ import './game.css';
 import { qs, qsa, addClass, removeClass } from '../../libs/dom';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
+import Board from '../board/Board';
 import Deck from '../deck/Deck';
 import Player from '../player/Player';
 
@@ -14,6 +15,7 @@ class Game {
     this.turn = 0;
     this.activePlayer = {};
     this.deck = [];
+    this.board = new Board();
 
     this.el = {
       game: document.getElementById('game'),
@@ -44,9 +46,10 @@ class Game {
   start = response => {
     this.room = response.body.room;
     this.turn = 0;
-    this.activePlayer = response.body.activePlayer;
     this.deck = new Deck(response.body.deck.cards.length);
+    this.board.render();
 
+    this.activePlayer = response.body.activePlayer;
     Player.setColor(this.room.players.find(p => p.id === Player.id).color);
     Player.initHand();
     Player.startTurn(this.activePlayer);
