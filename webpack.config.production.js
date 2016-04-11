@@ -31,6 +31,10 @@ const config = {
         test: /\.css$/,
         loaders: ['style', 'css', 'postcss'],
       },
+      {
+        test: /\.svg$/,
+        loaders: ['file', 'svgo'],
+      },
     ],
   },
 

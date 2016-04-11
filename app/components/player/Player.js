@@ -1,7 +1,9 @@
+import { RULES } from '../../config';
 import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import Hand from '../hand/Hand';
+import Game from '../game/Game';
 import Lobby from '../lobby/Lobby';
 import Menu from '../menu/Menu';
 
@@ -42,6 +44,7 @@ class Player {
     this.active = false;
     this.hand = [];
     this.builtRoutes = [];
+    this.actionsLeft = 0;
   }
 
 
@@ -82,6 +85,46 @@ class Player {
 
   setActive(active) {
     this.active = active;
+  }
+
+
+  startTurn = activePlayer => {
+    if (activePlayer.id === this.id) {
+      this.setActive(true);
+      this.actionsLeft = RULES.turn.actions;
+    } else {
+      this.setActive(false);
+      this.actionsLeft = 0;
+    }
+  }
+
+
+  changeTurn() {
+    if (this.actionsLeft <= 0) {
+      IO.emit('Player.endTurn', {
+        player: this.simplify(),
+        game: Game.simplify(),
+      })
+        .then(() => {
+          if (Game.room.players.length > 1) {
+            this.setActive(false);
+          }
+          Message.success('Your turn ended.');
+        })
+        .catch(response => {
+          this.setActive(true);
+          Message.error(response.message);
+        });
+    } else {
+      this.setActive(true);
+    }
+  }
+
+
+  drawCardFromDeck(card) {
+    this.actionsLeft -= RULES.action.drawFromDeck;
+    this.hand.addCard(card);
+    this.changeTurn();
   }
 
 }

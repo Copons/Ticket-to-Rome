@@ -1,9 +1,9 @@
 import './deck.css';
+import { RULES } from '../../config';
 import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
-import Card from '../card/Card';
 import Game from '../game/Game';
 import Player from '../player/Player';
 
@@ -40,17 +40,19 @@ export default class Deck {
 
 
   draw = () => {
-    if (Player.active && this.counter > 1) {
+    if (Player.active
+      && Player.actionsLeft >= RULES.action.drawFromDeck
+      && this.counter > 1
+    ) {
       Player.setActive(false);
       IO.emit('Deck.draw', Game.simplify())
         .then(response => {
           this.update(this.counter - 1);
-          Player.hand.addCard(new Card(response.body));
+          Player.drawCardFromDeck(response.body);
           Message.success(response.message);
-          Player.setActive(true);
         })
         .catch(response => {
-          Message.error(response.error);
+          Message.error(response.message);
           Player.setActive(true);
         });
     }

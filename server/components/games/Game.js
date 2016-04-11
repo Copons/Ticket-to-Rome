@@ -1,6 +1,7 @@
 'use strict';
 const CONFIG = require('../../config');
 const Deck = require('../deck/Deck');
+const Response = require('../communications/Response');
 
 
 class Game {
@@ -30,6 +31,20 @@ class Game {
       this.room.players.find(p => p.id === player.id).cards++;
     }
     return response;
+  }
+
+
+  changeTurn(player) {
+    const playerIndex = this.room.players.findIndex(p => p.id === player.id);
+    let nextPlayerIndex = 0;
+    if (playerIndex < this.room.players.length - 1) {
+      nextPlayerIndex = playerIndex + 1;
+    }
+    this.activePlayer = this.room.players[nextPlayerIndex];
+    return Response.success(
+      `It's now player [${this.activePlayer.name}]'s turn!`,
+      this.activePlayer
+    );
   }
 
 }

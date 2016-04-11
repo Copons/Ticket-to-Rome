@@ -28,6 +28,7 @@ class Game {
     IO.io.on('Game.start', this.start);
     IO.io.on('Game.closed', this.close);
     IO.io.on('Game.updated', this.update);
+    IO.io.on('Game.turnChanged', this.changeTurn);
   }
 
 
@@ -46,7 +47,9 @@ class Game {
     this.activePlayer = response.body.activePlayer;
     this.deck = new Deck(response.body.deck.cards.length);
 
+    Player.setColor(this.room.players.find(p => p.id === Player.id).color);
     Player.initHand();
+    Player.startTurn(this.activePlayer);
 
     this.render();
   }
@@ -59,34 +62,6 @@ class Game {
     addClass(this.el.game, 'hidden');
     this.room = {};
     this.turn = 0;
-  }
-
-
-  update = response => {
-    const game = response;
-    console.log(response);
-
-    if (game.turn !== this.turn) {
-      this.turn = game.turn;
-      this.el.turn.textContent = this.turn;
-    }
-
-    for (const player of this.room.players) {
-      const gamePlayer = game.players.find(p => p.id === player.id);
-      const playerElem = qs(`.player[data-player-id="${player.id}"]`);
-      if (player.cards !== gamePlayer.cards) {
-        player.cards = gamePlayer.cards;
-        qs('.cards .count', playerElem).textContent = player.cards;
-      }
-      if (player.pieces !== gamePlayer.pieces) {
-        player.pieces = gamePlayer.pieces;
-        qs('.pieces .count', playerElem).textContent = player.pieces;
-      }
-      if (player.destinations !== gamePlayer.destinations) {
-        player.destinations = gamePlayer.destinations;
-        qs('.destinations .count', playerElem).textContent = player.destinations;
-      }
-    }
   }
 
 
@@ -121,6 +96,42 @@ class Game {
   }
 
 
+  update = response => {
+    const game = response;
+
+    if (game.turn !== this.turn) {
+      this.turn = game.turn;
+      this.el.turn.textContent = this.turn;
+    }
+
+    for (const player of this.room.players) {
+      const gamePlayer = game.players.find(p => p.id === player.id);
+      const playerElem = qs(`.player[data-player-id="${player.id}"]`);
+      if (player.cards !== gamePlayer.cards) {
+        player.cards = gamePlayer.cards;
+        qs('.cards .count', playerElem).textContent = player.cards;
+      }
+      if (player.pieces !== gamePlayer.pieces) {
+        player.pieces = gamePlayer.pieces;
+        qs('.pieces .count', playerElem).textContent = player.pieces;
+      }
+      if (player.destinations !== gamePlayer.destinations) {
+        player.destinations = gamePlayer.destinations;
+        qs('.destinations .count', playerElem).textContent = player.destinations;
+      }
+    }
+
+    this.toggleTurnActivation();
+  }
+
+
+  changeTurn = response => {
+    this.activePlayer = response.body;
+    Player.startTurn(this.activePlayer);
+    Message.success(response.message);
+  }
+
+
   toggleTurnActivation() {
     const players = qsa('.player', this.el.players);
     [...players].forEach(player => {
@@ -131,10 +142,8 @@ class Game {
       }
     });
     if (Player.id === this.activePlayer.id) {
-      Player.setActive(true);
       addClass(this.el.game, 'active');
     } else {
-      Player.setActive(false);
       removeClass(this.el.game, 'active');
     }
   }

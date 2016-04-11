@@ -23,7 +23,8 @@ if (!isProduction) {
   const webpackConfig = require('./webpack.config.js');
 
   new WebpackDevServer(webpack(webpackConfig), {
-    hot: false,
+    hot: true,
+    inline: true,
     noInfo: true,
     quiet: false,
     publicPath: '/build/',

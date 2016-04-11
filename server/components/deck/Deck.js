@@ -13,11 +13,6 @@ class Deck {
   }
 
 
-  emitCards() {
-    return Response.success('Deck.emitCards', this.cards);
-  }
-
-
   reset() {
     for (const card of CONFIG.DECK) {
       for (let i = 0; i < card.amount; i++) {

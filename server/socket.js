@@ -70,6 +70,13 @@ module.exports.listen = server => {
       callback(response);
     });
 
+    client.on('Player.endTurn', (data, callback) => {
+      const response = games.game(data.game.id).changeTurn(data.player);
+      io.in(data.game.id).emit('Game.turnChanged', response);
+      io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
+      callback(response);
+    });
+
     client.on('Deck.draw', (game, callback) => {
       const response = games.game(game.id).drawFromDeck(game.activePlayer);
       if (response.type === 'success') {
