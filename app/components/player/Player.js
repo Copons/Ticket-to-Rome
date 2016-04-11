@@ -35,6 +35,18 @@ class Player {
 
   initHand() {
     this.hand = new Hand();
+    IO.emit('Player.initHand', {
+      player: this.simplify(),
+      game: Game.simplify(),
+    })
+      .then(response => {
+        for (const card of response.body.cards) {
+          this.hand.addCard(card);
+        }
+      })
+      .catch(response => {
+        Message.error(response.message);
+      });
   }
 
 

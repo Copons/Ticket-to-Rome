@@ -70,6 +70,16 @@ module.exports.listen = server => {
       callback(response);
     });
 
+    client.on('Player.initHand', (data, callback) => {
+      const response = games.game(data.game.id).dealFirstHand(data.player);
+      io.in(data.game.id).emit(
+        'Deck.count',
+        games.game(data.game.id).deck.cards.length
+      );
+      io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
+      callback(response);
+    });
+
     client.on('Player.endTurn', (data, callback) => {
       const response = games.game(data.game.id).changeTurn(data.player);
       io.in(data.game.id).emit('Game.turnChanged', response);

@@ -34,6 +34,19 @@ class Game {
   }
 
 
+  dealFirstHand(player) {
+    const cards = [];
+    for (let i = 0; i < CONFIG.RULES.player.startingHand; i++) {
+      const response = this.deck.draw();
+      if (response.type === 'success') {
+        cards.push(response.body);
+        this.room.players.find(p => p.id === player.id).cards++;
+      }
+    }
+    return Response.success('First hand was dealt successfully.', { cards });
+  }
+
+
   changeTurn(player) {
     const playerIndex = this.room.players.findIndex(p => p.id === player.id);
     let nextPlayerIndex = 0;
