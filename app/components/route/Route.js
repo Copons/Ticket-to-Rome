@@ -2,6 +2,7 @@ import './route.css';
 import uuid from 'node-uuid';
 import { SIZES, STATIONS } from '../../config';
 import { createSvg } from '../../libs/dom';
+import RoutePopup from './RoutePopup';
 
 
 export default class Route {
@@ -15,6 +16,7 @@ export default class Route {
     this.stations = this.setStations(route);
 
     this.el = this.create();
+    this.el.popup = new RoutePopup(this);
   }
 
 

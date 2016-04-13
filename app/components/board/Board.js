@@ -2,8 +2,8 @@ import './board.css';
 import { SIZES, STATIONS, ROUTES } from '../../config';
 import { qs, qsa, getDataset, addClass, removeClass } from '../../libs/dom';
 import { delegate } from '../../libs/events';
-import RouteStraight from '../route/RouteStraight';
 import RouteCurved from '../route/RouteCurved';
+import RouteStraight from '../route/RouteStraight';
 import Station from '../station/Station';
 
 
