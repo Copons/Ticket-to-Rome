@@ -11,7 +11,7 @@ const PATHS = {
 
 const config = {
 
-  devtool: 'source-map',
+  //devtool: 'source-map',
 
   entry: PATHS.app,
 

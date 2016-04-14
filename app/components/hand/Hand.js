@@ -1,5 +1,6 @@
 import './hand.css';
 import { DECK } from '../../config';
+import PubSub from '../communications/PubSub';
 import Card from '../card/Card';
 import CardsGroup from './CardsGroup';
 
@@ -23,6 +24,7 @@ export default class Hand {
 
   addCard(card) {
     this.groups.find(group => group.type === card.type).addCard(new Card(card));
+    PubSub.pub('Hand.changed', this.groups);
   }
 
 }
