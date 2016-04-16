@@ -1,8 +1,12 @@
 import Drop from 'tether-drop';
+import { RULES } from '../../config';
 import { create } from '../../libs/dom';
 import { delegate } from '../../libs/events';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
 import PubSub from '../communications/PubSub';
-
+import Game from '../game/Game';
+import Player from '../player/Player';
 
 export default class routePopup {
 
@@ -21,7 +25,7 @@ export default class routePopup {
 
   listen() {
     PubSub.sub('Hand.changed', this.renderUpdateClaims);
-    delegate('.claim', this.el.claims, 'click', this.claimRoute);
+    delegate('.claim', this.el.claims, 'click', this.claim);
   }
 
 
@@ -131,8 +135,24 @@ export default class routePopup {
   }
 
 
-  claimRoute = e => {
-    console.log(e.target.dataset.claim);
+  claim = e => {
+    if (Player.active
+      && Player.actionsLeft >= RULES.action.claimRoute
+    ) {
+      const cards = e.target.dataset.claim.split(',');
+      IO.emit('Route.claim', {
+        cards: cards.length,
+        route: this.route.simplify(),
+        game: Game.simplify(),
+      })
+        .then(response => {
+          Player.claimRoute(this.route, cards);
+          Message.success(response.message);
+        })
+        .catch(() => {
+          Message.error('You don\'t have enough cards to claim this route.');
+        });
+    }
   }
 
 }

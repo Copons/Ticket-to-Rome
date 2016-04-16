@@ -24,6 +24,7 @@ class Message {
     IO.io.on('Message.Player.joinRoom', this.success);
     IO.io.on('Message.Player.leaveRoom', this.error);
     IO.io.on('Message.Deck.draw', this.success);
+    IO.io.on('Message.Route.claim', this.success);
   }
 
 

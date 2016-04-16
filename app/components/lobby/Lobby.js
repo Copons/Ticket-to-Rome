@@ -1,7 +1,7 @@
 import './lobby.css';
 import uuid from 'node-uuid';
 import { RULES } from '../../config';
-import { qs, addClass, removeClass, hasClass } from '../../libs/dom';
+import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen, delegate } from '../../libs/events';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
@@ -169,9 +169,6 @@ class Lobby {
       player: Player.simplify(),
     })
       .then(response => {
-        if (hasClass(this.el.lobby, 'hidden')) {
-          this.show();
-        }
         Game.close(response);
         if (Object.keys(Game.room).length) {
           Message.success(response.message);
@@ -193,7 +190,6 @@ class Lobby {
     })
       .then(response => {
         Message.success(response.message);
-        this.hide();
       })
       .catch(response => {
         Message.error(response.message);

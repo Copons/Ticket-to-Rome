@@ -27,4 +27,9 @@ export default class Hand {
     PubSub.pub('Hand.changed', this.groups);
   }
 
+
+  removeCard(type) {
+    this.groups.find(group => group.type === type).removeCard();
+  }
+
 }

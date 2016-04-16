@@ -3,6 +3,7 @@ import { qs, qsa, addClass, removeClass } from '../../libs/dom';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import Board from '../board/Board';
+import Lobby from '../lobby/Lobby';
 import Deck from '../deck/Deck';
 import Player from '../player/Player';
 
@@ -49,6 +50,8 @@ class Game {
     this.deck = new Deck(response.body.deck.cards.length);
     this.board.render();
 
+    Lobby.hide();
+
     this.activePlayer = response.body.activePlayer;
     Player.setColor(this.room.players.find(p => p.id === Player.id).color);
     Player.initHand();
@@ -65,6 +68,7 @@ class Game {
     addClass(this.el.game, 'hidden');
     this.room = {};
     this.turn = 0;
+    Lobby.show();
   }
 
 

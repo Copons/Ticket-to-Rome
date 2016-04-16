@@ -2,6 +2,7 @@ import { RULES } from '../../config';
 import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
+import PubSub from '../communications/PubSub';
 import Hand from '../hand/Hand';
 import Game from '../game/Game';
 import Lobby from '../lobby/Lobby';
@@ -23,6 +24,7 @@ class Player {
     return {
       id: this.id,
       name: this.name,
+      color: this.color,
     };
   }
 
@@ -137,6 +139,18 @@ class Player {
     this.actionsLeft -= RULES.action.drawFromDeck;
     this.hand.addCard(card);
     this.changeTurn();
+    PubSub.pub('Hand.changed', this.hand.groups);
+  }
+
+
+  claimRoute(route, cards) {
+    this.actionsLeft -= RULES.action.claimRoute;
+    for (const type of cards) {
+      this.hand.removeCard(type);
+    }
+    this.builtRoutes.push(route.simplify());
+    this.changeTurn();
+    PubSub.pub('Hand.changed', this.hand.groups);
   }
 
 }

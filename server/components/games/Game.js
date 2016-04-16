@@ -60,6 +60,22 @@ class Game {
     );
   }
 
+
+  claimRoute(data) {
+    const player = this.room.players.find(p => p.id === data.game.activePlayer.id);
+
+    if (player.cards < data.cards) {
+      return Response.error(`Player [${player.name}] doesn't have enough cards to claim the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
+    }
+    if (player.pieces < data.pieces) {
+      return Response.error(`Player [${player.name}] doesn't have enough pieces to claim the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
+    }
+
+    player.cards -= data.cards;
+    player.pieces -= data.cards;
+    return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
+  }
+
 }
 
 

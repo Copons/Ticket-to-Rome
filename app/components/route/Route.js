@@ -1,7 +1,7 @@
 import './route.css';
 import uuid from 'node-uuid';
 import { SIZES, STATIONS } from '../../config';
-import { createSvg } from '../../libs/dom';
+import { createSvg, addClass, removeClass } from '../../libs/dom';
 import RoutePopup from './RoutePopup';
 
 
@@ -17,6 +17,23 @@ export default class Route {
 
     this.el = this.create();
     this.el.popup = new RoutePopup(this);
+  }
+
+
+  simplify() {
+    return {
+      id: this.id,
+      type: this.type,
+      parts: this.parts,
+      start: {
+        slug: this.stations.start.slug,
+        name: this.stations.start.name,
+      },
+      end: {
+        slug: this.stations.end.slug,
+        name: this.stations.end.name,
+      },
+    };
   }
 
 
@@ -73,6 +90,25 @@ export default class Route {
     this.el.path.setAttributeNS(null,
       'stroke-dasharray', this.pathDashArray(this.pathLength())
     );
+  }
+
+
+  setClaimed(player) {
+    this.claimed = true;
+    removeClass(this.el.path, 'unclaimed');
+    removeClass(this.el.path, this.type);
+    addClass(this.el.path, 'claimed');
+    addClass(this.el.path, player.color);
+    this.el.path.removeAttribute('stroke-dasharray');
+    this.el.popup.el.popup.destroy();
+  }
+
+
+  setUnclaimable() {
+    this.claimed = true;
+    removeClass(this.el.path, 'unclaimed');
+    addClass(this.el.path, 'unclaimable');
+    this.el.popup.el.popup.destroy();
   }
 
 }

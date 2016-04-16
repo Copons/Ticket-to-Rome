@@ -102,6 +102,19 @@ module.exports.listen = server => {
       callback(response);
     });
 
+    client.on('Route.claim', (data, callback) => {
+      const response = games.game(data.game.id).claimRoute(data);
+      if (response.type === 'success') {
+        client.broadcast.in(data.game.id).emit('Message.Route.claim', response.message);
+        io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
+        io.in(data.game.id).emit('Route.claimed', {
+          route: data.route,
+          player: data.game.activePlayer,
+        });
+      }
+      callback(response);
+    });
+
 
     // DISCONNECT
 
