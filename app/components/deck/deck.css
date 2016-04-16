@@ -1,23 +1,27 @@
-.deck {
-  position: fixed;
-  left: 3px;
-  bottom: 120px;
-  z-index: 1;
+#deck {
   display: flex;
-  flex-flow: column;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 65px;
-  cursor: pointer;
   border-radius: 5px;
-  border: 1px solid #37474f;
-  background-color: #607d8b;
-  color: #fff;
-  user-select: none;
+  border: 3px solid #795548;
+  background-color: #8d6e63;
+
+  span {
+    color: #bcaaa4;
+    font-weight: 700;
+    user-select: none;
+  }
 
   &.empty {
     cursor: not-allowed;
-    background-color: #cfd8dc;
+  }
+
+
+  @at-root {
+    #game.active #deck {
+      cursor: pointer;
+    }
   }
 }

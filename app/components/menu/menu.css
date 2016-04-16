@@ -1,22 +1,25 @@
-.menu {
+#menu {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 10;
   display: flex;
   flex-flow: row;
-  justify-content: left;
-  align-items: top;
+  justify-content: flex-start;
+  align-items: flex-start;
   width: 100%;
   height: 30px;
   background-color: #37474f;
   color: #fff;
   font-size: 14px;
 
-  .menu-title {
+  h1 {
+    margin: 0;
     padding: 0 10px;
     font-family: 'Hammersmith One', Arial, sans-serif;
     font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 1px;
     line-height: 30px;
   }
 
@@ -25,20 +28,12 @@
     width: auto;
     height: 30px;
     padding: 0 20px;
-
-    span {
+    & > span {
       line-height: 30px;
     }
-
-    .submenu {
-      position: absolute;
+    &.hidden {
       display: none;
-      width: 200px;
-      padding: 10px;
-      margin-left: -10px;
-      background-color: #37474f;
     }
-
     &:hover .submenu {
       display: block;
     }
@@ -47,121 +42,70 @@
     }
   }
 
+  .submenu {
+    position: absolute;
+    display: none;
+    width: 200px;
+    margin-left: -10px;
+    padding: 10px;
+    background-color: #37474f;
+  }
+
   .menu-username {
     span {
-      font-weight: bold;
+      font-weight: 700;
     }
-    /*&:hover span {
-      color: #90a4ae;
-    }*/
     input[type='text'] {
       border: none;
-      width: 125px;
-      padding: 2px;
+      border-bottom: 2px solid #b0bec5;
+      width: 120px;
+      padding: 3px 3px 1px 3px;
+      &:hover,
+      &:focus {
+        border-bottom-color: #90a4ae;
+      }
     }
     input[type='submit'] {
       border: none;
-      width: 50px;
-      padding: 2px;
+      width: 55px;
+      padding: 3px;
       background-color: #b0bec5;
-      color: #37474f;
+      color: #fff;
       cursor: pointer;
+      &:hover,
+      &:focus {
+        background-color: #90a4ae;
+      }
     }
   }
 
   .menu-room {
-    &.hidden {
-      display: none;
+    & > span {
+      font-weight: 700;
+      &:before {
+        content: 'Room: ';
+        font-weight: 400;
+      }
     }
     a {
       display: inline-block;
       margin-left: 5px;
-      color: #fff;
+      color: #b0bec5;
       font-size: 12px;
       text-decoration: none;
       &:hover {
         color: #90a4ae;
       }
     }
-  }
-}
 
-/*.menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  display: flex;
-  flex-flow: row;
-  justify-content: left;
-  align-items: top;
-  width: 100%;
-  height: 30px;
-  background-color: #37474f;
-  color: #fff;
-  font-size: 14px;
-
-  .menu-item {
-    display: block;
-    width: 200px;
-  }
-
-  .menu-title {
-    padding: 5px 10px;
-    font-family: 'Hammersmith One', Arial, sans-serif;
-    font-size: 16px;
-  }
-
-  .menu-item > div {
-    position: relative;
-    display: block;
-    padding: 0 10px;
-    color: #fff;
-    text-decoration: none;
-    &:hover {
-      color: #90a4ae;
+    .room-player {
+      margin-bottom: 2px;
+      span {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 12px;
+        font-style: italic;
+      }
     }
   }
-
-  .submenu {
-    position: relative;
-    display: none;
-    width: 200px;
-    padding: 10px;
-    margin-left: -10px;
-    background-color: #37474f;
-  }
 }
-
-.menu-item > div:hover {
-  .submenu {
-    display: block;
-  }
-  .submenu.hidden {
-    display: none;
-  }
-}
-
-.menu-item {
-
-  .menu-username {
-    span {
-      font-weight: bold;
-      line-height: 30px;
-    }
-    input[type='text'] {
-      border: none;
-      width: 125px;
-      padding: 2px;
-    }
-    input[type='submit'] {
-      border: none;
-      width: 50px;
-      padding: 2px;
-      background-color: #b0bec5;
-      color: #fff;
-    }
-  }
-
-}
-*/

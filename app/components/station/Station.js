@@ -1,42 +1,31 @@
 import './station.css';
-import uuid from 'node-uuid';
 import { SIZES } from '../../config';
 import { createSvg } from '../../libs/dom';
 
 
-/** Class representing a station. */
 export default class Station {
 
-
-  /**
-   * Create a station.
-   * @param {Object} station The station information.
-   */
   constructor(station) {
-    this.id = uuid.v4();
     this.slug = station.slug;
     this.name = station.name;
     this.x = station.x;
     this.y = station.y;
-    this.element = this.setupElement();
+
+    this.el = this.create();
   }
 
 
-  /**
-   * Create the station element.
-   * @return {Element}
-   */
-  setupElement() {
+  create() {
     const nameCoordinates = this.adjustNamePosition();
     const element = {
       station: createSvg('circle', {
-        id: this.id,
         class: 'station',
         'data-station': this.slug,
         cx: this.x,
         cy: this.y,
       }),
       name: createSvg('text', {
+        class: 'name',
         'data-station': this.slug,
         x: nameCoordinates.x,
         y: nameCoordinates.y,
@@ -48,9 +37,6 @@ export default class Station {
   }
 
 
-  /**
-   * Correct the station name coordinates.
-   */
   adjustNamePosition() {
     return {
       x: this.x + SIZES.station.radius + SIZES.station.name - SIZES.station.stroke,

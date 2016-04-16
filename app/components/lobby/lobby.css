@@ -1,54 +1,82 @@
-.lobby {
+#lobby {
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 30px;
+  background-color: #b0bec5;
 
-  .usernameForm,
-  .roomForm,
-  .rooms,
-  & {
-    &.hidden {
-      display: none;
+  &.hidden,
+  .hidden {
+    display: none;
+  }
+
+  .lobby-username,
+  .lobby-room {
+    padding: 30px 0;
+  }
+
+  input[type='text'] {
+    padding: 5px 5px 3px 5px;
+    border: none;
+    border-bottom: 2px solid #90a4ae;
+    font-size: 18px;
+    &:hover,
+    &:focus {
+      border-bottom-color: #37474f;
     }
   }
-}
-
-.rooms {
-  width: 80%;
-  margin: 1em;
-  border-collapse: collapse;
-  font-size: 14px;
-  th, td {
+  input[type='submit'] {
     padding: 5px;
-    border: 1px solid #cfd8dc;
-  }
-  th {
-    background-color: #cfd8dc;
-  }
-  .room-name {
-    font-weight: bold;
-  }
-  .room-players span {
-    display: block;
-    /*font-size: 12px;*/
-  }
-  .room-status {
-    text-transform: capitalize;
-  }
-  .room-actions {
-    text-align: center;
-  }
-  .join, .leave, .start {
-    display: inline-block;
-    padding: 2px 5px;
-    background-color: #37474f;
+    border: none;
+    background-color: #90a4ae;
     color: #fff;
-    text-decoration: none;
-    &:hover {
-      background-color: #546e7a;
+    font-size: 18px;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+      background-color: #37474f;
+    }
+  }
+
+  .lobby-rooms {
+    width: 100%;
+    margin: 30px 0;
+    border: 1px solid #90a4ae;
+    border-collapse: collapse;
+    font-size: 14px;
+    thead {
+      background-color: #37474f;
+      color: #90a4ae;
+    }
+    td,
+    th {
+      padding: 5px;
+      border: 1px solid #90a4ae;
+    }
+
+    .room-name {
+      font-weight: 700;
+    }
+    .room-status {
+      font-style: italic;
+      text-transform: capitalize;
+    }
+    .room-players span {
+      display: block;
+    }
+
+    a {
+      display: inline-block;
+      padding: 2px 5px;
+      background-color: #90a4ae;
+      color: #fff;
+      text-decoration: none;
+      &:hover {
+        background-color: #37474f;
+      }
     }
   }
 }

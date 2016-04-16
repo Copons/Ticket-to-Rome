@@ -1,91 +1,51 @@
 import './menu.css';
-import { APP_CONTAINER } from '../../config';
-import { listen } from '../../libs/events';
-import PubSub from '../../libs/PubSub';
+import { qs, addClass, removeClass } from '../../libs/dom';
+import { listen, delegate } from '../../libs/events';
+import IO from '../communications/IO';
+import Lobby from '../lobby/Lobby';
+import Player from '../player/Player';
 
 
-/** Class representing the menu. */
-export default class Menu {
+class Menu {
 
 
-  /**
-   * Create the menu.
-   * @param {Socket} io   The Socket.io client.
-   * @param {User}   user The current user.
-   */
-  constructor(io, user) {
-    this.io = io;
-    this.user = {
-      id: user.id,
-      name: user.name,
-    };
-    this.element = {};
-
-    PubSub.sub('User/changed', this.renderUpdateUser);
-    PubSub.sub('Game/leave', this.renderUpdateLeaveGame);
-
-    this.io.on('Game/started', this.renderUpdateStartGame);
+  constructor() {
+    this.el = { menu: document.getElementById('menu') };
+    this.el.username = qs('.menu-username', this.el.menu);
+    this.el.usernameName = qs('.menu-username > span', this.el.menu);
+    this.el.usernameSubmenu = qs('.submenu', this.el.username);
+    this.el.usernameInput = qs('input[type="text"]', this.el.usernameSubmenu);
+    this.el.usernameSubmit = qs('input[type="submit"]', this.el.usernameSubmenu);
+    this.el.room = qs('.menu-room', this.el.menu);
+    this.el.roomName = qs('.menu-room > span', this.el.menu);
+    this.el.roomLeave = qs('.leave', this.el.room);
+    this.el.roomSubmenu = qs('.submenu', this.el.room);
   }
 
 
-  /**
-   * Render the menu into the app container.
-   */
-  render() {
-    APP_CONTAINER.insertAdjacentHTML('afterbegin', `
-      <div class="menu">
-        <div class="menu-title">TTR</div>
-        <div class="menu-item menu-username">
-          <span></span>
-          <form class="submenu">
-            <input name="username" type="text" placeholder="Change name">
-            <input type="submit" value="Save">
-          </form>
-        </div>
-        <div class="menu-item menu-room hidden">
-          <span></span>
-          <a href="#">(Leave)</a>
-          <div class="submenu"></div>
-        </div>
-      </div>
-    `);
-    const menu = APP_CONTAINER.querySelector('.menu');
-    this.element = {
-      menu,
-      username: menu.querySelector('.menu-username span'),
-      usernameForm: menu.querySelector('.menu-username form'),
-      usernameInput: menu.querySelector('.menu-username input[type="text"]'),
-      usernameSubmit: menu.querySelector('.menu-username input[type="submit"]'),
-      room: menu.querySelector('.menu-room'),
-      roomName: menu.querySelector('.menu-room span'),
-      roomLeave: menu.querySelector('.menu-room a'),
-      roomSubmenu: menu.querySelector('.menu-room .submenu'),
-    };
-    listen(this.element.usernameSubmit, 'click', this.changeUsername);
+  listen() {
+    IO.io.on('Game.start', this.renderUpdateStartGame);
+    IO.io.on('Game.closed', this.renderUpdateClosedGame);
+    listen(this.el.usernameSubmit, 'click', this.changeUsername);
+    delegate('.leave', this.el.room, 'click', this.leaveRoom);
   }
 
 
-  /**
-   * Update the menu when the current user is changed.
-   * @param {Object} data The data emitted when the current user is changed.
-   */
-  renderUpdateUser = data => {
-    this.user.name = data.name;
-    this.element.username.textContent = data.name;
+  renderUpdateUser(username) {
+    this.el.usernameName.textContent = username;
+    if (username === '') {
+      addClass(this.el.username, 'hidden');
+    } else {
+      removeClass(this.el.username, 'hidden');
+    }
   }
 
 
-  /**
-   * Update the menu when a game is started.
-   * @param {Object} room The data emitted when a game is started.
-   */
-  renderUpdateStartGame = room => {
-    console.log(room);
-    this.element.usernameForm.classList.add('hidden');
-    this.element.room.classList.remove('hidden');
-    this.element.roomName.innerHTML = `Room: <b>${room.name}</b>`;
-    this.element.roomLeave.dataset.roomId = room.id;
-    this.element.roomLeave.dataset.roomName = room.name;
+  renderUpdateStartGame = response => {
+    const room = response.body.room;
+    this.el.roomName.textContent = room.name;
+    this.el.roomLeave.dataset.roomId = room.id;
+    this.el.roomLeave.dataset.roomName = room.name;
 
     let players = '';
     for (const player of room.players) {
@@ -94,46 +54,41 @@ export default class Menu {
       if (player.id === room.owner.id) {
         players += ' <span class="room-owner">(Owner)</span>';
       }
-      if (player.id === this.user.id) {
+      if (player.id === Player.id) {
         players += ' <span class="room-you">(You)</span>';
       }
       players += '</div>';
     }
-    this.element.roomSubmenu.innerHTML = players;
 
-    listen(this.element.roomLeave, 'click', this.leaveGame);
+    this.el.roomSubmenu.innerHTML = players;
+    removeClass(this.el.room, 'hidden');
+    addClass(this.el.usernameSubmenu, 'hidden');
   }
 
 
-  /**
-   * Update the menu when the current user leaves the game.
-   */
-  renderUpdateLeaveGame = () => {
-    this.element.usernameForm.classList.remove('hidden');
-    this.element.room.classList.add('hidden');
+  renderUpdateClosedGame = () => {
+    addClass(this.el.room, 'hidden');
+    removeClass(this.el.usernameSubmenu, 'hidden');
   }
 
 
-  /**
-   * Dispatch a change username event.
-   * @param {Event} e The click event.
-   */
   changeUsername = e => {
     e.preventDefault();
-    if (this.element.usernameInput.value !== '') {
-      PubSub.pub('User/name', this.element.usernameInput.value);
-      this.element.usernameInput.value = '';
-    }
+    if (this.el.usernameInput.value === '') return;
+
+    Player.setName(this.el.usernameInput.value);
+    this.el.usernameInput.value = '';
   }
 
 
-  /**
-   * Leave the game.
-   * @param {Event} e The click event.
-   */
-  leaveGame = e => {
+  leaveRoom = e => {
     e.preventDefault();
-    PubSub.pub('Game/leave', e);
+    Lobby.leaveRoom(e);
+    this.el.roomSubmenu.innerHTML = '';
+    addClass(this.el.room, 'hidden');
+    removeClass(this.el.usernameSubmenu, 'hidden');
   }
 
 }
+
+export default new Menu();

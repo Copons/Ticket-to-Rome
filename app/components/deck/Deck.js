@@ -1,116 +1,61 @@
 import './deck.css';
-import { APP_CONTAINER } from '../../config';
-import { create } from '../../libs/dom';
+import { RULES } from '../../config';
+import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
-import Message from '../message';
-import PubSub from '../../libs/PubSub';
-import Card from '../card';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import Game from '../game/Game';
+import Player from '../player/Player';
 
 
-/** Class representing the deck. */
 export default class Deck {
 
 
-  /**
-   * Create the deck.
-   * @param {Object} deck The current game's deck emitted by the server.
-   * @param {Socket} io   The Socket.io server.
-   */
-  constructor(deck, io) {
-    this.io = io;
-    this.cards = this.setupCards(deck.cards);
-    this.element = this.setupElement();
-    this.render();
+  constructor(cardsCount) {
+    this.counter = cardsCount;
 
-    this.io.on('Deck/remove', this.remove);
+    this.el = { deck: document.getElementById('deck') };
+    this.el.counter = qs('span', this.el.deck);
+    this.el.counter.textContent = this.counter;
+
+    this.listen();
   }
 
 
-  /**
-   * Setup the deck cards.
-   * @param  {Object} deck The current game's deck emitted by the server.
-   * @return {Array}
-   */
-  setupCards(deckCards) {
-    const cards = [];
-    for (const card of deckCards) {
-      cards.push(new Card(card));
-    }
-    return cards;
+  listen() {
+    IO.io.on('Deck.count', this.update);
+    listen(this.el.deck, 'click', this.draw);
   }
 
 
-  /**
-   * Create the deck element.
-   * @return {Object}
-   */
-  setupElement() {
-    const element = {
-      deck: create('div', { class: 'deck' }),
-      counter: create('div', { class: 'deck-counter' }),
-    };
-    element.counter.textContent = this.cards.length;
-    listen(element.deck, 'click', this.draw);
-    return element;
-  }
-
-
-  /**
-   * Render the deck into the app container.
-   */
-  render() {
-    this.element.deck.appendChild(this.element.counter);
-    APP_CONTAINER.appendChild(this.element.deck);
-  }
-
-
-  /**
-   * Update the deck when the cards count changes.
-   */
-  renderUpdate() {
-    this.element.counter.textContent = this.cards.length;
-    if (!this.cards.length) {
-      this.element.deck.classList.add('empty');
+  update = cardsCount => {
+    this.counter = cardsCount;
+    this.el.counter.textContent = this.counter;
+    if (this.counter) {
+      removeClass(this.el.deck, 'empty');
     } else {
-      this.element.deck.classList.remove('empty');
+      addClass(this.el.deck, 'empty');
     }
   }
 
 
-  /**
-   * Draw a card from the deck.
-   * @param {Object} room The current game room.
-   */
-  draw = room => {
-    /*const drawnCard = this.cards[cardIndex];
-    this.cards = this.cards.filter(card => card.id !== drawnCard.id);
-    this.renderUpdate();
-    PubSub.pub('game/action', {
-      action: 'deck/draw',
-      card: drawnCard,
-    });
-    return drawnCard;*/
-    this.io.emit('Deck/draw', room, response => {
-      if (response === 'Deck is empty') {
-        Message.show({
-          type: 'error',
-          message: response,
+  draw = () => {
+    if (Player.active
+      && Player.actionsLeft >= RULES.action.drawFromDeck
+      && this.counter > 1
+    ) {
+      Player.setActive(false);
+      IO.emit('Deck.draw', Game.simplify())
+        .then(response => {
+          this.update(this.counter - 1);
+          Player.drawCardFromDeck(response.body);
+          Message.success(response.message);
+        })
+        .catch(response => {
+          Message.error(response.message);
+          Player.setActive(true);
         });
-      } else {
-        this.cards = this.cards.filter(card => card.id !== response.id);
-        this.renderUpdate();
-        PubSub.pub('Game/action', {
-          action: 'Deck/draw',
-          card: response,
-        });
-      }
-    });
-  }
-
-
-  remove = card => {
-    this.cards = this.cards.filter(c => c.id !== card.id);
-    this.renderUpdate();
+    }
   }
 
 }

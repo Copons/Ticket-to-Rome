@@ -6,6 +6,9 @@ const RULES = {
     max: 5,
     startingHand: 3,
     startingPieces: 45,
+    colorsOrder: [
+      'red', 'blue', 'green', 'orange', 'purple',
+    ],
   },
   turn: {
     actions: 2,

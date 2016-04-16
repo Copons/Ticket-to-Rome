@@ -1,160 +1,99 @@
 import './lobby.css';
 import uuid from 'node-uuid';
-import { APP_CONTAINER, RULES } from '../../config';
-import { listen } from '../../libs/events';
-import Message from '../message';
-import PubSub from '../../libs/PubSub';
+import { RULES } from '../../config';
+import { qs, addClass, removeClass } from '../../libs/dom';
+import { listen, delegate } from '../../libs/events';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import Game from '../game/Game';
+import Player from '../player/Player';
 
 
-/** Class representing the lobby. */
-export default class Lobby {
+class Lobby {
 
-
-  /**
-   * Create the lobby.
-   * @param {Socket} io   The Socket.io client.
-   * @param {User}   user The current user.
-   */
-  constructor(io, user) {
-    this.io = io;
-    this.user = {
-      id: user.id,
-      name: user.name,
-    };
-    this.rooms = [];
-
-    this.io.emit('Rooms/list', {});
-    this.io.on('Rooms/list', rooms => {
-      this.rooms = rooms.list;
-      this.renderUpdateRooms();
-    });
-
-    PubSub.sub('User/changed', this.renderUpdateUser);
-    PubSub.sub('Game/leave', this.leaveRoom);
+  constructor() {
+    this.el = { lobby: document.getElementById('lobby') };
+    this.el.usernameForm = qs('.lobby-username', this.el.lobby);
+    this.el.usernameInput = qs('input[type="text"]', this.el.usernameForm);
+    this.el.usernameSubmit = qs('input[type="submit"]', this.el.usernameForm);
+    this.el.rooms = qs('.lobby-rooms', this.el.lobby);
+    this.el.roomsList = qs('tbody', this.el.rooms);
+    this.el.roomForm = qs('.lobby-room', this.el.lobby);
+    this.el.roomInput = qs('input[type="text"]', this.el.roomForm);
+    this.el.roomSubmit = qs('input[type="submit"]', this.el.roomForm);
   }
 
 
-  /**
-   * Render the lobby into the app container.
-   */
-  render() {
-    APP_CONTAINER.insertAdjacentHTML('afterbegin', `
-      <div class="lobby hidden">
-        <form class="usernameForm hidden">
-          <input name="username" type="text" placeholder="Change name">
-          <input type="submit" value="Save">
-        </form>
-        <table class="rooms hidden">
-          <thead>
-            <tr>
-              <th>Room</th>
-              <th>Owner</th>
-              <th>Players</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <form class="roomForm hidden">
-          <input name="room" type="text" placeholder="New room">
-          <input type="submit" value="Create">
-        </form>
-      </div>
-    `);
-    const lobby = APP_CONTAINER.querySelector('.lobby');
-    this.element = {
-      lobby,
-      usernameForm: lobby.querySelector('.usernameForm'),
-      usernameInput: lobby.querySelector('.usernameForm input[type="text"]'),
-      usernameSubmit: lobby.querySelector('.usernameForm input[type="submit"]'),
-      rooms: lobby.querySelector('table.rooms'),
-      roomsList: lobby.querySelector('table.rooms tbody'),
-      roomForm: lobby.querySelector('.roomForm'),
-      roomInput: lobby.querySelector('.roomForm input[type="text"]'),
-      roomSubmit: lobby.querySelector('.roomForm input[type="submit"]'),
-    };
-    listen(this.element.usernameSubmit, 'click', this.changeUsername);
-    listen(this.element.roomSubmit, 'click', this.createRoom);
-
-    if (this.user.name === '') {
-      this.element.usernameForm.classList.remove('hidden');
-    }
-
-    this.show();
+  listen() {
+    listen(this.el.usernameSubmit, 'click', this.changeUsername);
+    listen(this.el.roomSubmit, 'click', this.createRoom);
+    delegate('.join', this.el.roomsList, 'click', this.joinRoom);
+    delegate('.leave', this.el.roomsList, 'click', this.leaveRoom);
+    delegate('.start', this.el.roomsList, 'click', this.startGame);
   }
 
 
-  /**
-   * Update the lobby when a user is changed.
-   * @param {Object} data The data emitted when a user is changed.
-   */
-  renderUpdateUser = data => {
-    this.user = {
-      id: data.id,
-      name: data.name,
-      room: data.room,
-    };
-    if (data.name !== '') {
-      this.element.usernameForm.classList.add('hidden');
-      this.element.roomForm.classList.remove('hidden');
-      this.renderUpdateRooms();
+  renderUpdateUser(username) {
+    if (username === '') {
+      removeClass(this.el.usernameForm, 'hidden');
+      addClass(this.el.rooms, 'hidden');
+      addClass(this.el.roomForm, 'hidden');
     } else {
-      this.element.usernameForm.classList.remove('hidden');
-      this.element.roomForm.classList.add('hidden');
+      addClass(this.el.usernameForm, 'hidden');
+      if (this.el.roomsList.hasChildNodes()) {
+        removeClass(this.el.rooms, 'hidden');
+      }
+      removeClass(this.el.roomForm, 'hidden');
     }
   }
 
 
-  /**
-   * Update the lobby when the rooms are changed.
-   */
-  renderUpdateRooms = () => {
-    while (this.element.roomsList.firstChild) {
-      this.element.roomsList.removeChild(this.element.roomsList.firstChild);
-    }
+  renderUpdateRooms = response => {
+    const rooms = response.body;
 
-    if (this.rooms.length > 0) {
-      this.element.rooms.classList.remove('hidden');
+    this.el.roomsList.innerHTML = '';
+
+    if (rooms.length && Player.name) {
+      removeClass(this.el.rooms, 'hidden');
     } else {
-      this.element.rooms.classList.add('hidden');
+      addClass(this.el.rooms, 'hidden');
       return;
     }
 
-    for (const room of this.rooms) {
-      let actions = '';
+    for (const room of rooms) {
       let players = '';
+      let actions = '';
+      let start = '';
 
       for (const player of room.players) {
         players += `<span>${player.name}</span>`;
       }
 
       if (
-        room.status === 'open' && this.user.name !== '' &&
+        room.status === 'open' && Player.name !== '' &&
         room.players.length < RULES.player.max &&
-        !room.players.find(p => p.id === this.user.id)
+        !room.players.find(p => p.id === Player.id)
       ) {
         actions += `<a
           href="#" class="join"
           data-room-id="${room.id}" data-room-name="${room.name}"
         >Join</a>`;
       }
-      if (room.players.find(p => p.id === this.user.id)) {
+      if (room.players.find(p => p.id === Player.id)) {
         actions += `<a
           href="#" class="leave"
           data-room-id="${room.id}" data-room-name="${room.name}"
         >Leave</a>`;
       }
 
-      let start = '';
-      if (room.status === 'open' && room.owner.id === this.user.id) {
+      if (room.status === 'open' && room.owner.id === Player.id) {
         start = `<a
           href="#" class="start"
           data-room-id="${room.id}" data-room-name="${room.name}"
         >Start Game</a>`;
       }
 
-      this.element.roomsList.insertAdjacentHTML('afterbegin',`
+      this.el.roomsList.insertAdjacentHTML('afterbegin', `
         <tr>
           <td class="room-name">${start} ${room.name}</td>
           <td class="room-owner">${room.owner.name}</td>
@@ -163,169 +102,114 @@ export default class Lobby {
           <td class="room-actions">${actions}</td>
         </tr>
       `);
-
-      if (start !== '') {
-        const startButton = this.element.roomsList.querySelector('.start');
-        listen(startButton, 'click', this.startGame);
-      }
-    }
-
-    const joinButtons = this.element.roomsList.querySelectorAll('.join');
-    const leaveButtons = this.element.roomsList.querySelectorAll('.leave');
-    for (const join of [...joinButtons]) {
-      listen(join, 'click', this.joinRoom);
-    }
-    for (const leave of [...leaveButtons]) {
-      listen(leave, 'click', this.leaveRoom);
     }
   }
 
 
-  /**
-   * Dispatch a change username event.
-   * @param {Event} e The click event.
-   */
   changeUsername = e => {
     e.preventDefault();
-    if (this.element.usernameInput.value !== '') {
-      PubSub.pub('User/name', this.element.usernameInput.value);
-      this.element.usernameInput.value = '';
+    if (this.el.usernameInput.value !== '') {
+      Player.setName(this.el.usernameInput.value);
+      this.el.usernameInput.value = '';
+      IO.emit('Lobby.getRoomsList', {});
     }
   }
 
 
-  /**
-   * Create a room.
-   * @param {Event} e The click event.
-   */
   createRoom = e => {
     e.preventDefault();
-    if (this.user.name === '') return;
-    if (this.element.roomInput.value !== '') {
-      const room = {
-        id: uuid.v4(),
-        name: this.element.roomInput.value,
-        owner: this.user,
-        players: [],
-        status: 'open',
-      };
-      this.io.emit('Rooms/create', room, response => {
-        if (response === 'ok') {
-          Message.show({
-            type: 'success',
-            message: 'Room created!',
-          });
-        } else {
-          Message.show({
-            type: 'error',
-            message: response,
-          });
-        }
+    if (Player.name === '' || this.el.roomInput.value === '') return;
+
+    IO.emit('Lobby.createRoom', {
+      id: uuid.v4(),
+      name: this.el.roomInput.value,
+      owner: Player.simplify(),
+      players: [],
+      status: 'open',
+    })
+      .then(response => {
+        Message.success(response.message);
+      })
+      .catch(response => {
+        Message.error(response.message);
       });
-      this.element.roomInput.value = '';
-    }
+    this.el.roomInput.value = '';
   }
 
-  /**
-   * Join a room.
-   * @param {Event} e The click event.
-   */
+
   joinRoom = e => {
     e.preventDefault();
-    if (this.user.name === '') return;
-    const room = {
-      id: e.target.dataset.roomId,
-      name: e.target.dataset.roomName,
-    };
-    this.io.emit('Rooms/join', {
-      room,
-      player: this.user,
-    }, response => {
-      if (response === 'ok') {
-        Message.show({
-          type: 'success',
-          message: `Joined room <b>${room.name}</b>!`,
-        });
-      } else {
-        Message.show({
-          type: 'error',
-          message: response,
-        });
-      }
-    });
+    if (Player.name === '') return;
+
+    IO.emit('Lobby.joinRoom', {
+      room: {
+        id: e.target.dataset.roomId,
+        name: e.target.dataset.roomName,
+      },
+      player: Player.simplify(),
+    })
+      .then(response => {
+        Message.success(response.message);
+      })
+      .catch(response => {
+        Message.error(response.message);
+      });
   }
 
 
-  /**
-   * Leave a room.
-   * @param {Event} e The click event.
-   */
   leaveRoom = e => {
     e.preventDefault();
-    if (this.user.name === '') return;
-    const room = {
-      id: e.target.dataset.roomId,
-      name: e.target.dataset.roomName,
-    };
-    this.io.emit('Rooms/leave', {
-      room,
-      player: this.user,
-    }, response => {
-      if (response === 'ok') {
-        Message.show({
-          type: 'success',
-          message: `Left room <b>${room.name}</b>!`,
-        });
-      } else {
-        Message.show({
-          type: 'error',
-          message: response,
-        });
-      }
-    });
+    if (Player.name === '') return;
+
+    IO.emit('Lobby.leaveRoom', {
+      room: {
+        id: e.target.dataset.roomId,
+        name: e.target.dataset.roomName,
+      },
+      player: Player.simplify(),
+    })
+      .then(response => {
+        Game.close(response);
+        if (Object.keys(Game.room).length) {
+          Message.success(response.message);
+        }
+      })
+      .catch(response => {
+        Message.error(response.message);
+      });
   }
 
 
-  /**
-   * Start a game.
-   * @param {Event} e The click event.
-   */
   startGame = e => {
     e.preventDefault();
-    if (this.user.name === '') return;
-    const room = {
+    if (Player.name === '') return;
+
+    IO.emit('Lobby.startGame', {
       id: e.target.dataset.roomId,
       name: e.target.dataset.roomName,
-    };
-    this.io.emit('Rooms/start', room, response => {
-      if (response === 'ok') {
-        Message.show({
-          type: 'success',
-          message: `Starting game in room <b>${room.name}</b>!`,
-        });
-      } else {
-        Message.show({
-          type: 'error',
-          message: response,
-        });
-      }
-    });
+    })
+      .then(response => {
+        Message.success(response.message);
+      })
+      .catch(response => {
+        Message.error(response.message);
+      });
   }
 
 
-  /**
-   * Show the lobby.
-   */
   show() {
-    this.element.lobby.classList.remove('hidden');
+    removeClass(this.el.lobby, 'hidden');
+    IO.io.on('Rooms.getList', this.renderUpdateRooms);
+    IO.emit('Lobby.getRoomsList', {});
   }
 
 
-  /**
-   * Hide the lobby.
-   */
   hide() {
-    this.element.lobby.classList.add('hidden');
+    addClass(this.el.lobby, 'hidden');
+    IO.io.off('Rooms.getList', this.renderUpdateRooms);
   }
 
 }
+
+
+export default new Lobby();

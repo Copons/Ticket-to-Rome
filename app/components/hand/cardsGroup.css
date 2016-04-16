@@ -1,4 +1,4 @@
-.hand .group {
+#hand .group {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;

@@ -11,12 +11,13 @@ const PATHS = {
 
 const config = {
 
-  devtool: 'source-map',
+  //devtool: 'source-map',
 
   entry: PATHS.app,
 
   output: {
     path: PATHS.build,
+    publicPath: '/build/',
     filename: 'bundle.js',
   },
 
@@ -30,6 +31,10 @@ const config = {
       {
         test: /\.css$/,
         loaders: ['style', 'css', 'postcss'],
+      },
+      {
+        test: /\.svg$/,
+        loaders: ['file', 'svgo'],
       },
     ],
   },
