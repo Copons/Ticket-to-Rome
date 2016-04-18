@@ -54,6 +54,7 @@ class Player {
 
   reset() {
     this.color = '';
+    this.points = 0;
     this.pieces = 0;
     this.active = false;
     this.hand = [];

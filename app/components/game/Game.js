@@ -82,6 +82,10 @@ class Game {
       this.el.players.insertAdjacentHTML('beforeend', `
         <div class="player" data-player-id="${player.id}">
           <div class="name ${player.color}">${player.name}</div>
+          <div class="points">
+            <span class="count">${player.points}</span>
+            <span class="icon"></span>
+          </div>
           <div class="pieces">
             <span class="count">${player.pieces}</span>
             <span class="icon"></span>
@@ -105,6 +109,7 @@ class Game {
 
   update = response => {
     const game = response;
+    console.log(response);
 
     if (game.turn !== this.turn) {
       this.turn = game.turn;
@@ -114,6 +119,10 @@ class Game {
     for (const player of this.room.players) {
       const gamePlayer = game.players.find(p => p.id === player.id);
       const playerElem = qs(`.player[data-player-id="${player.id}"]`);
+      if (player.points !== gamePlayer.points) {
+        player.points = gamePlayer.points;
+        qs('.points .count', playerElem).textContent = player.points;
+      }
       if (player.cards !== gamePlayer.cards) {
         player.cards = gamePlayer.cards;
         qs('.cards .count', playerElem).textContent = player.cards;

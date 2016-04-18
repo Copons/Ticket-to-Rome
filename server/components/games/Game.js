@@ -52,6 +52,8 @@ class Game {
     let nextPlayerIndex = 0;
     if (playerIndex < this.room.players.length - 1) {
       nextPlayerIndex = playerIndex + 1;
+    } else {
+      this.turn++;
     }
     this.activePlayer = this.room.players[nextPlayerIndex];
     return Response.success(
@@ -67,13 +69,14 @@ class Game {
     if (player.cards < data.cards) {
       return Response.error(`Player [${player.name}] doesn't have enough cards to claim the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
     }
-    if (player.pieces < data.pieces) {
+    if (player.pieces < data.cards) {
       return Response.error(`Player [${player.name}] doesn't have enough pieces to claim the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
     }
 
     player.cards -= data.cards;
     player.pieces -= data.cards;
-    return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
+    player.points += CONFIG.RULES.points[data.cards];
+    return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}] and earned [${CONFIG.RULES.points[data.cards]}] points.`); // eslint-disable-line max-len
   }
 
 }
