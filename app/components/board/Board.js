@@ -14,13 +14,8 @@ export default class Board {
 
   constructor() {
     this.railway = {
-      stations: STATIONS.map(station => new Station(station)),
-      routes: ROUTES.map(route => {
-        if (route.qx && route.qy) {
-          return new RouteCurved(route);
-        }
-        return new RouteStraight(route);
-      }),
+      stations: [],
+      routes: [],
     };
 
     this.el = {
@@ -41,7 +36,22 @@ export default class Board {
   }
 
 
-  render() {
+  initRailway() {
+    return {
+      stations: STATIONS.map(station => new Station(station)),
+      routes: ROUTES.map(route => {
+        if (route.qx && route.qy) {
+          return new RouteCurved(route);
+        }
+        return new RouteStraight(route);
+      }),
+    };
+  }
+
+
+  render = () => {
+    this.railway = this.initRailway();
+
     this.el.board.setAttributeNS(null, 'viewBox', `0 0 ${SIZES.board.width} ${SIZES.board.height}`);
 
     while (this.el.routes.firstChild) {
