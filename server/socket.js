@@ -30,20 +30,11 @@ module.exports.listen = server => {
     });
 
     client.on('Lobby.createRoom', (room, callback) => {
-      const player = players.list.find(p => p.id === room.owner.id).simplify();
-      const response = rooms.create(room, player, client);
-      io.sockets.emit('Rooms.getList', rooms.emitList());
-      callback(response);
+      callback(rooms.create(room, players, client, io));
     });
 
     client.on('Lobby.joinRoom', (data, callback) => {
-      const player = players.list.find(p => p.id === data.player.id).simplify();
-      const response = rooms.join(data.room, player, client);
-      if (response.type === 'success') {
-        client.broadcast.in(data.room.id).emit('Message.Player.joinRoom', response.message);
-      }
-      io.sockets.emit('Rooms.getList', rooms.emitList());
-      callback(response);
+      callback(rooms.join(data, players, client, io));
     });
 
     client.on('Lobby.leaveRoom', (data, callback) => {

@@ -17,31 +17,53 @@ class Rooms {
   }
 
 
-  create(newRoom, player, client) {
-    if (this.list.find(r => r.name === newRoom.name)) {
-      return Response.error(`Room [${newRoom.name}] already exists.`);
-    }
-    const room = new Room(newRoom);
+  create(room, players, client, io) {
+    let response = {};
+    const player = players.list.find(p => p.id === room.owner.id).simplify();
 
-    this.list.push(room);
-    return this.join(room, player, client);
+    if (this.list.find(r => r.name === room.name)) {
+      response = Response.error(`Room [${room.name}] already exists.`);
+    } else {
+      const newRoom = new Room(room);
+      this.list.push(newRoom);
+      response = this.join({
+        player,
+        room: newRoom,
+      }, players, client, io);
+    }
+
+    io.sockets.emit('Rooms.getList', this.emitList());
+    return response;
   }
 
 
-  join(roomToJoin, player, client) {
-    const room = this.list.find(r => r.id === roomToJoin.id);
+  join(data, players, client, io) {
+    let response = {};
+    const room = this.list.find(r => r.id === data.room.id);
+    const player = players.list.find(p => p.id === data.player.id).simplify();
+
     if (!room) {
-      return Response.error(`Room [${roomToJoin.name}] does not exist.`);
+      response = Response.error(`Room [${data.room.name}] does not exist.`);
     } else if (room.players.length >= CONFIG.RULES.player.max) {
-      return Response.error(`Room [${room.name}] is full.`);
+      response = Response.error(`Room [${room.name}] is full.`);
     } else if (room.players.find(p => p.id === player.id)) {
-      return Response.error(`Player [${player.name}] is already in room [${room.name}].`);
+      response = Response.error(`Player [${player.name}] is already in room [${room.name}].`);
+    } else {
+      this.leaveAll(client);
+      room.players.push(player);
+      client.join(room.id);
+      response = Response.success(
+        `Player [${player.name}] joined room [${room.name}].`,
+        room
+      );
     }
 
-    this.leaveAll(client);
-    room.players.push(player);
-    client.join(room.id);
-    return Response.success(`Player [${player.name}] joined room [${room.name}].`, room);
+    if (response.type === 'success') {
+      client.broadcast.in(room.id).emit('Message.Player.joinRoom', response.message);
+    }
+
+    io.sockets.emit('Rooms.getList', this.emitList());
+    return response;
   }
 
 
