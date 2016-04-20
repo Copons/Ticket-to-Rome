@@ -1,6 +1,7 @@
 'use strict';
 const CONFIG = require('../../config');
 const Deck = require('../deck/Deck');
+const DestinationDeck = require('../deck/DestinationDeck');
 const Response = require('../communications/Response');
 
 
@@ -22,6 +23,7 @@ class Game {
       Math.floor(Math.random() * this.room.players.length)
     ];
     this.deck = new Deck();
+    this.destinations = new DestinationDeck();
   }
 
 
@@ -29,6 +31,15 @@ class Game {
     const response = this.deck.draw();
     if (response.type === 'success') {
       this.room.players.find(p => p.id === player.id).cards++;
+    }
+    return response;
+  }
+
+
+  drawDestination(player) {
+    const response = this.destinations.draw();
+    if (response.type === 'success') {
+      this.room.players.find(p => p.id === player.id).destinations++;
     }
     return response;
   }
@@ -44,6 +55,19 @@ class Game {
       }
     }
     return Response.success('First hand was dealt successfully.', { cards });
+  }
+
+
+  dealFirstDestinations(player) {
+    const destinations = [];
+    for (let i = 0; i < CONFIG.RULES.player.startingDestinations; i++) {
+      const response = this.destinations.draw();
+      if (response.type === 'success') {
+        destinations.push(response.body);
+        this.room.players.find(p => p.id === player.id).destinations++;
+      }
+    }
+    return Response.success('First destinations were dealt successfully.', { destinations });
   }
 
 

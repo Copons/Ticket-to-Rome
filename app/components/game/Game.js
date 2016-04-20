@@ -5,6 +5,7 @@ import Message from '../communications/Message';
 import Board from '../board/Board';
 import Lobby from '../lobby/Lobby';
 import Deck from '../deck/Deck';
+import DestinationDeck from '../deck/DestinationDeck';
 import Player from '../player/Player';
 
 
@@ -48,6 +49,7 @@ class Game {
     this.room = response.body.room;
     this.turn = 0;
     this.deck = new Deck(response.body.deck.cards.length);
+    this.destinations = new DestinationDeck(response.body.destinations.cards.length);
     this.board.render();
 
     Lobby.hide();
@@ -55,6 +57,7 @@ class Game {
     this.activePlayer = response.body.activePlayer;
     Player.setColor(this.room.players.find(p => p.id === Player.id).color);
     Player.initHand();
+    Player.initDestinations();
     Player.startTurn(this.activePlayer);
 
     this.render();

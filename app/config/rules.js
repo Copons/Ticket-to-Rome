@@ -3,7 +3,9 @@ export const RULES = {
   player: {
     max: 5,
     startingHand: 3,
+    startingDestinations: 3,
     startingPieces: 45,
+    minDestinations: 2,
   },
 
   turn: {

@@ -1,4 +1,4 @@
-import './deck.css';
+import './destinationDeck.css';
 import { RULES } from '../../config';
 import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
@@ -8,14 +8,14 @@ import Game from '../game/Game';
 import Player from '../player/Player';
 
 
-export default class Deck {
+export default class DestinationDeck {
 
 
-  constructor(cardsCount) {
-    this.counter = cardsCount;
+  constructor(destinationsCount) {
+    this.counter = destinationsCount;
 
-    this.el = { deck: document.getElementById('deck') };
-    this.el.counter = qs('span', this.el.deck);
+    this.el = { destinationDeck: document.getElementById('destinationDeck') };
+    this.el.counter = qs('span', this.el.destinationDeck);
     this.el.counter.textContent = this.counter;
 
     this.listen();
@@ -23,8 +23,8 @@ export default class Deck {
 
 
   listen() {
-    IO.io.on('Deck.count', this.update);
-    listen(this.el.deck, 'click', this.draw);
+    IO.io.on('DestinationDeck.count', this.update);
+    listen(this.el.destinationDeck, 'click', this.draw);
   }
 
 
@@ -32,23 +32,23 @@ export default class Deck {
     this.counter = cardsCount;
     this.el.counter.textContent = this.counter;
     if (this.counter) {
-      removeClass(this.el.deck, 'empty');
+      removeClass(this.el.destinationDeck, 'empty');
     } else {
-      addClass(this.el.deck, 'empty');
+      addClass(this.el.destinationDeck, 'empty');
     }
   }
 
 
   draw = () => {
     if (Player.active
-      && Player.actionsLeft >= RULES.action.drawFromDeck
+      && Player.actionsLeft >= RULES.action.newDestination
       && this.counter > 0
     ) {
       Player.setActive(false);
-      IO.emit('Deck.draw', Game.simplify())
+      IO.emit('DestinationDeck.draw', Game.simplify())
         .then(response => {
           this.update(this.counter - 1);
-          Player.drawCardFromDeck(response.body);
+          Player.drawDestination(response.body);
           Message.success(response.message);
         })
         .catch(response => {

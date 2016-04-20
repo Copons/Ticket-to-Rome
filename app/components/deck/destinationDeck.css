@@ -1,17 +1,18 @@
-#deck {
+#destinationDeck {
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 65px;
+  margin-bottom: 10px;
   border-radius: 5px;
-  border: 3px solid #795548;
-  background-color: #8d6e63;
+  border: 3px solid #00695c;
+  background-color: #00796b;
 
   div,
   span {
-    color: #bcaaa4;
+    color: #b2dfdb;
     font-weight: 700;
     user-select: none;
   }
@@ -26,7 +27,7 @@
 
 
   @at-root {
-    #game.active #deck {
+    #game.active #destinationDeck {
       cursor: pointer;
     }
   }

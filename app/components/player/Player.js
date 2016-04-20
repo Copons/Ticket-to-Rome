@@ -1,8 +1,10 @@
+import './player.css';
 import { RULES } from '../../config';
 import { sessionSet, sessionGet, sessionRemove } from '../../libs/storage';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
 import PubSub from '../communications/PubSub';
+import Destinations from '../destinations/Destinations';
 import Hand from '../hand/Hand';
 import Game from '../game/Game';
 import Lobby from '../lobby/Lobby';
@@ -52,12 +54,27 @@ class Player {
   }
 
 
+  initDestinations() {
+    IO.emit('Player.initDestinations', {
+      player: this.simplify(),
+      game: Game.simplify(),
+    })
+      .then(response => {
+        this.destinations = new Destinations(response.body.destinations);
+      })
+      .catch(response => {
+        Message.error(response.message);
+      });
+  }
+
+
   reset() {
     this.color = '';
     this.points = 0;
     this.pieces = 0;
     this.active = false;
     this.hand = [];
+    this.destinations = [];
     this.builtRoutes = [];
     this.actionsLeft = 0;
   }
@@ -141,6 +158,13 @@ class Player {
     this.hand.addCard(card);
     this.changeTurn();
     PubSub.pub('Hand.changed', this.hand.groups);
+  }
+
+
+  drawDestination(destination) {
+    this.actionsLeft -= RULES.action.newDestination;
+    this.destinations.add(destination);
+    this.changeTurn();
   }
 
 

@@ -72,9 +72,15 @@ module.exports.listen = server => {
 
     client.on('Player.initHand', (data, callback) => {
       const response = games.game(data.game.id).dealFirstHand(data.player);
-      io.in(data.game.id).emit(
-        'Deck.count',
-        games.game(data.game.id).deck.cards.length
+      io.in(data.game.id).emit('Deck.count', games.game(data.game.id).deck.cards.length);
+      io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
+      callback(response);
+    });
+
+    client.on('Player.initDestinations', (data, callback) => {
+      const response = games.game(data.game.id).dealFirstDestinations(data.player);
+      io.in(data.game.id).emit('DestinationDeck.count',
+        games.game(data.game.id).destinations.cards.length
       );
       io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
       callback(response);
@@ -93,9 +99,21 @@ module.exports.listen = server => {
         client.broadcast.in(game.id).emit('Message.Deck.draw',
           `Player [${game.activePlayer.name}] drew a card.`
         );
+        client.broadcast.in(game.id).emit('Deck.count', games.game(game.id).deck.cards.length);
+      }
+      io.in(game.id).emit('Game.updated', games.info(game.id));
+      callback(response);
+    });
+
+    client.on('DestinationDeck.draw', (game, callback) => {
+      const response = games.game(game.id).drawDestination(game.activePlayer);
+      if (response.type === 'success') {
         client.broadcast.in(game.id).emit(
-          'Deck.count',
-          games.game(game.id).deck.cards.length
+          'Message.DestinationDeck.draw',
+          'Player drew a destination.'
+        );
+        client.broadcast.in(game.id).emit('DestinationDeck.count',
+          games.game(game.id).destinations.cards.length
         );
       }
       io.in(game.id).emit('Game.updated', games.info(game.id));
