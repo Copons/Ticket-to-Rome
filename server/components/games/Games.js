@@ -45,21 +45,105 @@ class Games {
   }
 
 
-  closeOnLeaving(client) {
+  closeOnLeaving(client, io) {
+    let response = {};
+
     for (const game of this.list) {
       const player = game.room.players.find(p => client.id.includes(p.id));
       if (player) {
         this.close(game.room);
-        return Response.error(
+        response = Response.error(
           `Game in room [${game.room.name}] ended because [${player.name}] left.`,
           game
         );
       }
     }
-    return false;
+
+    if (response.body) {
+      io.in(response.body.id).emit('Game.closed', response);
+    }
+  }
+
+
+  dealFirstHand(data, io) {
+    const game = this.game(data.game.id);
+    const response = game.dealFirstHand(data.player);
+
+    io.in(game.id).emit('Deck.count', game.deck.cards.length);
+    io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
+  }
+
+
+  dealFirstDestinations(data, io) {
+    const game = this.game(data.game.id);
+    const response = game.dealFirstDestinations(data.player);
+
+    io.in(game.id).emit('DestinationDeck.count', game.destinations.cards.length);
+    io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
+  }
+
+
+  changeTurn(data, io) {
+    const game = this.game(data.game.id);
+    const response = game.changeTurn(data.player);
+
+    io.in(game.id).emit('Game.turnChanged', response);
+    io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
+  }
+
+
+  drawFromDeck(data, client, io) {
+    const game = this.game(data.id);
+    const response = game.drawFromDeck(game.activePlayer);
+
+    if (response.type === 'success') {
+      client.broadcast.in(game.id).emit('Message.Deck.draw',
+        `Player [${game.activePlayer.name}] drew a card.`
+      );
+      client.broadcast.in(game.id).emit('Deck.count', game.deck.cards.length);
+    }
+
+    io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
+  }
+
+
+  drawDestination(data, client, io) {
+    const game = this.game(data.id);
+    const response = game.drawDestination(game.activePlayer);
+
+    if (response.type === 'success') {
+      client.broadcast.in(game.id).emit('Message.DestinationDeck.draw',
+        `Player [${game.activePlayer.name}] drew a destination.`
+      );
+      client.broadcast.in(game.id).emit('DestinationDeck.count', game.destinations.cards.length);
+    }
+
+    io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
+  }
+
+
+  claimRoute(data, client, io) {
+    const game = this.game(data.game.id);
+    const response = game.claimRoute(data);
+
+    if (response.type === 'success') {
+      client.broadcast.in(game.id).emit('Message.Route.claim', response.message);
+      io.in(game.id).emit('Route.claimed', {
+        route: data.route,
+        player: game.activePlayer,
+      });
+    }
+
+    io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
   }
 
 }
 
 
-module.exports = Games;
+module.exports = new Games();

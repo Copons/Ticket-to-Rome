@@ -1,6 +1,8 @@
 'use strict';
 const CONFIG = require('../../config');
 const Response = require('../communications/Response');
+const Games = require('../games/Games');
+const Players = require('../players/Players');
 const Room = require('./Room');
 
 
@@ -17,19 +19,16 @@ class Rooms {
   }
 
 
-  create(room, players, client, io) {
+  create(room, client, io) {
     let response = {};
-    const player = players.list.find(p => p.id === room.owner.id).simplify();
+    const player = Players.player(room.owner.id).simplify();
 
     if (this.list.find(r => r.name === room.name)) {
       response = Response.error(`Room [${room.name}] already exists.`);
     } else {
       const newRoom = new Room(room);
       this.list.push(newRoom);
-      response = this.join({
-        player,
-        room: newRoom,
-      }, players, client, io);
+      response = this.join({ player, room: newRoom }, client, io);
     }
 
     io.sockets.emit('Rooms.getList', this.emitList());
@@ -37,10 +36,10 @@ class Rooms {
   }
 
 
-  join(data, players, client, io) {
+  join(data, client, io) {
     let response = {};
     const room = this.list.find(r => r.id === data.room.id);
-    const player = players.list.find(p => p.id === data.player.id).simplify();
+    const player = Players.player(room.owner.id).simplify();
 
     if (!room) {
       response = Response.error(`Room [${data.room.name}] does not exist.`);
@@ -49,7 +48,7 @@ class Rooms {
     } else if (room.players.find(p => p.id === player.id)) {
       response = Response.error(`Player [${player.name}] is already in room [${room.name}].`);
     } else {
-      this.leaveAll(client);
+      this.leaveAll(client, io);
       room.players.push(player);
       client.join(room.id);
       response = Response.success(
@@ -67,52 +66,77 @@ class Rooms {
   }
 
 
-  leaveAll(client) {
+  leaveAll(client, io) {
     const player = {
       id: client.id,
       name: client.name || client.id,
     };
+
     for (const room of this.list) {
       if (room.players.find(p => player.id.includes(p.id))) {
-        this.leave(room, player, client);
+        this.leave({ player, room }, client, io);
       }
     }
+
+    io.sockets.emit('Rooms.getList', this.emitList());
   }
 
 
-  leave(roomToLeave, player, client) {
-    const room = this.list.find(r => r.id === roomToLeave.id);
+  leave(data, client, io) {
+    let response = {};
+    const room = this.list.find(r => r.id === data.room.id);
+
     if (!room) {
-      return Response.error(`Room [${roomToLeave.name}] does not exist.`);
-    }
-
-    if (room.status === 'playing') {
-      room.status = 'open';
-    }
-
-    if (player.id.includes(room.owner.id)) {
-      this.list = this.list.filter(r => r.id !== room.id);
+      response = Response.error(`Room [${data.room.name}] does not exist.`);
     } else {
-      room.players = room.players.filter(p => !player.id.includes(p.id));
+      if (room.status === 'playing') {
+        room.status = 'open';
+      }
+
+      if (data.player.id.includes(room.owner.id)) {
+        this.list = this.list.filter(r => r.id !== room.id);
+      } else {
+        room.players = room.players.filter(p => !data.player.id.includes(p.id));
+      }
+
+      client.leave(room.id);
+      response = Response.success(
+        `Player [${data.player.name}] left room [${room.name}].`,
+        room
+      );
     }
-    client.leave(room.id);
-    return Response.success(`Player [${player.name}] left room [${room.name}].`, room);
+
+    if (response.type === 'success') {
+      io.in(room.id).emit('Message.Player.leaveRoom', response.message);
+    }
+
+    Games.closeOnLeaving(client, io);
+
+    io.sockets.emit('Rooms.getList', this.emitList());
+    return response;
   }
 
 
-  startGame(roomToStart, games) {
+  startGame(roomToStart, io) {
+    let response = {};
     const room = this.list.find(r => r.id === roomToStart.id);
     if (!room) {
-      return Response.error(`Room [${roomToStart.name}] does not exist.`);
+      response = Response.error(`Room [${roomToStart.name}] does not exist.`);
     } else if (room.players.length < 1) {
-      return Response.error(`Room [${room.name}] is empty.`);
+      response = Response.error(`Room [${room.name}] is empty.`);
+    } else {
+      room.status = 'playing';
+      response = Games.start(room);
     }
 
-    room.status = 'playing';
-    return games.start(room);
+    if (response.type === 'success') {
+      io.in(room.id).emit('Game.start', response);
+    }
+
+    return response;
   }
 
 }
 
 
-module.exports = Rooms;
+module.exports = new Rooms();

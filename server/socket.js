@@ -7,9 +7,9 @@ const Games = require('./components/games/Games');
 
 module.exports.listen = server => {
   const io = socketIo.listen(server);
-  const players = new Players();
-  const rooms = new Rooms();
-  const games = new Games();
+  //const players = new Players();
+  //const rooms = new Rooms();
+  //const games = new Games();
 
   io.on('connection', client => {
     console.log(`Client ${client.id} connected.`);
@@ -18,125 +18,66 @@ module.exports.listen = server => {
     // PLAYERS
 
     client.on('Player.setName', (player, callback) => {
-      const response = players.add(player, client);
-      callback(response);
+      callback(Players.add(player, client));
     });
 
 
     // ROOMS
 
     client.on('Lobby.getRoomsList', () => {
-      io.sockets.emit('Rooms.getList', rooms.emitList());
+      io.sockets.emit('Rooms.getList', Rooms.emitList());
     });
 
     client.on('Lobby.createRoom', (room, callback) => {
-      callback(rooms.create(room, players, client, io));
+      callback(Rooms.create(room, client, io));
     });
 
     client.on('Lobby.joinRoom', (data, callback) => {
-      callback(rooms.join(data, players, client, io));
+      callback(Rooms.join(data, client, io));
     });
 
     client.on('Lobby.leaveRoom', (data, callback) => {
-      const response = rooms.leave(data.room, data.player, client);
-      io.sockets.emit('Rooms.getList', rooms.emitList());
-      if (response.type === 'success') {
-        io.in(data.room.id).emit('Message.Player.leaveRoom', response.message);
-      }
-      const gameClosed = games.closeOnLeaving(client);
-      if (gameClosed.body) {
-        io.in(gameClosed.body.id).emit('Game.closed', gameClosed);
-      }
-      callback(response);
+      callback(Rooms.leave(data, client, io));
     });
 
 
     // GAMES
 
     client.on('Lobby.startGame', (room, callback) => {
-      const response = rooms.startGame(room, games);
-      if (response.type === 'success') {
-        io.in(room.id).emit('Game.start', response);
-      }
-      callback(response);
+      callback(Rooms.startGame(room, io));
     });
 
     client.on('Player.initHand', (data, callback) => {
-      const response = games.game(data.game.id).dealFirstHand(data.player);
-      io.in(data.game.id).emit('Deck.count', games.game(data.game.id).deck.cards.length);
-      io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
-      callback(response);
+      callback(Games.dealFirstHand(data, io));
     });
 
     client.on('Player.initDestinations', (data, callback) => {
-      const response = games.game(data.game.id).dealFirstDestinations(data.player);
-      io.in(data.game.id).emit('DestinationDeck.count',
-        games.game(data.game.id).destinations.cards.length
-      );
-      io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
-      callback(response);
+      callback(Games.dealFirstDestinations(data, io));
     });
 
     client.on('Player.endTurn', (data, callback) => {
-      const response = games.game(data.game.id).changeTurn(data.player);
-      io.in(data.game.id).emit('Game.turnChanged', response);
-      io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
-      callback(response);
+      callback(Games.changeTurn(data, io));
     });
 
     client.on('Deck.draw', (game, callback) => {
-      const response = games.game(game.id).drawFromDeck(game.activePlayer);
-      if (response.type === 'success') {
-        client.broadcast.in(game.id).emit('Message.Deck.draw',
-          `Player [${game.activePlayer.name}] drew a card.`
-        );
-        client.broadcast.in(game.id).emit('Deck.count', games.game(game.id).deck.cards.length);
-      }
-      io.in(game.id).emit('Game.updated', games.info(game.id));
-      callback(response);
+      callback(Games.drawFromDeck(game, client, io));
     });
 
     client.on('DestinationDeck.draw', (game, callback) => {
-      const response = games.game(game.id).drawDestination(game.activePlayer);
-      if (response.type === 'success') {
-        client.broadcast.in(game.id).emit(
-          'Message.DestinationDeck.draw',
-          'Player drew a destination.'
-        );
-        client.broadcast.in(game.id).emit('DestinationDeck.count',
-          games.game(game.id).destinations.cards.length
-        );
-      }
-      io.in(game.id).emit('Game.updated', games.info(game.id));
-      callback(response);
+      callback(Games.drawDestination(game, client, io));
     });
 
     client.on('Route.claim', (data, callback) => {
-      const response = games.game(data.game.id).claimRoute(data);
-      if (response.type === 'success') {
-        client.broadcast.in(data.game.id).emit('Message.Route.claim', response.message);
-        io.in(data.game.id).emit('Game.updated', games.info(data.game.id));
-        io.in(data.game.id).emit('Route.claimed', {
-          route: data.route,
-          player: data.game.activePlayer,
-        });
-      }
-      callback(response);
+      callback(Games.claimRoute(data, client, io));
     });
 
 
     // DISCONNECT
 
     client.on('disconnect', () => {
-      const gameClosed = games.closeOnLeaving(client);
-      if (gameClosed.body) {
-        io.in(gameClosed.body.id).emit('Game.closed', gameClosed);
-      }
-
-      rooms.leaveAll(client);
-      io.sockets.emit('Rooms.getList', rooms.emitList());
-
-      players.remove(client);
+      Games.closeOnLeaving(client, io);
+      Rooms.leaveAll(client, io);
+      Players.remove(client);
     });
   });
 

@@ -11,6 +11,11 @@ class Players {
   }
 
 
+  player(id) {
+    return this.list.find(p => p.id === id);
+  }
+
+
   getList() {
     return this.list.map(p => p.simplify());
   }
@@ -41,4 +46,4 @@ class Players {
 }
 
 
-module.exports = Players;
+module.exports = new Players();
