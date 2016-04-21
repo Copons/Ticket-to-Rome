@@ -1,70 +1,64 @@
 import './destinations.css';
+import uuid from 'node-uuid';
 import { STATIONS } from '../../config';
-import { create } from '../../libs/dom';
+import { create, qs, addClass } from '../../libs/dom';
 
 
 export default class Destinations {
 
   constructor(destinations) {
-    this.list = this.init(destinations);
+    this.list = [];
     this.el = { destinations: document.getElementById('destinations') };
-    this.render();
+    this.init(destinations);
   }
 
 
   init(destinations) {
-    const list = [];
     for (const destination of destinations) {
-      list.push(this.addName(destination));
-    }
-    return list;
-  }
-
-
-  addName(destination) {
-    let name = STATIONS.find(s => s.slug === destination.start).name;
-    name += ' - ';
-    name += STATIONS.find(s => s.slug === destination.end).name;
-    return {
-      name,
-      start: destination.start,
-      end: destination.end,
-      points: destination.points,
-    };
-  }
-
-
-  render() {
-    while (this.el.destinations.firstChild) {
-      this.el.destinations.removeChild(this.el.destinations.firstChild);
-    }
-    for (const destination of this.list) {
-      const destinationElement = create('div', { class: 'destination' });
-      destinationElement.insertAdjacentHTML('afterbegin', `
-        ${destination.name}
-        <span class="points">
-          ${destination.points}
-          <span class="icon"></span>
-        </span>
-      `);
-      this.el.destinations.appendChild(destinationElement);
+      this.add(destination);
     }
   }
 
 
   add(destination) {
-    const namedDestination = this.addName(destination);
-    this.list.push(namedDestination);
+    let name = STATIONS.find(s => s.slug === destination.start).name;
+    name += ' - ';
+    name += STATIONS.find(s => s.slug === destination.end).name;
+    const actualDestination = {
+      name,
+      id: uuid.v4(),
+      start: destination.start,
+      end: destination.end,
+      points: destination.points,
+      completed: false,
+    };
 
-    const destinationElement = create('div', { class: 'destination' });
+    this.list.push(actualDestination);
+
+    const destinationElement = create('div', {
+      class: 'destination',
+      'data-destination': actualDestination.id,
+    });
     destinationElement.insertAdjacentHTML('afterbegin', `
-      ${namedDestination.name}
+      ${actualDestination.name}
       <span class="points">
-        ${namedDestination.points}
+        ${actualDestination.points}
         <span class="icon"></span>
       </span>
     `);
     this.el.destinations.appendChild(destinationElement);
+  }
+
+
+  update(graphs) {
+    for (const destination of this.list) {
+      for (const graph of graphs) {
+        if (graph.indexOf(destination.start) > -1 && graph.indexOf(destination.end) > -1) {
+          destination.completed = true;
+          addClass(qs(`[data-destination="${destination.id}"]`), 'completed');
+        }
+      }
+    }
   }
 
 }

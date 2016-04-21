@@ -7,9 +7,6 @@ const Games = require('./components/games/Games');
 
 module.exports.listen = server => {
   const io = socketIo.listen(server);
-  //const players = new Players();
-  //const rooms = new Rooms();
-  //const games = new Games();
 
   io.on('connection', client => {
     console.log(`Client ${client.id} connected.`);

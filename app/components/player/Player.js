@@ -75,8 +75,12 @@ class Player {
     this.active = false;
     this.hand = [];
     this.destinations = [];
-    this.builtRoutes = [];
     this.actionsLeft = 0;
+    this.claims = {
+      routes: [],
+      graphs: [],
+      lines: [],
+    };
   }
 
 
@@ -164,6 +168,7 @@ class Player {
   drawDestination(destination) {
     this.actionsLeft -= RULES.action.newDestination;
     this.destinations.add(destination);
+    this.destinations.update(this.claims.graphs);
     this.changeTurn();
   }
 
@@ -173,9 +178,66 @@ class Player {
     for (const type of cards) {
       this.hand.removeCard(type);
     }
-    this.builtRoutes.push(route.simplify());
+
+    this.claims.routes.push(route.simplify());
+    this.addRouteToGraph(route.simplify());
+    this.destinations.update(this.claims.graphs);
+
     this.changeTurn();
     PubSub.pub('Hand.changed', this.hand.groups);
+  }
+
+
+  addRouteToGraph(route) {
+    const start = route.start.slug;
+    const end = route.end.slug;
+
+    if (this.claims.graphs.length === 0) {
+      this.claims.graphs.push([start, end]);
+      return;
+    }
+
+    const newGraph = [];
+    for (const graph of this.claims.graphs) {
+      if (graph.indexOf(start) > -1 || graph.indexOf(end) > -1) {
+        graph.push(start, end);
+      } else {
+        newGraph.push(start, end);
+      }
+    }
+    if (newGraph.length > 0) {
+      this.claims.graphs.push(newGraph);
+    }
+
+    const graphsToDelete = [];
+
+    for (let i = 0; i < this.claims.graphs.length; i++) {
+      const leftGraph = this.claims.graphs[i];
+      for (let j = i + 1; j < this.claims.graphs.length; j++) {
+        const rightGraph = this.claims.graphs[j];
+        for (const station of leftGraph) {
+          if (rightGraph.indexOf(station) > -1) {
+            this.claims.graphs[i] = leftGraph.concat(rightGraph);
+            graphsToDelete.push(j);
+            break;
+          }
+        }
+      }
+    }
+
+    for (const index of graphsToDelete) {
+      this.claims.graphs.splice(index, 1);
+    }
+
+    for (const graph of this.claims.graphs) {
+      graph.sort();
+      graph.forEach((station, index) => {
+        const lastIndex = graph.lastIndexOf(station);
+        if (lastIndex !== index) {
+          graph.splice(index + 1, lastIndex - index);
+        }
+      });
+    }
   }
 
 }

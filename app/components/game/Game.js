@@ -112,7 +112,6 @@ class Game {
 
   update = response => {
     const game = response;
-    console.log(response);
 
     if (game.turn !== this.turn) {
       this.turn = game.turn;
