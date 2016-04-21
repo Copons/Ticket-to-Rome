@@ -1,6 +1,6 @@
 {
   "name": "ticket-to-rome",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Ticket to Rome",
   "repository": {
     "type": "git",
@@ -32,18 +32,14 @@
     "eslint": "^2.4.0",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
-    "http-proxy": "^1.13.2",
     "node-uuid": "^1.4.7",
     "postcss-loader": "^0.8.2",
     "precss": "^1.4.0",
-    "rimraf": "^2.5.2",
     "socket.io": "^1.4.5",
     "style-loader": "^0.13.0",
     "svgo-loader": "^1.1.0",
     "tether-drop": "^1.4.2",
     "webpack": "^1.12.14",
-    "webpack-dev-middleware": "^1.6.0",
-    "webpack-dev-server": "^1.14.1",
-    "webpack-hot-middleware": "^2.10.0"
+    "webpack-dev-server": "^1.14.1"
   }
 }
