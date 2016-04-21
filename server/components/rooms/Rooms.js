@@ -39,7 +39,7 @@ class Rooms {
   join(data, client, io) {
     let response = {};
     const room = this.list.find(r => r.id === data.room.id);
-    const player = Players.player(room.owner.id).simplify();
+    const player = Players.player(data.player.id).simplify();
 
     if (!room) {
       response = Response.error(`Room [${data.room.name}] does not exist.`);
