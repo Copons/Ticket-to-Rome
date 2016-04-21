@@ -1,13 +1,8 @@
-.hand {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  padding: 5px;
+#hand {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid #bdbdbd;
-  background: #e0e0e0;
+  width: 70%;
+  padding: 5px;
 }

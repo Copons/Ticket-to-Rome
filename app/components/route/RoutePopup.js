@@ -1,70 +1,39 @@
 import Drop from 'tether-drop';
-import PubSub from '../../libs/PubSub';
+import { RULES } from '../../config';
 import { create } from '../../libs/dom';
-import { listen } from '../../libs/events';
+import { delegate } from '../../libs/events';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import PubSub from '../communications/PubSub';
+import Game from '../game/Game';
+import Player from '../player/Player';
+
+export default class routePopup {
 
 
-/** Class representing a route popup. */
-export default class RoutePopup {
-
-
-  /**
-   * Create the route popup.
-   * @param {Route} route The related route.
-   */
   constructor(route) {
     this.route = route;
-    this.dropContent = this.setupDropContent();
-    this.element = this.setupElement();
-    PubSub.sub('hand/changed', this.updateRouteClaims);
-  }
-
-
-  /**
-   * Setup the popup content.
-   * @return {Object}
-   */
-  setupDropContent() {
-    const dropContent = {
-      content: create('div'),
-      title: {
-        container: create('div', { class: 'title' }),
-        start: create('span', { class: 'start' }),
-        end: create('span', { class: 'end' }),
-      },
-      info: {
-        container: create('div', { class: 'info' }),
-        parts: create('span', { class: 'parts' }),
-      },
+    this.el = {
       claims: create('div', { class: 'claims' }),
     };
+    this.el.content = this.createContent();
+    this.el.popup = this.createPopup();
 
-    dropContent.title.start.textContent = this.route.stations.start.name;
-    dropContent.title.end.textContent = this.route.stations.end.name;
-    dropContent.title.container.appendChild(dropContent.title.start);
-    dropContent.title.container.appendChild(dropContent.title.end);
-
-    const parts = [];
-    for (let i = 0; i < this.route.parts; i++) {
-      parts.push(this.route.type);
-    }
-    dropContent.info.parts.insertAdjacentHTML(
-      'beforeend', this.createParts(parts)
-    );
-    dropContent.info.container.appendChild(dropContent.info.parts);
-
-    dropContent.content.appendChild(dropContent.title.container);
-    dropContent.content.appendChild(dropContent.info.container);
-    dropContent.content.appendChild(dropContent.claims);
-    return dropContent;
+    this.listen();
   }
 
 
-  setupElement() {
+  listen() {
+    PubSub.sub('Hand.changed', this.renderUpdateClaims);
+    delegate('.claim', this.el.claims, 'click', this.claim);
+  }
+
+
+  createPopup() {
     return new Drop({
-      target: this.route.element.path,
+      target: this.route.el.path,
       classes: 'route-popup',
-      content: this.dropContent.content,
+      content: this.el.content,
       position: 'bottom center',
       openOn: 'click',
       tetherOptions: { offset: '-10px 0' },
@@ -72,11 +41,27 @@ export default class RoutePopup {
   }
 
 
-  /**
-   * Create the part elements;
-   * @param  {Array}  types The parts types.
-   * @return {string}
-   */
+  createContent() {
+    const content = create('div');
+
+    content.insertAdjacentHTML('beforeend',
+      `<div class="title">
+        <span class="start">${this.route.stations.start.name}</span>
+        <span class="end">${this.route.stations.end.name}</span>
+      </div>`
+    );
+
+    const parts = [];
+    for (let i = 0; i < this.route.parts; i++) {
+      parts.push(this.route.type);
+    }
+    content.insertAdjacentHTML('beforeend', this.createParts(parts));
+
+    content.appendChild(this.el.claims);
+    return content;
+  }
+
+
   createParts(types) {
     let parts = '';
     for (const type of types) {
@@ -86,34 +71,32 @@ export default class RoutePopup {
   }
 
 
-  updateRouteClaims = data => {
-    while (this.dropContent.claims.hasChildNodes()) {
-      this.dropContent.claims.removeChild(this.dropContent.claims.lastChild);
+  renderUpdateClaims = cardGroups => {
+    while (this.el.claims.hasChildNodes()) {
+      this.el.claims.removeChild(this.el.claims.lastChild);
     }
 
-    const colorCards = data.hand.filter(group => group.type !== 'wild' && group.cards.length);
-    const wildCards = data.hand.find(group => group.type === 'wild');
-    const claimContent = [];
+    const colorCards = cardGroups.filter(group => group.type !== 'wild' && group.cards.length);
+    const wildCards = cardGroups.find(group => group.type === 'wild');
+    const claims = [];
     let claim = [];
 
     for (const group of colorCards) {
       claim = [];
       if (group.type === this.route.type || this.route.type === 'wild') {
         if (group.cards.length >= this.route.parts) {
-          // type cards are enough to claim the route
           for (let i = 0; i < this.route.parts; i++) {
             claim.push(group.type);
           }
-          claimContent.push(this.setupClaimDiv(claim));
+          claims.push(this.createClaim(claim));
         } else if (group.cards.length + wildCards.cards.length >= this.route.parts) {
-          // wild cards are in part needed to claim the route
           for (let i = 0; i < group.cards.length; i++) {
             claim.push(group.type);
           }
           for (let i = 0; i < this.route.parts - group.cards.length; i++) {
             claim.push('wild');
           }
-          claimContent.push(this.setupClaimDiv(claim));
+          claims.push(this.createClaim(claim));
         }
       }
     }
@@ -123,43 +106,53 @@ export default class RoutePopup {
       for (let i = 0; i < this.route.parts; i++) {
         claim.push('wild');
       }
-      claimContent.push(this.setupClaimDiv(claim));
+      claims.push(this.createClaim(claim));
     }
 
-    if (claimContent.length) {
-      this.dropContent.claims.innerHTML = '<div class="title">Claim with:</div>';
+    if (claims.length) {
+      this.el.claims.insertAdjacentHTML('afterbegin',
+        '<div class="title">Claim with:</div>'
+      );
     } else {
-      this.dropContent.claims.innerHTML = '<div class="title">Unclaimable</div>';
+      this.el.claims.insertAdjacentHTML('afterbegin',
+        '<div class="title">Unclaimable</div>'
+      );
     }
 
-    for (const claimAction of claimContent) {
-      this.dropContent.claims.appendChild(claimAction);
-      listen(claimAction, 'click', this.claimRoute);
+    for (const claimElement of claims) {
+      this.el.claims.appendChild(claimElement);
     }
   }
 
 
-  setupClaimDiv = claim => {
-    const claimDiv = create('div', {
+  createClaim(claim) {
+    const claimElement = create('div',{
       class: 'claim',
       'data-claim': claim.join(),
     });
-    claimDiv.innerHTML = this.createParts(claim);
-    return claimDiv;
+    claimElement.insertAdjacentHTML('beforeend', this.createParts(claim));
+    return claimElement;
   }
 
 
-
-  /**
-   * Dispatch a claim route event whenever the claim container is clicked.
-   * @param  {Event} e - The click event.
-   */
-  claimRoute = e => {
-    PubSub.pub('game/action', {
-      action: 'route/claim',
-      route: this.route,
-      cards: e.target.dataset.claim.split(','),
-    });
+  claim = e => {
+    if (Player.active
+      && Player.actionsLeft >= RULES.action.claimRoute
+    ) {
+      const cards = e.target.dataset.claim.split(',');
+      IO.emit('Route.claim', {
+        cards: cards.length,
+        route: this.route.simplify(),
+        game: Game.simplify(),
+      })
+        .then(response => {
+          Player.claimRoute(this.route, cards);
+          Message.success(response.message);
+        })
+        .catch(() => {
+          Message.error('You don\'t have enough cards to claim this route.');
+        });
+    }
   }
 
 }

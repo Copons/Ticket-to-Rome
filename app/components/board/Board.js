@@ -1,85 +1,120 @@
 import './board.css';
-import { APP_CONTAINER, SIZES, STATIONS, ROUTES } from '../../config';
-import { create, createSvg } from '../../libs/dom';
-import RouteStraight from '../route/RouteStraight';
+import { SIZES, STATIONS, ROUTES } from '../../config';
+import { qs, qsa, getDataset, addClass, removeClass } from '../../libs/dom';
+import { delegate } from '../../libs/events';
+import IO from '../communications/IO';
+import Player from '../player/Player';
 import RouteCurved from '../route/RouteCurved';
-import Station from '../station';
+import RouteStraight from '../route/RouteStraight';
+import Station from '../station/Station';
 
 
-/** Class representing the game board. */
 export default class Board {
 
 
-  /**
-   * Create the game board.
-   */
   constructor() {
-    this.element = this.setupElement();
-    this.railway = {};
-    this.railway.stations = this.setupRailwayStations();
-    this.railway.routes = this.setupRailwayRoutes();
-    this.render();
+    this.railway = {
+      stations: [],
+      routes: [],
+    };
+
+    this.el = {
+      board: qs('#board svg'),
+      routes: document.getElementById('routes'),
+      stations: document.getElementById('stations'),
+      names: document.getElementById('station-names'),
+    };
+
+    this.listen();
   }
 
 
-  /**
-   * Setup the railway stations.
-   * @return {Object}
-   */
-  setupRailwayStations() {
-    return STATIONS.map(station => new Station(station));
+  listen() {
+    IO.io.on('Route.claimed', this.renderUpdateRoutes);
+    delegate('.route.unclaimed', this.el.routes, 'mouseover', this.mouseOverRoute);
+    delegate('.route.unclaimed', this.el.routes, 'mouseout', this.mouseOutRoute);
   }
 
 
-  /**
-   * Setup the railway routes.
-   * @return {Object}
-   */
-  setupRailwayRoutes() {
-    return ROUTES.map(route => {
-      if (route.qx && route.qy) {
-        return new RouteCurved(route, this);
-      }
-      return new RouteStraight(route, this);
-    });
-  }
-
-
-  /**
-   * Create the board elements.
-   * @return {Object}
-   */
-  setupElement() {
+  initRailway() {
     return {
-      board: create('div', { class: 'board' }),
-      svg: createSvg('svg', {
-        viewBox: `0 0 ${SIZES.board.width} ${SIZES.board.height}`,
+      stations: STATIONS.map(station => new Station(station)),
+      routes: ROUTES.map(route => {
+        if (route.qx && route.qy) {
+          return new RouteCurved(route);
+        }
+        return new RouteStraight(route);
       }),
-      stations: createSvg('g', { class: 'stations' }),
-      routes: createSvg('g', { class: 'routes' }),
-      stationNames: createSvg('g', { class: 'station-names' }),
     };
   }
 
 
-  /**
-   * Render the board into the app container.
-   */
-  render() {
+  render = () => {
+    this.railway = this.initRailway();
+
+    this.el.board.setAttributeNS(null, 'viewBox', `0 0 ${SIZES.board.width} ${SIZES.board.height}`);
+
+    while (this.el.routes.firstChild) {
+      this.el.routes.removeChild(this.el.routes.firstChild);
+    }
+    while (this.el.stations.firstChild) {
+      this.el.stations.removeChild(this.el.stations.firstChild);
+    }
+    while (this.el.names.firstChild) {
+      this.el.names.removeChild(this.el.names.firstChild);
+    }
+
     for (const station of this.railway.stations) {
-      this.element.stations.appendChild(station.element.station);
-      this.element.stationNames.appendChild(station.element.name);
+      this.el.stations.appendChild(station.el.station);
+      this.el.names.appendChild(station.el.name);
     }
     for (const route of this.railway.routes) {
-      this.element.routes.appendChild(route.element.path);
+      this.el.routes.appendChild(route.el.path);
     }
+  }
 
-    this.element.svg.appendChild(this.element.routes);
-    this.element.svg.appendChild(this.element.stations);
-    this.element.svg.appendChild(this.element.stationNames);
 
-    this.element.board.appendChild(this.element.svg);
-    APP_CONTAINER.appendChild(this.element.board);
+  renderUpdateRoutes = data => {
+    const route = this.railway.routes.find(r =>
+      r.type === data.route.type
+      && r.stations.start.slug === data.route.start.slug
+      && r.stations.end.slug === data.route.end.slug
+    );
+    if (route) {
+      route.setClaimed(data.player);
+
+      if (data.player.id === Player.id) {
+        const sameRoute = this.railway.routes.find(r =>
+          r !== route &&
+          r.stations.start.slug === route.stations.start.slug &&
+          r.stations.end.slug === route.stations.end.slug
+        );
+        if (sameRoute) {
+          sameRoute.setUnclaimable();
+        }
+      }
+    }
+  }
+
+
+  mouseOverRoute = e => {
+    const dataset = getDataset(e.target);
+    const stations = qsa(
+      `[data-station="${dataset.stationStart}"], [data-station="${dataset.stationEnd}"]`
+    );
+    [...stations].forEach(station => {
+      addClass(station, 'highlight');
+    });
+  }
+
+  mouseOutRoute = e => {
+    const dataset = getDataset(e.target);
+    const stations = qsa(
+      `[data-station="${dataset.stationStart}"], [data-station="${dataset.stationEnd}"]`
+    );
+    [...stations].forEach(station => {
+      removeClass(station, 'highlight');
+    });
   }
 
 }

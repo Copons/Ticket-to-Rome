@@ -1,108 +1,172 @@
-import { RULES, DECK } from '../../config';
-import { random } from '../../libs/math';
-import PubSub from '../../libs/PubSub';
-import Board from '../board';
-import Deck from '../deck';
-import Player from '../player';
+import './game.css';
+import { qs, qsa, addClass, removeClass } from '../../libs/dom';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import Board from '../board/Board';
+import Lobby from '../lobby/Lobby';
+import Deck from '../deck/Deck';
+import DestinationDeck from '../deck/DestinationDeck';
+import Player from '../player/Player';
 
 
-/** Class representing the main game logic. */
-export default class Game {
+class Game {
 
 
-  /**
-   * Create the main game logic.
-   * @param  {number} numberOfPlayers - The current game's number of players.
-   */
-  constructor(numberOfPlayers) {
-    PubSub.sub('game/action', this.executeAction);
-
-    this.turnCount = 1;
-    this.turnActionsLeft = RULES.turn.actions;
-
-    this.board = new Board();
-    this.deck = new Deck();
-
-    this.players = [];
+  constructor() {
+    this.room = {};
+    this.turn = 0;
     this.activePlayer = {};
-    this.setupPlayers(numberOfPlayers);
+    this.deck = [];
+    this.board = new Board();
+
+    this.el = {
+      game: document.getElementById('game'),
+      info: document.getElementById('info'),
+    };
+    this.el.turn = qs('.turn .count', this.el.info);
+    this.el.players = qs('.players', this.el.info);
   }
 
 
-  /**
-   * Setup this game players.
-   * @param {number} numberOfPlayers The number of players.
-   */
-  setupPlayers(numberOfPlayers) {
-    for (let i = 0; i < numberOfPlayers; i++) {
-      this.activePlayer = new Player(`P${i + 1}`, DECK[i].type);
-      for (let j = 0; j < RULES.player.startingHand; j++) {
-        this.deck.draw();
+  listen() {
+    IO.io.on('Game.start', this.start);
+    IO.io.on('Game.closed', this.close);
+    IO.io.on('Game.updated', this.update);
+    IO.io.on('Game.turnChanged', this.changeTurn);
+  }
+
+
+  simplify() {
+    return {
+      id: this.room.id,
+      turn: this.turn,
+      activePlayer: this.activePlayer,
+    };
+  }
+
+
+  start = response => {
+    this.room = response.body.room;
+    this.turn = 0;
+    this.deck = new Deck(response.body.deck.cards.length);
+    this.destinations = new DestinationDeck(response.body.destinations.cards.length);
+    this.board.render();
+
+    Lobby.hide();
+
+    this.activePlayer = response.body.activePlayer;
+    Player.setColor(this.room.players.find(p => p.id === Player.id).color);
+    Player.initHand();
+    Player.initDestinations();
+    Player.startTurn(this.activePlayer);
+
+    this.render();
+  }
+
+
+  close = response => {
+    if (Object.keys(this.room).length) {
+      Message.error(response.message);
+    }
+    addClass(this.el.game, 'hidden');
+    this.room = {};
+    this.turn = 0;
+    Lobby.show();
+  }
+
+
+  render() {
+    this.el.turn.textContent = this.turn;
+
+    while (this.el.players.firstChild) {
+      this.el.players.removeChild(this.el.players.firstChild);
+    }
+    for (const player of this.room.players) {
+      this.el.players.insertAdjacentHTML('beforeend', `
+        <div class="player" data-player-id="${player.id}">
+          <div class="name ${player.color}">${player.name}</div>
+          <div class="points">
+            <span class="count">${player.points}</span>
+            <span class="icon"></span>
+          </div>
+          <div class="pieces">
+            <span class="count">${player.pieces}</span>
+            <span class="icon"></span>
+          </div>
+          <div class="cards">
+            <span class="count">${player.cards}</span>
+            <span class="icon"></span>
+          </div>
+          <div class="destinations">
+            <span class="count">${player.destinations}</span>
+            <span class="icon"></span>
+          </div>
+        </div>
+      `);
+    }
+    removeClass(this.el.game, 'hidden');
+
+    this.toggleTurnActivation();
+  }
+
+
+  update = response => {
+    const game = response;
+
+    if (game.turn !== this.turn) {
+      this.turn = game.turn;
+      this.el.turn.textContent = this.turn;
+    }
+
+    for (const player of this.room.players) {
+      const gamePlayer = game.players.find(p => p.id === player.id);
+      const playerElem = qs(`.player[data-player-id="${player.id}"]`);
+      if (player.points !== gamePlayer.points) {
+        player.points = gamePlayer.points;
+        qs('.points .count', playerElem).textContent = player.points;
       }
-      this.players.push(this.activePlayer);
+      if (player.cards !== gamePlayer.cards) {
+        player.cards = gamePlayer.cards;
+        qs('.cards .count', playerElem).textContent = player.cards;
+      }
+      if (player.pieces !== gamePlayer.pieces) {
+        player.pieces = gamePlayer.pieces;
+        qs('.pieces .count', playerElem).textContent = player.pieces;
+      }
+      if (player.destinations !== gamePlayer.destinations) {
+        player.destinations = gamePlayer.destinations;
+        qs('.destinations .count', playerElem).textContent = player.destinations;
+      }
     }
-    const randomIndex = random(numberOfPlayers);
-    this.players[randomIndex].active = true;
-    this.activePlayer = this.players[randomIndex];
+
+    this.toggleTurnActivation();
   }
 
 
-  /**
-   * Execute a game action.
-   * @param {Object} data The data published when an action changes.
-   */
-  executeAction = data => {
-    if (data.action === 'deck/draw') {
-      this.actionDrawFromDeck(data);
-    } else if (data.action === 'route/claim') {
-      this.actionRouteClaimed(data);
-    }
+  changeTurn = response => {
+    this.activePlayer = response.body;
+    Player.startTurn(this.activePlayer);
+    Message.success(response.message);
   }
 
 
-  /**
-   * Execute the action "draw card from deck".
-   * @param {Object} data The data published by the 'deck/draw' action.
-   */
-  actionDrawFromDeck = data => {
-    this.turnActionsLeft - RULES.action.drawFromDeck;
-    PubSub.pub('deck/draw', {
-      player: this.activePlayer,
-      card: data.card,
+  toggleTurnActivation() {
+    const players = qsa('.player', this.el.players);
+    [...players].forEach(player => {
+      if (player.dataset.playerId === this.activePlayer.id) {
+        addClass(player, 'active');
+      } else {
+        removeClass(player, 'active');
+      }
     });
-    console.log(
-      `Player [${this.activePlayer.name} (${this.activePlayer.color})] ` +
-      `drawn a [${data.card.type}] card from the deck.`
-    );
-  }
-
-
-  /**
-   * Execute the action "claim a route".
-   * @param {Object} data The data published by the 'route/claim' action.
-   */
-  actionRouteClaimed = data => {
-    this.turnActionsLeft - RULES.action.claimRoute;
-    PubSub.pub('route/claim', {
-      player: this.activePlayer,
-      route: data.route,
-      cards: data.cards,
-    });
-
-    const sameRoute = this.board.railway.routes.find(route =>
-      route !== data.route &&
-      route.stations.start.slug === data.route.stations.start.slug &&
-      route.stations.end.slug === data.route.stations.end.slug
-    );
-    if (sameRoute) {
-      sameRoute.setUnclaimable();
+    if (Player.id === this.activePlayer.id) {
+      addClass(this.el.game, 'active');
+    } else {
+      removeClass(this.el.game, 'active');
     }
-
-    console.log(
-      `Player [${this.activePlayer.name} (${this.activePlayer.color})] ` +
-      `claimed the route [${data.route.stations.start.name} - ${data.route.stations.end.name}] ` +
-      `with the cards [${data.cards.join(', ')}].`
-    );
   }
 
 }
+
+
+export default new Game();

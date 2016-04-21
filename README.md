@@ -5,13 +5,14 @@ A just for laughs and giggles rip-off of the amazing boardgame **[Ticket to Ride
 ## Install
 
 Clone the project and run `npm i` to install the dependencies.
-Then run `npm run build`, drop the generated `/build` folder wherever you want and just open the `index.html` file.
+
+Run `npm run postinstall` to bundle the source.
+
+Then run `npm start` to start the server and open the browser at `http://localhost:3000` to play.
 
 
 ## Develop
 
 Clone the project and run `npm i` to install all the dependencies.
 
-Then just run `npm start` to launch the webpack dev server at `http://localhost:8080`.
-
-To build a production version in the `/build` folder, run `npm run build`.
+Then just run `npm run dev` to start the webpack dev server and open the browser at `http://localhost:8080`.

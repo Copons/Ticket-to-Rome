@@ -1,90 +1,61 @@
 import './deck.css';
-import { APP_CONTAINER, DECK } from '../../config';
-import { create } from '../../libs/dom';
+import { RULES } from '../../config';
+import { qs, addClass, removeClass } from '../../libs/dom';
 import { listen } from '../../libs/events';
-import { random } from '../../libs/math';
-import PubSub from '../../libs/PubSub';
-import Card from '../card';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import Game from '../game/Game';
+import Player from '../player/Player';
 
 
-/** Class representing the deck. */
 export default class Deck {
 
 
-  /**
-   * Create the deck.
-   */
-  constructor() {
-    this.cards = this.setupCards();
-    this.element = this.setupElement();
-    this.render();
+  constructor(cardsCount) {
+    this.counter = cardsCount;
+
+    this.el = { deck: document.getElementById('deck') };
+    this.el.counter = qs('span', this.el.deck);
+    this.el.counter.textContent = this.counter;
+
+    this.listen();
   }
 
 
-  /**
-   * Setup the deck cards.
-   * @return {Array}
-   */
-  setupCards() {
-    const cards = [];
-    for (const card of DECK) {
-      for (let i = 0; i < card.amount; i++) {
-        cards.push(new Card(card.type));
-      }
-    }
-    return cards;
+  listen() {
+    IO.io.on('Deck.count', this.update);
+    listen(this.el.deck, 'click', this.draw);
   }
 
 
-  /**
-   * Create the deck element.
-   * @return {Object}
-   */
-  setupElement() {
-    const element = {
-      deck: create('div', { class: 'deck' }),
-      counter: create('div', { class: 'deck-counter' }),
-    };
-    element.counter.textContent = this.cards.length;
-    listen(element.deck, 'click', this.draw);
-    return element;
-  }
-
-
-  /**
-   * Render the deck into the app container.
-   */
-  render() {
-    this.element.deck.appendChild(this.element.counter);
-    APP_CONTAINER.appendChild(this.element.deck);
-  }
-
-
-  /**
-   * Update the deck when the cards count changes.
-   */
-  renderUpdate() {
-    this.element.counter.textContent = this.cards.length;
-    if (!this.cards.length) {
-      this.element.deck.classList.add('empty');
+  update = cardsCount => {
+    this.counter = cardsCount;
+    this.el.counter.textContent = this.counter;
+    if (this.counter) {
+      removeClass(this.el.deck, 'empty');
     } else {
-      this.element.deck.classList.remove('empty');
+      addClass(this.el.deck, 'empty');
     }
   }
 
 
-  /**
-   * Draw a card from the deck.
-   */
   draw = () => {
-    const drawnCard = this.cards[random(this.cards.length)];
-    this.cards = this.cards.filter(card => card.id !== drawnCard.id);
-    this.renderUpdate();
-    PubSub.pub('game/action', {
-      action: 'deck/draw',
-      card: drawnCard,
-    });
-    return drawnCard;
+    if (Player.active
+      && Player.actionsLeft >= RULES.action.drawFromDeck
+      && this.counter > 0
+    ) {
+      Player.setActive(false);
+      IO.emit('Deck.draw', Game.simplify())
+        .then(response => {
+          this.update(this.counter - 1);
+          Player.drawCardFromDeck(response.body);
+          Message.success(response.message);
+        })
+        .catch(response => {
+          Message.error(response.message);
+          Player.setActive(true);
+        });
+    }
   }
 
 }

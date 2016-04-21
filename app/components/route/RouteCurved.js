@@ -2,20 +2,10 @@ import { bezierLength } from '../../libs/math';
 import Route from './Route';
 
 
-/**
- * Class representing a curved route.
- * @extends Route
- */
 export default class RouteCurved extends Route {
 
-
-  /**
-   * Create the curved route.
-   * @param {Object} route The route information.
-   * @param {Board}  board The game board.
-   */
-  constructor(route, board) {
-    super(route, board);
+  constructor(route) {
+    super(route);
 
     this.bezier = {
       p0: { x: this.stations.start.x, y: this.stations.start.y },
@@ -31,10 +21,6 @@ export default class RouteCurved extends Route {
   }
 
 
-  /**
-   * Calculate the route's path description attribute.
-   * @return {string}
-   */
   pathD() {
     const d = [
       'M', this.bezier.p0.x, this.bezier.p0.y,
@@ -45,10 +31,6 @@ export default class RouteCurved extends Route {
   }
 
 
-  /**
-   * Calculate the route's path length.
-   * @return {number}
-   */
   pathLength() {
     return bezierLength(this.bezier.p0, this.bezier.p1, this.bezier.p2);
   }

@@ -1,0 +1,34 @@
+#destinationDeck {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 65px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 3px solid #00695c;
+  background-color: #00796b;
+
+  div,
+  span {
+    color: #b2dfdb;
+    font-weight: 700;
+    user-select: none;
+  }
+  div {
+    margin-top: 3px;
+    font-size: 12px;
+  }
+
+  &.empty {
+    cursor: not-allowed;
+  }
+
+
+  @at-root {
+    #game.active #destinationDeck {
+      cursor: pointer;
+    }
+  }
+}
