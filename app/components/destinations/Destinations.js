@@ -14,6 +14,9 @@ export default class Destinations {
 
 
   init(destinations) {
+    while (this.el.destinations.firstChild) {
+      this.el.destinations.removeChild(this.el.destinations.firstChild);
+    }
     for (const destination of destinations) {
       this.add(destination);
     }
