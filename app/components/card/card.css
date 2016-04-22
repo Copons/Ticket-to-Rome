@@ -46,4 +46,42 @@
       $black 87.5%, $black 100%
     );
   }
+  &.deck {
+    border: 3px solid #795548;
+    background-color: #8d6e63;
+  }
+}
+
+
+.card.animate {
+  position: fixed;
+  z-index: 10;
+  transform: rotate(90deg);
+  &.draw {
+    animation: draw 2s;
+  }
+}
+
+@keyframes draw {
+  0% {
+    opacity: 1;
+  }
+  33% {
+    top: calc(50vh - 50px);
+    left: calc(50% - 32.5px);
+    transform: rotate(0) rotateY(180deg);
+    animation-timing-function: ease-in;
+  }
+  66% {
+    top: calc(50vh - 50px);
+    left: calc(50% - 32.5px);
+    opacity: 1;
+  }
+  100% {
+    top: calc(100vh - 100px);
+    left: calc(50% - 32.5px);
+    opacity: 0;
+    transform: rotate(0) rotateY(180deg);
+    animation-timing-function: ease-out;
+  }
 }

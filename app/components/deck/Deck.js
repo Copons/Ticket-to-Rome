@@ -1,6 +1,6 @@
 import './deck.css';
 import { RULES } from '../../config';
-import { qs, addClass, removeClass } from '../../libs/dom';
+import { create, qs, addClass, removeClass, setStyle } from '../../libs/dom';
 import { listen } from '../../libs/events';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
@@ -47,15 +47,41 @@ export default class Deck {
       Player.setActive(false);
       IO.emit('Deck.draw', Game.simplify())
         .then(response => {
-          this.update(this.counter - 1);
-          Player.drawCardFromDeck(response.body);
-          Message.success(response.message);
+          this.drawAnimation(response.body.type)
+            .then(() => {
+              this.update(this.counter - 1);
+              Player.drawCardFromDeck(response.body);
+              Message.success(response.message);
+            });
         })
         .catch(response => {
           Message.error(response.message);
           Player.setActive(true);
         });
     }
+  }
+
+
+  drawAnimation(type) {
+    const deckPosition = this.el.deck.getBoundingClientRect();
+    const card = create('div', { class: 'card animate deck' });
+    document.body.appendChild(card);
+    setStyle(card, {
+      top: `${deckPosition.top}px`,
+      left: `${deckPosition.left}px`,
+    });
+    addClass(card, 'draw');
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        removeClass(card, 'deck');
+        addClass(card, type);
+        setTimeout(() => {
+          document.body.removeChild(card);
+          resolve();
+        }, 1700);
+      }, 300);
+    });
   }
 
 }
