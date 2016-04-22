@@ -67,10 +67,10 @@ export default class Deck {
     const card = create('div', { class: 'card animate deck' });
     document.body.appendChild(card);
     setStyle(card, {
-      top: `${deckPosition.top}px`,
-      left: `${deckPosition.left}px`,
+      top: `${deckPosition.top - 18}px`,
+      left: `${deckPosition.left + 18}px`,
     });
-    addClass(card, 'draw');
+    addClass(card, 'draw-card');
 
     return new Promise(resolve => {
       setTimeout(() => {

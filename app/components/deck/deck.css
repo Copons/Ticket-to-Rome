@@ -28,6 +28,9 @@
   @at-root {
     #game.active #deck {
       cursor: pointer;
+      &.empty {
+        cursor: auto;
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-#destinationDeck {
+#destination-deck {
   display: flex;
   flex-flow: column;
   justify-content: center;
@@ -27,8 +27,11 @@
 
 
   @at-root {
-    #game.active #destinationDeck {
+    #game.active #destination-deck {
       cursor: pointer;
+      &.empty {
+        cursor: auto;
+      }
     }
   }
 }

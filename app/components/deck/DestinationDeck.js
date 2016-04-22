@@ -1,6 +1,6 @@
 import './destinationDeck.css';
-import { RULES } from '../../config';
-import { qs, addClass, removeClass } from '../../libs/dom';
+import { RULES, STATIONS } from '../../config';
+import { create, qs, addClass, removeClass, setStyle } from '../../libs/dom';
 import { listen } from '../../libs/events';
 import IO from '../communications/IO';
 import Message from '../communications/Message';
@@ -14,7 +14,7 @@ export default class DestinationDeck {
   constructor(destinationsCount) {
     this.counter = destinationsCount;
 
-    this.el = { destinationDeck: document.getElementById('destinationDeck') };
+    this.el = { destinationDeck: document.getElementById('destination-deck') };
     this.el.counter = qs('span', this.el.destinationDeck);
     this.el.counter.textContent = this.counter;
 
@@ -47,15 +47,45 @@ export default class DestinationDeck {
       Player.setActive(false);
       IO.emit('DestinationDeck.draw', Game.simplify())
         .then(response => {
-          this.update(this.counter - 1);
-          Player.drawDestination(response.body);
-          Message.success(response.message);
+          this.drawAnimation(response.body)
+            .then(() => {
+              this.update(this.counter - 1);
+              Player.drawDestination(response.body);
+              Message.success(response.message);
+            });
         })
         .catch(response => {
           Message.error(response.message);
           Player.setActive(true);
         });
     }
+  }
+
+  drawAnimation(destination) {
+    const deckPosition = this.el.destinationDeck.getBoundingClientRect();
+    const card = create('div', { class: 'card animate destination-deck' });
+    card.insertAdjacentHTML('afterbegin', `
+      <div>${STATIONS.find(s => s.slug === destination.start).name}</div>
+      <div>${STATIONS.find(s => s.slug === destination.end).name}</div>
+      <span>${destination.points}</span>
+    `);
+
+    document.body.appendChild(card);
+    setStyle(card, {
+      top: `${deckPosition.top - 18}px`,
+      left: `${deckPosition.left + 18}px`,
+    });
+    addClass(card, 'draw-destination');
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        removeClass(card, 'destination');
+        setTimeout(() => {
+          document.body.removeChild(card);
+          resolve();
+        }, 1700);
+      }, 300);
+    });
   }
 
 }
