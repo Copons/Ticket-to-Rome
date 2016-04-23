@@ -18,6 +18,7 @@ class Player {
     this.id = '';
     this.name = '';
 
+    this.listen();
     this.reset();
   }
 
@@ -28,6 +29,11 @@ class Player {
       name: this.name,
       color: this.color,
     };
+  }
+
+
+  listen() {
+    PubSub.sub('Route.claim', this.claimRoute);
   }
 
 
@@ -183,18 +189,32 @@ class Player {
   }
 
 
-  claimRoute(route, cards) {
-    this.actionsLeft -= RULES.action.claimRoute;
-    for (const type of cards) {
-      this.hand.removeCard(type);
+  claimRoute = data => {
+    const cards = [];
+    for (const card of data.cards) {
+      cards.push(this.hand.removeCard(card).simplify());
     }
+    IO.emit('Route.claim', {
+      cards,
+      route: data.route,
+      game: Game.simplify(),
+    })
+      .then(response => {
+        this.actionsLeft -= RULES.action.claimRoute;
+        this.claims.routes.push(data.route);
+        this.addRouteToGraph(data.route);
+        this.destinations.update(this.claims.graphs);
 
-    this.claims.routes.push(route.simplify());
-    this.addRouteToGraph(route.simplify());
-    this.destinations.update(this.claims.graphs);
-
-    this.changeTurn();
-    PubSub.pub('Hand.changed', this.hand.groups);
+        this.changeTurn();
+        PubSub.pub('Hand.changed', this.hand.groups);
+        Message.success(response.message);
+      })
+      .catch(() => {
+        for (const card of cards) {
+          this.hand.addCard(card);
+        }
+        Message.error('You can\'t claim this route.');
+      });
   }
 
 

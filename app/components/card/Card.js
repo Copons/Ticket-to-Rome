@@ -15,4 +15,12 @@ export default class Card {
     });
   }
 
+
+  simplify() {
+    return {
+      id: this.id,
+      type: this.type,
+    };
+  }
+
 }

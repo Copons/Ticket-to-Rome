@@ -76,37 +76,40 @@ export default class routePopup {
       this.el.claims.removeChild(this.el.claims.lastChild);
     }
 
-    const colorCards = cardGroups.filter(group => group.type !== 'wild' && group.cards.length);
-    const wildCards = cardGroups.find(group => group.type === 'wild');
     const claims = [];
-    let claim = [];
 
-    for (const group of colorCards) {
-      claim = [];
-      if (group.type === this.route.type || this.route.type === 'wild') {
-        if (group.cards.length >= this.route.parts) {
-          for (let i = 0; i < this.route.parts; i++) {
-            claim.push(group.type);
+    if (Player.pieces >= this.route.parts) {
+      const colorCards = cardGroups.filter(group => group.type !== 'wild' && group.cards.length);
+      const wildCards = cardGroups.find(group => group.type === 'wild');
+      let claim = [];
+
+      for (const group of colorCards) {
+        claim = [];
+        if (group.type === this.route.type || this.route.type === 'wild') {
+          if (group.cards.length >= this.route.parts) {
+            for (let i = 0; i < this.route.parts; i++) {
+              claim.push(group.type);
+            }
+            claims.push(this.createClaim(claim));
+          } else if (group.cards.length + wildCards.cards.length >= this.route.parts) {
+            for (let i = 0; i < group.cards.length; i++) {
+              claim.push(group.type);
+            }
+            for (let i = 0; i < this.route.parts - group.cards.length; i++) {
+              claim.push('wild');
+            }
+            claims.push(this.createClaim(claim));
           }
-          claims.push(this.createClaim(claim));
-        } else if (group.cards.length + wildCards.cards.length >= this.route.parts) {
-          for (let i = 0; i < group.cards.length; i++) {
-            claim.push(group.type);
-          }
-          for (let i = 0; i < this.route.parts - group.cards.length; i++) {
-            claim.push('wild');
-          }
-          claims.push(this.createClaim(claim));
         }
       }
-    }
 
-    if (wildCards.cards.length >= this.route.parts) {
-      claim = [];
-      for (let i = 0; i < this.route.parts; i++) {
-        claim.push('wild');
+      if (wildCards.cards.length >= this.route.parts) {
+        claim = [];
+        for (let i = 0; i < this.route.parts; i++) {
+          claim.push('wild');
+        }
+        claims.push(this.createClaim(claim));
       }
-      claims.push(this.createClaim(claim));
     }
 
     if (claims.length) {
@@ -140,18 +143,11 @@ export default class routePopup {
       && Player.actionsLeft >= RULES.action.claimRoute
     ) {
       const cards = e.target.dataset.claim.split(',');
-      IO.emit('Route.claim', {
-        cards: cards.length,
+
+      PubSub.pub('Route.claim', {
+        cards,
         route: this.route.simplify(),
-        game: Game.simplify(),
-      })
-        .then(response => {
-          Player.claimRoute(this.route, cards);
-          Message.success(response.message);
-        })
-        .catch(() => {
-          Message.error('You don\'t have enough cards to claim this route.');
-        });
+      });
     }
   }
 

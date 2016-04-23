@@ -125,6 +125,12 @@ class Game {
     for (const player of this.room.players) {
       const gamePlayer = game.players.find(p => p.id === player.id);
       const playerElem = qs(`.player[data-player-id="${player.id}"]`);
+
+      if (gamePlayer.id === Player.id) {
+        Player.points = gamePlayer.points;
+        Player.pieces = gamePlayer.pieces;
+      }
+
       if (player.points !== gamePlayer.points) {
         player.points = gamePlayer.points;
         qs('.points .count', playerElem).textContent = player.points;

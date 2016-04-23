@@ -25,15 +25,23 @@ class Game {
     this.deck = new Deck();
     this.destinations = new DestinationDeck();
     this.pile = [];
+    this.discardPile = [];
     this.dealPile();
   }
 
 
   drawFromDeck(player) {
     const response = this.deck.draw();
+
     if (response.type === 'success') {
       this.room.players.find(p => p.id === player.id).cards++;
+
+      if (this.deck.cards.length < 1) {
+        this.deck.shuffle(this.discardPile);
+        this.discardPile = [];
+      }
     }
+
     return response;
   }
 
@@ -41,7 +49,6 @@ class Game {
   drawFromPile(cardId, player) {
     const cardIndex = this.pile.findIndex(c => c.id === cardId);
     const card = this.pile.splice(cardIndex, 1);
-    console.log(card[0]);
     this.room.players.find(p => p.id === player.id).cards++;
     return Response.success(
       `Player [${player.name}] drew a [${card[0].type}] card from the pile.`,
@@ -87,6 +94,12 @@ class Game {
 
   dealPile() {
     const missingCards = CONFIG.RULES.pile.max - this.pile.length;
+
+    if (this.deck.cards.length < missingCards) {
+      this.deck.shuffle(this.discardPile);
+      this.discardPile = [];
+    }
+
     for (let i = 0; i < missingCards; i++) {
       const response = this.deck.draw();
       if (response.type === 'success') {
@@ -103,11 +116,14 @@ class Game {
       }
     }
     if (countWild > CONFIG.RULES.pile.maxWild) {
-      for (const card of this.pile) {
-        this.deck.push(card);
-      }
+      this.discardPile = this.discardPile.concat(this.pile);
       this.pile = [];
       this.dealPile();
+    }
+
+    if (this.deck.cards.length < 1) {
+      this.deck.shuffle(this.discardPile);
+      this.discardPile = [];
     }
 
     return Response.success('Pile is ready.', { pile: this.pile });
@@ -133,17 +149,20 @@ class Game {
   claimRoute(data) {
     const player = this.room.players.find(p => p.id === data.game.activePlayer.id);
 
-    if (player.cards < data.cards) {
+    if (player.cards < data.cards.length) {
       return Response.error(`Player [${player.name}] doesn't have enough cards to claim the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
     }
-    if (player.pieces < data.cards) {
+    if (player.pieces < data.cards.length) {
       return Response.error(`Player [${player.name}] doesn't have enough pieces to claim the route [${data.route.start.name} - ${data.route.end.name}].`); // eslint-disable-line max-len
     }
 
-    player.cards -= data.cards;
-    player.pieces -= data.cards;
-    player.points += CONFIG.RULES.points[data.cards];
-    return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}] and earned [${CONFIG.RULES.points[data.cards]}] points.`); // eslint-disable-line max-len
+    player.cards -= data.cards.length;
+    player.pieces -= data.cards.length;
+    player.points += CONFIG.RULES.points[data.cards.length];
+
+    this.discardPile = this.discardPile.concat(data.cards);
+
+    return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}] and earned [${CONFIG.RULES.points[data.cards.length]}] points.`); // eslint-disable-line max-len
   }
 
 }

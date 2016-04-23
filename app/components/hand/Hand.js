@@ -29,7 +29,7 @@ export default class Hand {
 
 
   removeCard(type) {
-    this.groups.find(group => group.type === type).removeCard();
+    return this.groups.find(group => group.type === type).removeCard();
   }
 
 }

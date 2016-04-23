@@ -34,6 +34,11 @@ class Deck {
     return Response.success(`Drawn a [${card.type}] card.`, card);
   }
 
+
+  shuffle(pile) {
+    this.cards = this.cards.concat(pile);
+  }
+
 }
 
 
