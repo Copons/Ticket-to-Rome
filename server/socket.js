@@ -52,12 +52,20 @@ module.exports.listen = server => {
       callback(Games.dealFirstDestinations(data, io));
     });
 
+    client.on('Pile.deal', (data, callback) => {
+      callback(Games.dealPile(data, io));
+    });
+
     client.on('Player.endTurn', (data, callback) => {
       callback(Games.changeTurn(data, io));
     });
 
     client.on('Deck.draw', (game, callback) => {
       callback(Games.drawFromDeck(game, client, io));
+    });
+
+    client.on('Pile.draw', (game, callback) => {
+      callback(Games.drawFromPile(game, client, io));
     });
 
     client.on('DestinationDeck.draw', (game, callback) => {

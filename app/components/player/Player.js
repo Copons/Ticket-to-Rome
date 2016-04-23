@@ -165,6 +165,16 @@ class Player {
   }
 
 
+  drawCardFromPile(card) {
+    const actions = card.type === 'wild' ?
+      RULES.action.drawWildFromPile : RULES.action.drawFromPile;
+    this.actionsLeft -= actions;
+    this.hand.addCard(card);
+    this.changeTurn();
+    PubSub.pub('Hand.changed', this.hand.groups);
+  }
+
+
   drawDestination(destination) {
     this.actionsLeft -= RULES.action.newDestination;
     this.destinations.add(destination);

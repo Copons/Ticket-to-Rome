@@ -8,14 +8,14 @@ export default class Destinations {
 
   constructor(destinations) {
     this.list = [];
-    this.el = { destinations: document.getElementById('destinations') };
+    this.el = document.getElementById('destinations');
     this.init(destinations);
   }
 
 
   init(destinations) {
-    while (this.el.destinations.firstChild) {
-      this.el.destinations.removeChild(this.el.destinations.firstChild);
+    while (this.el.firstChild) {
+      this.el.removeChild(this.el.firstChild);
     }
     for (const destination of destinations) {
       this.add(destination);
@@ -49,7 +49,7 @@ export default class Destinations {
         <span class="icon"></span>
       </span>
     `);
-    this.el.destinations.appendChild(destinationElement);
+    this.el.appendChild(destinationElement);
   }
 
 

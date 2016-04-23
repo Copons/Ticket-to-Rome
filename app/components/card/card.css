@@ -51,6 +51,8 @@
     background-color: #8d6e63;
   }
   &.destination-deck {
+    width: 100px;
+    height: 65px;
     border: 3px solid #00695c;
     background-color: #00796b;
   }
@@ -61,6 +63,8 @@
   position: fixed;
   z-index: 10;
   opacity: 0;
+  box-shadow: 0 0.15em 0.3em 0 rgba(0, 0, 0, 0.16),
+              0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
 
   &.draw-card {
     animation: draw-card 2s;
@@ -72,10 +76,6 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    width: 100px;
-    height: 65px;
-    border: 3px solid #00695c;
-    background-color: #00796b;
     animation: draw-destination 2s;
 
     div,

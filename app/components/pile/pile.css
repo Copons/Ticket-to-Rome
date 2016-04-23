@@ -1,0 +1,10 @@
+#pile {
+  position: relative;
+  .card {
+    position: relative;
+    width: 100px;
+    height: 65px;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+}

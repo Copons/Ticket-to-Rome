@@ -8,6 +8,11 @@ export const RULES = {
     minDestinations: 2,
   },
 
+  pile: {
+    max: 5,
+    maxWild: 3,
+  },
+
   turn: {
     actions: 2,
   },

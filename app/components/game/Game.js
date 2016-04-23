@@ -6,6 +6,7 @@ import Board from '../board/Board';
 import Lobby from '../lobby/Lobby';
 import Deck from '../deck/Deck';
 import DestinationDeck from '../deck/DestinationDeck';
+import Pile from '../pile/Pile';
 import Player from '../player/Player';
 
 
@@ -16,7 +17,9 @@ class Game {
     this.room = {};
     this.turn = 0;
     this.activePlayer = {};
-    this.deck = [];
+    this.deck = {};
+    this.destinations = {};
+    this.pile = {};
     this.board = new Board();
 
     this.el = {
@@ -50,6 +53,7 @@ class Game {
     this.turn = 0;
     this.deck = new Deck(response.body.deck.cards.length);
     this.destinations = new DestinationDeck(response.body.destinations.cards.length);
+    this.pile = new Pile();
     this.board.render();
 
     Lobby.hide();

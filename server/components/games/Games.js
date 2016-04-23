@@ -85,6 +85,18 @@ class Games {
   }
 
 
+  dealPile(data, io) {
+    const game = this.game(data.game.id);
+    const response = game.dealPile();
+
+    if (response.type === 'success') {
+      io.in(game.id).emit('Deck.count', game.deck.cards.length);
+      io.in(game.id).emit('Pile.updated', response);
+    }
+    return response;
+  }
+
+
   changeTurn(data, io) {
     const game = this.game(data.game.id);
     const response = game.changeTurn(data.player);
@@ -107,6 +119,20 @@ class Games {
     }
 
     io.in(game.id).emit('Game.updated', this.info(game.id));
+    return response;
+  }
+
+
+  drawFromPile(data, client, io) {
+    const game = this.game(data.game.id);
+    const response = game.drawFromPile(data.card.id, data.game.activePlayer);
+
+    if (response.type === 'success') {
+      client.broadcast.in(game.id).emit('Message.Pile.draw', response.message);
+      this.dealPile(data, io);
+    }
+
+    io.in(data.game.id).emit('Game.updated', this.info(data.game.id));
     return response;
   }
 

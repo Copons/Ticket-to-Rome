@@ -9,12 +9,10 @@ export default class Card {
     this.id = card.id;
     this.type = card.type;
 
-    this.el = {
-      card: create('div', {
-        id: this.id,
-        class: `card ${this.type}`,
-      }),
-    };
+    this.el = create('div', {
+      id: this.id,
+      class: `card ${this.type}`,
+    });
   }
 
 }

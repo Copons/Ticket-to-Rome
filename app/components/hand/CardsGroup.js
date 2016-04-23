@@ -31,11 +31,11 @@ export default class CardsGroup {
       removeClass(this.el.group, 'empty');
       for (let i = 0; i < this.cards.length; i++) {
         if (i > 0) {
-          addClass(this.cards[i].el.card, 'stacked');
+          addClass(this.cards[i].el, 'stacked');
         } else {
-          removeClass(this.cards[i].el.card, 'stacked');
+          removeClass(this.cards[i].el, 'stacked');
         }
-        this.el.group.appendChild(this.cards[i].el.card);
+        this.el.group.appendChild(this.cards[i].el);
       }
     } else {
       addClass(this.el.group, 'empty');

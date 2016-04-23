@@ -24,6 +24,8 @@ class Game {
     ];
     this.deck = new Deck();
     this.destinations = new DestinationDeck();
+    this.pile = [];
+    this.dealPile();
   }
 
 
@@ -33,6 +35,18 @@ class Game {
       this.room.players.find(p => p.id === player.id).cards++;
     }
     return response;
+  }
+
+
+  drawFromPile(cardId, player) {
+    const cardIndex = this.pile.findIndex(c => c.id === cardId);
+    const card = this.pile.splice(cardIndex, 1);
+    console.log(card[0]);
+    this.room.players.find(p => p.id === player.id).cards++;
+    return Response.success(
+      `Player [${player.name}] drew a [${card[0].type}] card from the pile.`,
+      card[0]
+    );
   }
 
 
@@ -68,6 +82,35 @@ class Game {
       }
     }
     return Response.success('First destinations were dealt successfully.', { destinations });
+  }
+
+
+  dealPile() {
+    const missingCards = CONFIG.RULES.pile.max - this.pile.length;
+    for (let i = 0; i < missingCards; i++) {
+      const response = this.deck.draw();
+      if (response.type === 'success') {
+        this.pile.push(response.body);
+      } else {
+        return response;
+      }
+    }
+
+    let countWild = 0;
+    for (const card of this.pile) {
+      if (card.type === 'wild') {
+        countWild++;
+      }
+    }
+    if (countWild > CONFIG.RULES.pile.maxWild) {
+      for (const card of this.pile) {
+        this.deck.push(card);
+      }
+      this.pile = [];
+      this.dealPile();
+    }
+
+    return Response.success('Pile is ready.', { pile: this.pile });
   }
 
 
