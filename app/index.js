@@ -17,4 +17,5 @@ IO.connect().then(clientId => {
 
   // Initialize the game, waiting to start
   Game.listen();
+  //Game.debugBoard();
 });

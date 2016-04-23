@@ -39,14 +39,14 @@ const RULES = {
 
 
 const DECK = [
-  { type: 'red', amount: 3 },
-  { type: 'orange', amount: 3 },
-  { type: 'yellow', amount: 3 },
-  { type: 'green', amount: 3 },
-  { type: 'blue', amount: 3 },
-  { type: 'purple', amount: 3 },
-  { type: 'black', amount: 3 },
-  { type: 'white', amount: 3 },
+  { type: 'red', amount: 12 },
+  { type: 'orange', amount: 12 },
+  { type: 'yellow', amount: 12 },
+  { type: 'green', amount: 12 },
+  { type: 'blue', amount: 12 },
+  { type: 'purple', amount: 12 },
+  { type: 'black', amount: 12 },
+  { type: 'white', amount: 12 },
   { type: 'wild', amount: 14 },
 ];
 

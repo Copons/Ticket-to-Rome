@@ -68,6 +68,13 @@ class Game {
   }
 
 
+  debugBoard() {
+    this.board.render();
+    Lobby.hide();
+    removeClass(this.el.game, 'hidden');
+  }
+
+
   close = response => {
     if (Object.keys(this.room).length) {
       Message.error(response.message);

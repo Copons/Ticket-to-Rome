@@ -1,8 +1,10 @@
 export const SIZES = {
 
   board: {
-    width: 300, //640,
-    height: 300, //360,
+    width: 640,
+    height: 360,
+    //width: 300,
+    //height: 300,
   },
 
   station: {
