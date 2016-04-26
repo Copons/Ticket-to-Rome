@@ -1,4 +1,5 @@
 'use strict';
+const chalk = require('chalk');
 const CONFIG = require('../../config');
 const Deck = require('../deck/Deck');
 const DestinationDeck = require('../deck/DestinationDeck');
@@ -37,8 +38,12 @@ class Game {
       this.room.players.find(p => p.id === player.id).cards++;
 
       if (this.deck.cards.length < 1) {
+        console
+          .log(`${chalk.magenta('drawFromDeck BEFORE SHUFFLE')}: ${this.discardPile.length}`);
         this.deck.shuffle(this.discardPile);
         this.discardPile = [];
+        console
+          .log(`${chalk.magenta('drawFromDeck AFTER SHUFFLE')}: ${this.discardPile.length}`);
       }
     }
 
@@ -96,8 +101,12 @@ class Game {
     const missingCards = CONFIG.RULES.pile.max - this.pile.length;
 
     if (this.deck.cards.length < missingCards) {
+      console
+        .log(`${chalk.magenta('dealPile BEFORE DECK NEEDS CARDS')}: ${this.discardPile.length}`);
       this.deck.shuffle(this.discardPile);
       this.discardPile = [];
+      console
+        .log(`${chalk.magenta('dealPile AFTER DECK NEEDS CARDS')}: ${this.discardPile.length}`);
     }
 
     for (let i = 0; i < missingCards; i++) {
@@ -116,14 +125,22 @@ class Game {
       }
     }
     if (countWild > CONFIG.RULES.pile.maxWild) {
+      console
+        .log(`${chalk.magenta('dealPile BEFORE DISCARD 4+ WILD')}: ${this.discardPile.length}`);
       this.discardPile = this.discardPile.concat(this.pile);
       this.pile = [];
+      console
+        .log(`${chalk.magenta('dealPile AFTER DISCARD 4+ WILD')}: ${this.discardPile.length}`);
       this.dealPile();
     }
 
     if (this.deck.cards.length < 1) {
+      console
+        .log(`${chalk.magenta('dealPile BEFORE DECK EMPTY')}: ${this.discardPile.length}`);
       this.deck.shuffle(this.discardPile);
       this.discardPile = [];
+      console
+        .log(`${chalk.magenta('dealPile AFTER DECK EMPTY')}: ${this.discardPile.length}`);
     }
 
     return Response.success('Pile is ready.', { pile: this.pile });
@@ -161,6 +178,7 @@ class Game {
     player.points += CONFIG.RULES.points[data.cards.length];
 
     this.discardPile = this.discardPile.concat(data.cards);
+    console.log(`${chalk.magenta('claimRoute AFTER CLAIM')}: ${this.discardPile.length}`);
 
     return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}] and earned [${CONFIG.RULES.points[data.cards.length]}] points.`); // eslint-disable-line max-len
   }
