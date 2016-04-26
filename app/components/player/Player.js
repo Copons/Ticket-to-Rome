@@ -204,6 +204,7 @@ class Player {
         this.claims.routes.push(data.route);
         this.addRouteToGraph(data.route);
         this.destinations.update(this.claims.graphs);
+        //this.debugGraphs();
 
         this.changeTurn();
         PubSub.pub('Hand.changed', this.hand.groups);
@@ -222,52 +223,39 @@ class Player {
     const start = route.start.slug;
     const end = route.end.slug;
 
-    if (this.claims.graphs.length === 0) {
-      this.claims.graphs.push([start, end]);
-      return;
-    }
+    this.claims.graphs.push(new Set([start, end]));
 
-    const newGraph = [];
-    for (const graph of this.claims.graphs) {
-      if (graph.indexOf(start) > -1 || graph.indexOf(end) > -1) {
-        graph.push(start, end);
-      } else {
-        newGraph.push(start, end);
-      }
-    }
-    if (newGraph.length > 0) {
-      this.claims.graphs.push(newGraph);
-    }
+    if (this.claims.graphs.length === 1) return;
 
-    const graphsToDelete = [];
-
-    for (let i = 0; i < this.claims.graphs.length; i++) {
-      const leftGraph = this.claims.graphs[i];
-      for (let j = i + 1; j < this.claims.graphs.length; j++) {
-        const rightGraph = this.claims.graphs[j];
-        for (const station of leftGraph) {
-          if (rightGraph.indexOf(station) > -1) {
-            this.claims.graphs[i] = leftGraph.concat(rightGraph);
-            graphsToDelete.push(j);
-            break;
+    for (const leftGraph of this.claims.graphs) {
+      if (leftGraph.size > 0) {
+        for (const rightGraph of this.claims.graphs) {
+          if (leftGraph !== rightGraph && rightGraph.size > 0) {
+            for (const station of leftGraph) {
+              if (rightGraph.has(station)) {
+                rightGraph.forEach(value => {
+                  leftGraph.add(value);
+                });
+                rightGraph.clear();
+                break;
+              }
+            }
           }
         }
       }
     }
 
-    for (const index of graphsToDelete) {
-      this.claims.graphs.splice(index, 1);
-    }
+    this.claims.graphs = this.claims.graphs.filter(g => g.size > 0);
+  }
 
+
+  debugGraphs() {
+    console.group();
+    console.log(this.claims.graphs.length);
     for (const graph of this.claims.graphs) {
-      graph.sort();
-      graph.forEach((station, index) => {
-        const lastIndex = graph.lastIndexOf(station);
-        if (lastIndex !== index) {
-          graph.splice(index + 1, lastIndex - index);
-        }
-      });
+      console.log(graph);
     }
+    console.groupEnd();
   }
 
 }

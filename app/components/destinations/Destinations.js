@@ -56,7 +56,7 @@ export default class Destinations {
   update(graphs) {
     for (const destination of this.list) {
       for (const graph of graphs) {
-        if (graph.indexOf(destination.start) > -1 && graph.indexOf(destination.end) > -1) {
+        if (graph.has(destination.start) && graph.has(destination.end)) {
           destination.completed = true;
           addClass(qs(`[data-destination="${destination.id}"]`), 'completed');
         }
