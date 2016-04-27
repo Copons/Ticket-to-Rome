@@ -6,6 +6,7 @@ import Board from '../board/Board';
 import Lobby from '../lobby/Lobby';
 import Deck from '../deck/Deck';
 import DestinationDeck from '../deck/DestinationDeck';
+import Endgame from '../endgame/Endgame';
 import Pile from '../pile/Pile';
 import Player from '../player/Player';
 
@@ -161,17 +162,16 @@ class Game {
 
 
   changeTurn = response => {
-    console.log(response);
-
     this.activePlayer = response.body.player;
-    Message.success(response.message);
 
     if (response.body.turn !== 'endgame') {
       Player.startTurn(this.activePlayer);
     } else {
-      // Game.showScore();
-      console.log('SHOW SCORE');
+      const endgame = new Endgame(this.room.id);
+      endgame.render();
+      endgame.theWinnerIs();
     }
+    Message.success(response.message);
   }
 
 

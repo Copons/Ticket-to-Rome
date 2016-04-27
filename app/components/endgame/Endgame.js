@@ -1,10 +1,14 @@
 import './endgame.css';
+import { qs, addClass, removeClass } from '../../libs/dom';
+import { listen } from '../../libs/events';
+import IO from '../communications/IO';
 import Score from './Score';
 
 
 export default class Endgame {
 
-  constructor() {
+  constructor(game) {
+    this.game = game;
     this.debugScore();
     this.score = new Score(this.players);
 
@@ -14,6 +18,22 @@ export default class Endgame {
 
   render() {
     this.score.render();
+    listen(qs('.close', this.el), 'click', this.close);
+  }
+
+
+  theWinnerIs() {
+    this.score.theWinnerIs();
+    removeClass(this.el, 'hidden');
+  }
+
+
+  close = () => {
+    IO.emit('Endgame.close', this.game)
+      .then(response => {
+        console.log(response);
+        addClass(this.el, 'hidden');
+      });
   }
 
 

@@ -12,11 +12,27 @@
   padding: 30px;
   background-color: #b0bec5;
 
+  &.hidden {
+    display: none;
+  }
+
   h2 {
     font-family: 'Hammersmith One', Arial, sans-serif;
     font-size: 30px;
     font-weight: 400;
     letter-spacing: 1px;
     text-transform: uppercase;
+  }
+
+  .close {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: block;
+    padding: 20px 40px;
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    font-size: 40px;
+    text-decoration: none;
+    color: #000;
   }
 }

@@ -76,6 +76,16 @@ module.exports.listen = server => {
       callback(Games.claimRoute(data, client, io));
     });
 
+    client.on('Endgame.close', (data, callback) => {
+      Games.closeOnLeaving(client, io);
+      Rooms.leaveAll(client, io);
+      callback({
+        message: 'Game over!',
+        type: 'success',
+        body: {},
+      });
+    });
+
 
     // DISCONNECT
 

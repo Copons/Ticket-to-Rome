@@ -4,9 +4,9 @@
 const RULES = {
   player: {
     max: 5,
-    startingHand: 3,
+    startingHand: 30,
     startingDestinations: 3,
-    startingPieces: 45,
+    startingPieces: 5,
     endGamePieces: 2,
     colorsOrder: [
       'red', 'blue', 'green', 'orange', 'purple',
