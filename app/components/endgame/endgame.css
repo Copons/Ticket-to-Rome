@@ -1,0 +1,22 @@
+#endgame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  z-index: 100;
+  padding: 30px;
+  background-color: #b0bec5;
+
+  h2 {
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+}

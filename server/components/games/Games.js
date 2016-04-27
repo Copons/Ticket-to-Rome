@@ -101,8 +101,10 @@ class Games {
     const game = this.game(data.game.id);
     const response = game.changeTurn(data.player);
 
+    if (response.body.turn !== 'endgame') {
+      io.in(game.id).emit('Game.updated', this.info(game.id));
+    }
     io.in(game.id).emit('Game.turnChanged', response);
-    io.in(game.id).emit('Game.updated', this.info(game.id));
     return response;
   }
 

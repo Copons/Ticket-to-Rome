@@ -79,8 +79,8 @@ export default class Deck {
         setTimeout(() => {
           document.body.removeChild(card);
           resolve();
-        }, 1700);
-      }, 300);
+        }, 800);
+      }, 200);
     });
   }
 

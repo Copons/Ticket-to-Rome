@@ -23,6 +23,7 @@ class Game {
     this.activePlayer = this.room.players[
       Math.floor(Math.random() * this.room.players.length)
     ];
+    this.lastPlayer = null;
     this.deck = new Deck();
     this.destinations = new DestinationDeck();
     this.pile = [];
@@ -148,7 +149,15 @@ class Game {
 
 
   changeTurn(player) {
+    if (this.lastPlayer && player.id === this.lastPlayer.id) {
+      return Response.success('GAME OVER! Let\'s count the points!', {
+        player: {},
+        turn: 'endgame',
+      });
+    }
+
     const playerIndex = this.room.players.findIndex(p => p.id === player.id);
+
     let nextPlayerIndex = 0;
     if (playerIndex < this.room.players.length - 1) {
       nextPlayerIndex = playerIndex + 1;
@@ -156,10 +165,23 @@ class Game {
       this.turn++;
     }
     this.activePlayer = this.room.players[nextPlayerIndex];
-    return Response.success(
-      `It's now player [${this.activePlayer.name}]'s turn!`,
-      this.activePlayer
-    );
+
+    if (this.lastPlayer || this.activePlayer.pieces <= CONFIG.RULES.player.endGamePieces) {
+      if (!this.lastPlayer) {
+        this.lastPlayer = this.activePlayer;
+      }
+      return Response.success(`It's now player [${this.activePlayer.name}]'s last turn!`, {
+        player: this.activePlayer,
+        last: this.lastPlayer,
+        turn: 'last',
+      });
+    } else {
+      return Response.success(`It's now player [${this.activePlayer.name}]'s turn!`, {
+        player: this.activePlayer,
+        last: this.lastPlayer,
+        turn: this.turn,
+      });
+    }
   }
 
 

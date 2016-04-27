@@ -6,6 +6,12 @@
   border: 1px solid #000;
   border-radius: 5px;
 
+  /* DEBUG */
+  padding: 5px;
+  font-size: 8px;
+  letter-spacing: 1px;
+  word-break: break-all;
+
   &.stacked {
     margin-left: -60px;
   }
@@ -67,7 +73,7 @@
               0 0.15em 0.6em 0 rgba(0, 0, 0, 0.12);
 
   &.draw-card {
-    animation: draw-card 2s;
+    animation: draw-card 1s;
     transform: rotate(90deg);
   }
 
@@ -76,7 +82,7 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    animation: draw-destination 2s;
+    animation: draw-destination 1s;
 
     div,
     span {
@@ -100,13 +106,13 @@
   0% {
     opacity: 1;
   }
-  33% {
+  20% {
     top: calc(50vh - 50px);
     left: calc(50% - 32.5px);
     transform: rotate(0) rotateY(180deg) scale(1.5, 1.5);
     animation-timing-function: ease-in;
   }
-  66% {
+  80% {
     top: calc(50vh - 50px);
     left: calc(50% - 32.5px);
     opacity: 1;
@@ -126,13 +132,13 @@
   0% {
     opacity: 1;
   }
-  33% {
+  20% {
     top: calc(50vh - 50px);
     left: calc(100% - 170px);
     transform: scale(1.5, 1.5);
     animation-timing-function: ease-in;
   }
-  66% {
+  80% {
     top: calc(50vh - 50px);
     left: calc(100% - 170px);
     opacity: 1;

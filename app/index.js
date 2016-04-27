@@ -5,6 +5,8 @@ import Lobby from './components/lobby/Lobby';
 import Menu from './components/menu/Menu';
 import Player from './components/player/Player';
 
+import Endgame from './components/endgame/Endgame';
+
 
 IO.connect().then(clientId => {
   // Initialize the current player
@@ -18,4 +20,8 @@ IO.connect().then(clientId => {
   // Initialize the game, waiting to start
   Game.listen();
   //Game.debugBoard();
+
+  const endgame = new Endgame();
+  endgame.render();
+  endgame.score.theWinnerIs();
 });

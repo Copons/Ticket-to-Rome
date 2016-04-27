@@ -161,9 +161,17 @@ class Game {
 
 
   changeTurn = response => {
-    this.activePlayer = response.body;
-    Player.startTurn(this.activePlayer);
+    console.log(response);
+
+    this.activePlayer = response.body.player;
     Message.success(response.message);
+
+    if (response.body.turn !== 'endgame') {
+      Player.startTurn(this.activePlayer);
+    } else {
+      // Game.showScore();
+      console.log('SHOW SCORE');
+    }
   }
 
 

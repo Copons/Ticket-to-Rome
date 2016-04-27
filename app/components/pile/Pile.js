@@ -93,7 +93,7 @@ export default class Pile {
       setTimeout(() => {
         document.body.removeChild(card);
         resolve();
-      }, 2000);
+      }, 1000);
     });
   }
 

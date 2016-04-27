@@ -5,6 +5,7 @@ export const RULES = {
     startingHand: 3,
     startingDestinations: 3,
     startingPieces: 45,
+    endGamePieces: 2,
     minDestinations: 2,
   },
 

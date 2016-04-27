@@ -13,6 +13,9 @@ export default class Card {
       id: this.id,
       class: `card ${this.type}`,
     });
+
+    // DEBUG
+    this.el.textContent = this.id;
   }
 
 

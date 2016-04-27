@@ -83,8 +83,8 @@ export default class DestinationDeck {
         setTimeout(() => {
           document.body.removeChild(card);
           resolve();
-        }, 1700);
-      }, 300);
+        }, 800);
+      }, 200);
     });
   }
 
