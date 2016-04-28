@@ -4,7 +4,7 @@ import http from 'http';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config';
-import socket from './server/socket';
+import socket from './server-redux/socket';
 
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -16,7 +16,7 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 
 const server = http.Server(app); // eslint-disable-line new-cap
 
-socket.listen(server);
+socket(server);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
