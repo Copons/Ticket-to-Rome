@@ -17,7 +17,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node --harmony .",
-    "dev": "set NODE_ENV=development && npm start",
+    "dev": "set NODE_ENV=development && node --harmony .",
     "postinstall": "node deploy"
   },
   "dependencies": {

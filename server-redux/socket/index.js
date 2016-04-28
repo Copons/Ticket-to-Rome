@@ -1,12 +1,12 @@
 import socketIo from 'socket.io';
 import * as API from '../API';
 import store from '../store';
-import { createPlayer/*, deletePlayer*/ } from '../actions';
+import { createPlayer, updatePlayer, deletePlayer } from '../actions';
 
 export default function socket(server) {
   const io = socketIo.listen(server);
 
-  /*console.log(JSON.stringify(store.getState()));
+  console.log(JSON.stringify(store.getState()));
 
   const unsubscribe = store.subscribe(() => {
     console.log(JSON.stringify(store.getState()));
@@ -20,9 +20,12 @@ export default function socket(server) {
     id: 2,
     name: 'Player 2',
   }));
+  store.dispatch(updatePlayer(2, {
+    name: 'Player 3',
+  }));
   store.dispatch(deletePlayer(1));
 
-  unsubscribe();*/
+  unsubscribe();
 
   io.on(API.CONNECTION, client => {
     console.log(`Client ${client.id} connected.`);
