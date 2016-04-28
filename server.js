@@ -1,27 +1,28 @@
-'use strict';
+import path from 'path';
+import express from 'express';
+import http from 'http';
+import webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config';
+import socket from './server/socket';
+
 
 const isProduction = process.env.NODE_ENV === 'production';
 let port = isProduction ? process.env.PORT : 3000;
 if (!port) port = 3000;
 
-const path = require('path');
-const express = require('express');
 const app = express();
 app.use(express.static(path.resolve(__dirname, 'public')));
 
-const http = require('http').Server(app); // eslint-disable-line new-cap
+const server = http.Server(app); // eslint-disable-line new-cap
 
-require('./server/socket').listen(http);
+socket.listen(server);
 
-http.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
 if (!isProduction) {
-  const webpack = require('webpack');
-  const WebpackDevServer = require('webpack-dev-server');
-  const webpackConfig = require('./webpack.config.js');
-
   new WebpackDevServer(webpack(webpackConfig), {
     hot: true,
     inline: true,
@@ -35,3 +36,5 @@ if (!isProduction) {
     console.log('Webpack Dev Server listening at 8080');
   });
 }
+
+export default server;

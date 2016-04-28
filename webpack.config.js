@@ -16,7 +16,7 @@ const config = {
 
   entry: [
     'webpack-dev-server/client?http://localhost:8080',
-    'webpack/hot/dev-server',
+    'webpack/hot/only-dev-server',
     PATHS.app,
   ],
 
@@ -26,11 +26,15 @@ const config = {
     publicPath: 'http://localhost:8080/build/',
   },
 
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+  },
+
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        loaders: ['babel'],
+        test: /\.jsx?$/,
+        loaders: ['react-hot', 'babel'],
         exclude: [PATHS.node],
       },
       {

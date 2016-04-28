@@ -21,10 +21,14 @@ const config = {
     filename: 'bundle.js',
   },
 
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+  },
+
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loaders: ['babel'],
         exclude: [PATHS.node],
       },
