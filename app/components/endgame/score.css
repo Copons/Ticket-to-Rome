@@ -36,8 +36,27 @@
       color: red;
       text-decoration: line-through;
     }
-    span {
-      color: #666;
+  }
+
+  .destinations span {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 3px 3px 3px;
+    padding: 2px 4px;
+    background-color: #666;
+    color: #fff;
+    line-height: 1;
+    white-space: nowrap;
+
+    .icon {
+      display: inline-block;
+      vertical-align: text-top;
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      background-image: url('../../assets/ic_star_white_18px.svg');
+      background-position: center center;
+      line-height: 1;
     }
   }
 

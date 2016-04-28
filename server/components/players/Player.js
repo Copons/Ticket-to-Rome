@@ -12,7 +12,7 @@ class Player {
     this.cards = 0;
     this.pieces = 0;
     this.points = 0;
-    this.destinations = 0;
+    this.destinations = [];
   }
 
 

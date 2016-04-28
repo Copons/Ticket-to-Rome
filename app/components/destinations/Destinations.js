@@ -1,7 +1,9 @@
 import './destinations.css';
-import uuid from 'node-uuid';
 import { STATIONS } from '../../config';
 import { create, qs, addClass } from '../../libs/dom';
+import IO from '../communications/IO';
+import Message from '../communications/Message';
+import Game from '../game/Game';
 
 
 export default class Destinations {
@@ -29,7 +31,7 @@ export default class Destinations {
     name += STATIONS.find(s => s.slug === destination.end).name;
     const actualDestination = {
       name,
-      id: uuid.v4(),
+      id: destination.id,
       start: destination.start,
       end: destination.end,
       points: destination.points,
@@ -55,10 +57,23 @@ export default class Destinations {
 
   update(graphs) {
     for (const destination of this.list) {
-      for (const graph of graphs) {
-        if (graph.has(destination.start) && graph.has(destination.end)) {
-          destination.completed = true;
-          addClass(qs(`[data-destination="${destination.id}"]`), 'completed');
+      if (!destination.completed) {
+        for (const graph of graphs) {
+          if (graph.has(destination.start) && graph.has(destination.end)) {
+            destination.completed = true;
+            IO.emit('Destination.complete', {
+              destination,
+              game: Game.simplify(),
+            })
+              .then(response => {
+                addClass(qs(`[data-destination="${destination.id}"]`), 'completed');
+                Message.success(response.message);
+              })
+              .catch(response => {
+                Message.error(response.message);
+              });
+            break;
+          }
         }
       }
     }

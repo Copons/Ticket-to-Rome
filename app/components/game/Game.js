@@ -151,8 +151,8 @@ class Game {
         player.pieces = gamePlayer.pieces;
         qs('.pieces .count', playerElem).textContent = player.pieces;
       }
-      if (player.destinations !== gamePlayer.destinations) {
-        player.destinations = gamePlayer.destinations;
+      if (player.destinations !== gamePlayer.destinations.length) {
+        player.destinations = gamePlayer.destinations.length;
         qs('.destinations .count', playerElem).textContent = player.destinations;
       }
     }
@@ -169,7 +169,7 @@ class Game {
     } else {
       const endgame = new Endgame(this.room.id);
       endgame.render();
-      endgame.theWinnerIs();
+      //endgame.theWinnerIs();
     }
     Message.success(response.message);
   }

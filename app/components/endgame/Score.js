@@ -1,5 +1,6 @@
 import './score.css';
 import { create, qs, addClass } from '../../libs/dom';
+import { STATIONS } from '../../config';
 
 
 export default class Score {
@@ -23,12 +24,18 @@ export default class Score {
 
       let destinationList = '';
       for (const destination of player.destinations) {
+        const start = STATIONS.find(station => station.slug === destination.start).name;
+        const end = STATIONS.find(station => station.slug === destination.end).name;
         destinationList += `
           <div
             class="destination ${destination.completed ? 'completed' : 'failed'}"
             data-destination="${destination.id}"
           >
-            ${destination.name} <span>(${destination.points})</span>
+            <span>
+              ${destination.points}
+              <span class="icon"></span>
+            </span>
+            ${start} - ${end}
           </div>
         `;
 

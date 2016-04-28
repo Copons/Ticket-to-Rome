@@ -66,7 +66,7 @@ class Game {
   drawDestination(player) {
     const response = this.destinations.draw();
     if (response.type === 'success') {
-      this.room.players.find(p => p.id === player.id).destinations++;
+      this.room.players.find(p => p.id === player.id).destinations.push(response.body);
     }
     return response;
   }
@@ -91,7 +91,7 @@ class Game {
       const response = this.destinations.draw();
       if (response.type === 'success') {
         destinations.push(response.body);
-        this.room.players.find(p => p.id === player.id).destinations++;
+        this.room.players.find(p => p.id === player.id).destinations.push(response.body);
       }
     }
     return Response.success('First destinations were dealt successfully.', { destinations });
@@ -203,6 +203,19 @@ class Game {
     console.log(`${chalk.magenta('claimRoute AFTER CLAIM')}: ${this.discardPile.length}`);
 
     return Response.success(`Player [${player.name}] claimed the route [${data.route.start.name} - ${data.route.end.name}] and earned [${CONFIG.RULES.points[data.cards.length]}] points.`); // eslint-disable-line max-len
+  }
+
+
+  completeDestination(data) {
+    const player = this.room.players.find(p => p.id === data.game.activePlayer.id);
+    const destination = player.destinations.find(d => d.id === data.destination.id);
+    destination.completed = true;
+    return Response.success('You completed a destination!');
+  }
+
+
+  endgameScore() {
+    return this.room.players;
   }
 
 }

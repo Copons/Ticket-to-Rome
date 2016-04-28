@@ -20,6 +20,7 @@ class DestinationDeck {
         start: destination.start,
         end: destination.end,
         points: destination.points,
+        completed: false,
       });
     }
   }

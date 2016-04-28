@@ -9,15 +9,20 @@ export default class Endgame {
 
   constructor(game) {
     this.game = game;
-    this.debugScore();
-    this.score = new Score(this.players);
+    //this.debugScore();
 
     this.el = document.getElementById('endgame');
   }
 
 
   render() {
-    this.score.render();
+    IO.emit('Endgame.score', this.game)
+      .then(response => {
+        console.log(response);
+        this.score = new Score(response.body);
+        this.score.render();
+        this.theWinnerIs();
+      });
     listen(qs('.close', this.el), 'click', this.close);
   }
 

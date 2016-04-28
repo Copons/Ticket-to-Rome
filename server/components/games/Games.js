@@ -171,6 +171,20 @@ class Games {
     return response;
   }
 
+
+  completeDestination(data) {
+    return this.game(data.game.id).completeDestination(data);
+  }
+
+
+  endgameScore(game) {
+    return {
+      type: 'success',
+      message: '',
+      body: this.game(game).endgameScore(),
+    };
+  }
+
 }
 
 
