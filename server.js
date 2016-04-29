@@ -6,7 +6,6 @@ import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config';
 import socket from './server-redux/socket';
 
-
 const isProduction = process.env.NODE_ENV === 'production';
 let port = isProduction ? process.env.PORT : 3000;
 if (!port) port = 3000;
@@ -28,7 +27,8 @@ if (!isProduction) {
     inline: true,
     noInfo: true,
     quiet: false,
-    publicPath: '/build/',
+    historyApiFallback: true,
+    publicPath: webpackConfig.output.publicPath,
     proxy: { '*': 'http://localhost:3000' },
     stats: { colors: true },
   }).listen(8080, 'localhost', err => {

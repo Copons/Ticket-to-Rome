@@ -4,7 +4,7 @@ const autoprefixer = require('autoprefixer');
 const precss = require('precss');
 
 const PATHS = {
-  app: path.resolve(__dirname, 'app', 'index.js'),
+  app: path.resolve(__dirname, 'app-react', 'index'),
   build: path.resolve(__dirname, 'public', 'build'),
   node: path.resolve(__dirname, 'node_modules'),
 };
@@ -16,7 +16,7 @@ const config = {
 
   entry: [
     'webpack-dev-server/client?http://localhost:8080',
-    'webpack/hot/only-dev-server',
+    'webpack/hot/dev-server',
     PATHS.app,
   ],
 
@@ -34,7 +34,7 @@ const config = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loaders: ['react-hot', 'babel'],
+        loaders: ['react-hot', 'babel?cacheDirectory'],
         exclude: [PATHS.node],
       },
       {

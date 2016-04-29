@@ -3,7 +3,7 @@ const autoprefixer = require('autoprefixer');
 const precss = require('precss');
 
 const PATHS = {
-  app: path.resolve(__dirname, 'app', 'index.js'),
+  app: path.resolve(__dirname, 'app-react', 'index.jsx'),
   build: path.resolve(__dirname, 'public', 'build'),
   node: path.resolve(__dirname, 'node_modules'),
 };
