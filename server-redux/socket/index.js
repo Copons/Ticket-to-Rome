@@ -45,5 +45,9 @@ export default function socket(server) {
       store.dispatch(createPlayer(player));
       callback();
     });
+    client.on(API.UPDATE_PLAYER, (data, callback) => {
+      store.dispatch(updatePlayer(data.id, data.player));
+      callback();
+    });
   });
 }
