@@ -9,17 +9,20 @@ export const Rooms = ({
   }
   return (
     <tbody>
-      {rooms.map(room => {
-        <tr>
-          {JSON.stringify(room)}
-        </tr>;
-      })}
+      {rooms.valueSeq().map(room =>
+        <tr key={room.get('id')}>
+          <td>{room.get('name')}</td>
+          <td>{room.get('owner').get('name')}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      )}
     </tbody>
   );
 };
 
 Rooms.propTypes = {
-  rooms: PropTypes.array,
+  rooms: PropTypes.any,
 };
 
 

@@ -3,34 +3,36 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { io } from '../../libs/io';
 import { CREATE_PLAYER, UPDATE_PLAYER } from '../../API';
-import { setPlayer } from '../../actions';
+import { setPlayer, setRooms } from '../../actions';
 
 
 export const SetPlayer = ({
   player,
-  onSubmit,
+  handleSubmit,
 }) => {
   let input;
   return (
     <form onSubmit={e => {
       e.preventDefault();
       if (input.value === '') return;
-      onSubmit(input.value);
+      handleSubmit(input.value);
       input.value = '';
     }}>
-      <input type="text" placeholder="Your name" ref={node => {
-        input = node;
-      }} />
-      <input type="submit" value={
-        player.has('name') ? 'Change name' : 'Create new player'
-      } />
+      <input
+        type="text"
+        placeholder={ player.has('name') ? player.get('name') : 'Your name' }
+        ref={node => {
+          input = node;
+        }}
+      />
+      <input type="submit" value={ player.has('name') ? 'Change name' : 'Create new player' } />
     </form>
   );
 };
 
 SetPlayer.propTypes = {
   player: PropTypes.object.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 
@@ -59,11 +61,16 @@ function dispatchSetPlayer(name) {
       };
     }
 
-    io.emit(action, player).then(() => dispatch(setPlayer(player)));
+    io.emit(action, player).then(response => {
+      dispatch(setPlayer(player));
+      if (response) {
+        dispatch(setRooms(response.body));
+      }
+    });
   };
 }
 
 export default connect(
   mapStateToProps,
-  { onSubmit: dispatchSetPlayer }
+  { handleSubmit: dispatchSetPlayer }
 )(SetPlayer);

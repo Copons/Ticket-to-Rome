@@ -3,27 +3,17 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { io } from '../../libs/io';
 import { CREATE_ROOM } from '../../API';
+import { setRooms } from '../../actions';
 
-
-function handleSubmit(name, player) {
-  if (name === '' || !player.has('name')) return;
-  io.emit(CREATE_ROOM, {
-    name,
-    id: uuid.v4(),
-    owner: player.get('id'),
-  })
-    .then(response => {
-      console.log(response);
-    })
-    .catch(response => {
-      console.error(response);
-    });
-}
 
 export const CreateRoom = ({
   player,
+  handleSubmit,
 }) => {
   let input;
+  if (!player.has('name')) {
+    return <div></div>;
+  }
   return (
     <form onSubmit={e => {
       e.preventDefault();
@@ -40,6 +30,7 @@ export const CreateRoom = ({
 
 CreateRoom.propTypes = {
   player: PropTypes.object.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 
@@ -48,6 +39,24 @@ const mapStateToProps = state => ({
   player: state.player,
 });
 
+function dispatchCreateRoom(name) {
+  return (dispatch, getState) => {
+    const player = getState().player;
+    if (name === '' || !player.has('name')) return;
+
+    io.emit(CREATE_ROOM, {
+      name,
+      id: uuid.v4(),
+      owner: player.get('id'),
+    })
+      .then(response => {
+        dispatch(setRooms(response.body));
+      })
+      .catch(() => null);
+  };
+}
+
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  { handleSubmit: dispatchCreateRoom }
 )(CreateRoom);

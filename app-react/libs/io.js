@@ -1,5 +1,5 @@
 import socketIoClient from 'socket.io-client';
-import store from '../store/store';
+import store from '../store';
 import { setPlayer } from '../actions';
 
 export const io = {
@@ -15,9 +15,9 @@ export const io = {
     });
   },
 
-  emit: function emit(name, data) {
+  emit: function emit(action, data) {
     return new Promise((resolve, reject) => {
-      this.socket.emit(name, data, response => {
+      this.socket.emit(action, data, response => {
         if (!response) {
           resolve();
         } else if (response && response.type === 'success') {
@@ -27,6 +27,10 @@ export const io = {
         }
       });
     });
+  },
+
+  on: function on(action, callback) {
+    this.socket.on(action, callback);
   },
 
 };
