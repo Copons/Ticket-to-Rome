@@ -1,4 +1,6 @@
 import socketIoClient from 'socket.io-client';
+import store from '../store/store';
+import { setPlayer } from '../actions';
 
 export const io = {
 
@@ -7,6 +9,7 @@ export const io = {
   connect: function connect() {
     return new Promise(resolve => {
       this.socket.on('connect', () => {
+        store.dispatch(setPlayer({ client: this.socket.io.engine.id }));
         resolve(this.socket.io.engine.id);
       });
     });

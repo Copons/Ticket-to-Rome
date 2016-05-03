@@ -1,1 +1,1 @@
-export { createPlayer, updatePlayer } from './playerActions';
+export { setPlayer } from './playerActions';

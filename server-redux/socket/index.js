@@ -9,7 +9,8 @@ export default function socket(server) {
 
   console.log(JSON.stringify(store.getState()));
 
-  const unsubscribe = store.subscribe(() => {
+  /*const unsubscribe = */
+  store.subscribe(() => {
     console.log(JSON.stringify(store.getState()));
   });
 
@@ -48,6 +49,14 @@ export default function socket(server) {
     client.on(API.UPDATE_PLAYER, (player, callback) => {
       store.dispatch(updatePlayer(player));
       callback();
+    });
+
+    client.on(API.CREATE_ROOM, (room, callback) => {
+      store.dispatch(createRoom(room));
+      callback({
+        type: 'success',
+        body: store.getState().rooms,
+      });
     });
   });
 }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { SetPlayerContainer } from '../containers/SetPlayerContainer';
+import { Lobby } from './lobby/Lobby';
 
 export const App = () =>
   <div>
-    <SetPlayerContainer />
+    <Lobby />
   </div>;

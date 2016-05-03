@@ -1,15 +1,8 @@
-import { CREATE_PLAYER, UPDATE_PLAYER } from '../API';
+import { SET_PLAYER } from '../API';
 
-export function createPlayer(player) {
+export function setPlayer(player) {
   return {
-    type: CREATE_PLAYER,
-    player,
-  };
-}
-
-export function updatePlayer(player) {
-  return {
-    type: UPDATE_PLAYER,
+    type: SET_PLAYER,
     player,
   };
 }
