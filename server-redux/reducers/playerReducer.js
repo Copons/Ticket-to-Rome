@@ -4,8 +4,8 @@ import { findEntryById } from '../helpers/find';
 
 
 function updatePlayer(state, action) {
-  const player = findEntryById(state, action.id);
-  if (player[0] !== null) {
+  const player = findEntryById(state, action.player.id);
+  if (player !== null) {
     return state.set(player[0], player[1].merge(fromJS(action.player)));
   } else {
     return state;

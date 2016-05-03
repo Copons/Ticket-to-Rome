@@ -1,12 +1,7 @@
-import React, { Component } from 'react';
-import SetPlayer from '../containers/SetPlayer';
+import React from 'react';
+import { SetPlayerContainer } from '../containers/SetPlayerContainer';
 
-export default class App extends Component {
-  render() {
-    return (
-      <div>
-        <SetPlayer />
-      </div>
-    );
-  }
-}
+export const App = () =>
+  <div>
+    <SetPlayerContainer />
+  </div>;

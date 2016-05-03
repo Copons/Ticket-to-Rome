@@ -7,10 +7,9 @@ export function createPlayer(player) {
   };
 }
 
-export function updatePlayer(id, player) {
+export function updatePlayer(player) {
   return {
     type: UPDATE_PLAYER,
-    id,
     player,
   };
 }

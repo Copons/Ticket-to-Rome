@@ -43,6 +43,7 @@
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
+    "redux-thunk": "^2.0.1",
     "socket.io": "^1.4.5",
     "style-loader": "^0.13.1",
     "svgo-loader": "^1.1.0",
