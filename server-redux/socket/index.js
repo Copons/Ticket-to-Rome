@@ -1,9 +1,7 @@
 import socketIo from 'socket.io';
 import * as API from '../actions/actionTypes';
-import store from '../store';
 import Players from '../components/Players';
 import Rooms from '../components/Rooms';
-import { createRoom } from '../actions';
 
 export default function socket(server) {
   const io = socketIo.listen(server);

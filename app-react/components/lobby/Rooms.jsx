@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Room } from './Room';
 
 export const Rooms = ({
   rooms,
@@ -9,13 +10,8 @@ export const Rooms = ({
   }
   return (
     <tbody>
-      {rooms.valueSeq().map(room =>
-        <tr key={room.get('id')}>
-          <td>{room.get('name')}</td>
-          <td>{room.get('owner')}</td>
-          <td></td>
-          <td></td>
-        </tr>
+      {rooms.map(room =>
+        <Room key={room.get('id')} room={room} />
       )}
     </tbody>
   );

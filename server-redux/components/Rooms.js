@@ -1,8 +1,8 @@
 import store from '../store';
 import Players from './Players';
 import Response from './Response';
-import { SET_ROOMS, JOIN_ROOM, LEAVE_ROOM } from '../actions/actionTypes';
-import { createRoom, updateRoom, updatePlayerInRooms } from '../actions';
+import { SET_ROOMS, CREATE_ROOM, JOIN_ROOM, LEAVE_ROOM } from '../actions/actionTypes';
+import { createRoom, joinRoom, updateRoom, updatePlayerInRooms } from '../actions';
 import { findEntryById } from '../helpers/find';
 
 class Rooms {
@@ -16,8 +16,15 @@ class Rooms {
   }
 
   oneReadable = room => {
-    const player = Players.one(room.get('owner'));
-    return room.merge({ owner: player.get('name') });
+    const owner = Players.one(room.get('owner')).get('name');
+    const players = room.get('players').map(p => {
+      const player = Players.one(p);
+      return {
+        id: player.get('id'),
+        name: player.get('name'),
+      };
+    });
+    return room.merge({ owner, players });
   }
 
   allReadable = () => this.all().map(room => this.oneReadable(room))
@@ -27,9 +34,19 @@ class Rooms {
   }
 
   create = room => {
-    const action = store.dispatch(createRoom(room));
-    return Response.success(action.type);
+    const newRoom = {
+      ...room,
+      players: [],
+    };
+    store.dispatch(this.createThunk(newRoom));
+    return Response.success(CREATE_ROOM);
   }
+
+  createThunk = room =>
+    dispatch => {
+      dispatch(createRoom(room));
+      dispatch(joinRoom(room.id, room.owner));
+    }
 
   update = room => {
     const action = store.dispatch(updateRoom(room));
