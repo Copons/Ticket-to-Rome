@@ -1,8 +1,8 @@
 import store from '../store';
-import { io } from '../libs/io';
-import { SET_ROOMS } from '../API';
+import IO from './IO';
+import { SET_ROOMS } from '../actions/actionTypes';
 import { setRooms } from '../actions';
 
-io.on(SET_ROOMS, response => {
+IO.on(SET_ROOMS, response => {
   store.dispatch(setRooms(response.body));
 });

@@ -1,16 +1,6 @@
 import { List, fromJS } from 'immutable';
-import { CREATE_PLAYER, UPDATE_PLAYER, DELETE_PLAYER } from '../API';
-import { findEntryById } from '../helpers/find';
-
-
-function updatePlayer(state, action) {
-  const player = findEntryById(state, action.player.id);
-  if (player !== null) {
-    return state.set(player[0], player[1].merge(fromJS(action.player)));
-  } else {
-    return state;
-  }
-}
+import { CREATE_PLAYER, UPDATE_PLAYER, DELETE_PLAYER } from '../actions/actionTypes';
+import Players from '../components/Players';
 
 
 const defaultState = new List();
@@ -20,7 +10,7 @@ export default function playerReducer(state = defaultState, action) {
     case CREATE_PLAYER:
       return state.push(fromJS(action.player));
     case UPDATE_PLAYER:
-      return updatePlayer(state, action);
+      return Players.updateReducer(state, action);
     case DELETE_PLAYER:
       return state.filter(p => p.get('id') !== action.id);
     default:

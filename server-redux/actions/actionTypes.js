@@ -2,12 +2,16 @@
 export const CONNECTION = 'connection';
 export const DISCONNECT = 'disconnect';
 
-// Player
+// Response
+export const SUCCESS = 'SUCCESS';
+export const ERROR = 'ERROR';
+
+// Players
 export const CREATE_PLAYER = 'CREATE_PLAYER';
 export const UPDATE_PLAYER = 'UPDATE_PLAYER';
 export const DELETE_PLAYER = 'DELETE_PLAYER';
 
-// Room
+// Rooms
 export const SET_ROOMS = 'SET_ROOMS';
 export const CREATE_ROOM = 'CREATE_ROOM';
 export const JOIN_ROOM = 'JOIN_ROOM';

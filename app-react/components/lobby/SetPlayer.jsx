@@ -1,8 +1,8 @@
 import uuid from 'node-uuid';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { io } from '../../libs/io';
-import { CREATE_PLAYER, UPDATE_PLAYER } from '../../API';
+import IO from '../../socket/IO';
+import { CREATE_PLAYER, UPDATE_PLAYER } from '../../actions/actionTypes';
 import { setPlayer, setRooms } from '../../actions';
 
 
@@ -61,7 +61,7 @@ function dispatchSetPlayer(name) {
       };
     }
 
-    io.emit(action, player).then(response => {
+    IO.emit(action, player).then(response => {
       dispatch(setPlayer(player));
       if (response) {
         dispatch(setRooms(response.body));

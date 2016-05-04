@@ -1,5 +1,5 @@
 import { Map, fromJS } from 'immutable';
-import { SET_PLAYER } from '../API';
+import { SET_PLAYER } from '../actions/actionTypes';
 
 const defaultState = new Map();
 

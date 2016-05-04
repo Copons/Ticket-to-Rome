@@ -4,7 +4,7 @@ import {
   LEAVE_ROOM,
   DELETE_ROOM,
   UPDATE_PLAYER_IN_ROOMS,
- } from '../API';
+ } from './actionTypes';
 
 export function createRoom(room) {
   return {

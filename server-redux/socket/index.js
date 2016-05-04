@@ -1,18 +1,17 @@
 import socketIo from 'socket.io';
-import * as API from '../API';
+import * as API from '../actions/actionTypes';
 import store from '../store';
-import { createPlayer, updatePlayer } from '../actions';
-import { createRoom, updatePlayerInRooms } from '../actions';
+import Players from '../components/Players';
+import Rooms from '../components/Rooms';
+import { createRoom } from '../actions';
 
 export default function socket(server) {
   const io = socketIo.listen(server);
 
-  console.log(JSON.stringify(store.getState()));
-
-  /*const unsubscribe = */
+  /*const unsubscribe =
   store.subscribe(() => {
     console.log(JSON.stringify(store.getState()));
-  });
+  });*/
 
   /*
   store.dispatch(deletePlayer(1));
@@ -31,26 +30,19 @@ export default function socket(server) {
     console.log(`Client ${client.id} connected.`);
 
     client.on(API.CREATE_PLAYER, (player, callback) => {
-      store.dispatch(createPlayer(player));
+      Players.create(player);
       callback();
     });
 
     client.on(API.UPDATE_PLAYER, (player, callback) => {
-      store.dispatch(updatePlayer(player));
-      store.dispatch(updatePlayerInRooms(player));
-      io.sockets.emit(API.SET_ROOMS, {
-        type: 'success',
-        body: store.getState().rooms,
-      });
+      Players.update(player);
+      Rooms.emitAll(io.sockets);
       callback();
     });
 
     client.on(API.CREATE_ROOM, (room, callback) => {
-      store.dispatch(createRoom(room));
-      io.sockets.emit(API.SET_ROOMS, {
-        type: 'success',
-        body: store.getState().rooms,
-      });
+      Rooms.create(room);
+      Rooms.emitAll(io.sockets);
       callback();
     });
   });

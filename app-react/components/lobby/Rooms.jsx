@@ -12,7 +12,7 @@ export const Rooms = ({
       {rooms.valueSeq().map(room =>
         <tr key={room.get('id')}>
           <td>{room.get('name')}</td>
-          <td>{room.get('owner').get('name')}</td>
+          <td>{room.get('owner')}</td>
           <td></td>
           <td></td>
         </tr>

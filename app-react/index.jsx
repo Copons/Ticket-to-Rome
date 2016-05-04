@@ -2,16 +2,15 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './store';
-import { io } from './libs/io';
+import IO from './socket/IO';
 import { App } from './components/App';
-import './listeners';
+import './socket/listeners';
 
-store.subscribe(() => {
+/*store.subscribe(() => {
   console.log(JSON.stringify(store.getState()));
-});
+});*/
 
-
-io.connect().then(() => {
+IO.connect().then(() => {
   render(
     <Provider store={store}>
       <App />

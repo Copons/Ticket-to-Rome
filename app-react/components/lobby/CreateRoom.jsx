@@ -1,8 +1,8 @@
 import uuid from 'node-uuid';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { io } from '../../libs/io';
-import { CREATE_ROOM } from '../../API';
+import IO from '../../socket/IO';
+import { CREATE_ROOM } from '../../actions/actionTypes';
 import { setRooms } from '../../actions';
 
 
@@ -44,7 +44,7 @@ function dispatchCreateRoom(name) {
     const player = getState().player;
     if (name === '' || !player.has('name')) return;
 
-    io.emit(CREATE_ROOM, {
+    IO.emit(CREATE_ROOM, {
       name,
       id: uuid.v4(),
       owner: player.get('id'),

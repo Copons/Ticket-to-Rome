@@ -1,4 +1,4 @@
-import { SET_PLAYER } from '../API';
+import { SET_PLAYER } from './actionTypes';
 
 export function setPlayer(player) {
   return {

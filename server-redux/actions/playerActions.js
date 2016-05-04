@@ -1,4 +1,4 @@
-import { CREATE_PLAYER, UPDATE_PLAYER, DELETE_PLAYER } from '../API';
+import { CREATE_PLAYER, UPDATE_PLAYER, DELETE_PLAYER } from './actionTypes';
 
 export function createPlayer(player) {
   return {

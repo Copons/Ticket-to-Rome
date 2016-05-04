@@ -1,4 +1,4 @@
-import { SET_ROOMS } from '../API';
+import { SET_ROOMS } from './actionTypes';
 
 export function setRooms(rooms) {
   return {
