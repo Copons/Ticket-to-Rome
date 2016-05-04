@@ -13,3 +13,5 @@ export const UPDATE_PLAYER = 'UPDATE_PLAYER';
 // Rooms
 export const SET_ROOMS = 'SET_ROOMS';
 export const CREATE_ROOM = 'CREATE_ROOM';
+export const JOIN_ROOM = 'JOIN_ROOM';
+export const LEAVE_ROOM = 'LEAVE_ROOM';

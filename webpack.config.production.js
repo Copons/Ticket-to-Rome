@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const precss = require('precss');
@@ -44,6 +45,12 @@ const config = {
   },
 
   postcss: () => [autoprefixer, precss],
+
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"',
+    }),
+  ],
 
 };
 

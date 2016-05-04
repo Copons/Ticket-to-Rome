@@ -18,7 +18,7 @@
   "scripts": {
     "start": "node --harmony .",
     "dev": "set NODE_ENV=development && node --harmony . ",
-    "postinstall": "node deploy"
+    "postinstall": "set NODE_ENV=production && node --harmony ./deploy"
   },
   "dependencies": {
     "autoprefixer": "^6.3.6",

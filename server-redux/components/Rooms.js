@@ -2,7 +2,7 @@ import store from '../store';
 import Players from './Players';
 import Response from './Response';
 import { SET_ROOMS, CREATE_ROOM, JOIN_ROOM, LEAVE_ROOM } from '../actions/actionTypes';
-import { createRoom, joinRoom, updateRoom, updatePlayerInRooms } from '../actions';
+import { createRoom, joinRoom, leaveRoom, deleteRoom, updatePlayerInRooms } from '../actions';
 import { findEntryById } from '../helpers/find';
 
 class Rooms {
@@ -33,10 +33,17 @@ class Rooms {
     clients.emit(SET_ROOMS, Response.success(SET_ROOMS, this.allReadable()));
   }
 
+  containsPlayer = (roomId, playerId) => {
+    const room = this.one(roomId);
+    if (room && room.get('players').indexOf(playerId) > -1) return true;
+    else return false;
+  }
+
   create = room => {
     const newRoom = {
       ...room,
       players: [],
+      status: 'open',
     };
     store.dispatch(this.createThunk(newRoom));
     return Response.success(CREATE_ROOM);
@@ -48,10 +55,42 @@ class Rooms {
       dispatch(joinRoom(room.id, room.owner));
     }
 
-  update = room => {
-    const action = store.dispatch(updateRoom(room));
+  join = (roomId, playerId) => {
+    const action = store.dispatch(joinRoom(roomId, playerId));
     return Response.success(action.type);
   }
+
+  leave = (roomId, playerId) => {
+    const room = this.one(roomId);
+    if (!room) {
+      return Response.error(LEAVE_ROOM);
+    }
+
+    let action;
+    if (
+      room.get('owner') === playerId ||
+      room.get('players').size === 1 && this.containsPlayer(room.get('id'), playerId)
+    ) {
+      action = store.dispatch(deleteRoom(roomId));
+    } else {
+      action = store.dispatch(leaveRoom(roomId, playerId));
+    }
+
+    return Response.success(action.type);
+  }
+
+  leaveAll = clientId =>
+    new Promise((resolve, reject) => {
+      const player = Players.oneByClient(clientId);
+      if (!player) {
+        reject();
+      }
+      const rooms = this.all().map(room => room.get('id'));
+      for (const roomId of rooms) {
+        this.leave(roomId, player.get('id'));
+      }
+      resolve(clientId);
+    })
 
   updateReducer = (state, action) => {
     const room = findEntryById(state, action.roomId);

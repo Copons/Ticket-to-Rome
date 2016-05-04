@@ -61,11 +61,8 @@ function dispatchSetPlayer(name) {
       };
     }
 
-    IO.emit(action, player).then(response => {
+    IO.emit(action, player).then(() => {
       dispatch(setPlayer(player));
-      if (response) {
-        dispatch(setRooms(response.body));
-      }
     });
   };
 }

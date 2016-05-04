@@ -2,18 +2,27 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Room } from './Room';
 
-export const Rooms = ({
-  rooms,
-}) => {
-  if (!rooms) {
-    return <tbody></tbody>;
+export const Rooms = ({ rooms }) => {
+  if (rooms.isEmpty()) {
+    return <div></div>;
   }
   return (
-    <tbody>
-      {rooms.map(room =>
-        <Room key={room.get('id')} room={room} />
-      )}
-    </tbody>
+    <table className="rooms">
+      <thead>
+        <tr>
+          <th>Room</th>
+          <th>Owner</th>
+          <th>Players</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rooms.map((room, i) =>
+          <Room key={i} room={room} />
+        )}
+      </tbody>
+    </table>
   );
 };
 

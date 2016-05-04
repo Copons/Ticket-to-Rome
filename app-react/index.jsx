@@ -6,9 +6,9 @@ import IO from './socket/IO';
 import { App } from './components/App';
 import './socket/listeners';
 
-/*store.subscribe(() => {
-  console.log(JSON.stringify(store.getState()));
-});*/
+store.subscribe(() => {
+  //console.log(JSON.stringify(store.getState()));
+});
 
 IO.connect().then(() => {
   render(

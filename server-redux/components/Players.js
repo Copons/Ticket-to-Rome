@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
 import store from '../store';
 import Response from './Response';
-import { createPlayer, updatePlayer, updatePlayerInRooms } from '../actions';
+import { createPlayer, updatePlayer, deletePlayer, updatePlayerInRooms } from '../actions';
 import { findEntryById } from '../helpers/find';
 
 class Players {
@@ -16,6 +16,15 @@ class Players {
       return null;
     }
   };
+
+  oneByClient = clientId => {
+    const player = this.all().findEntry(item => clientId.includes(item.get('client')));
+    if (player) {
+      return player[1];
+    } else {
+      return null;
+    }
+  }
 
   create = player => {
     const action = store.dispatch(createPlayer(player));
@@ -34,6 +43,15 @@ class Players {
       return state.set(player[0], player[1].merge(fromJS(action.player)));
     } else {
       return state;
+    }
+  }
+
+  delete = clientId => {
+    const player = this.oneByClient(clientId);
+    let action;
+    if (player) {
+      action = store.dispatch(deletePlayer(player.get('id')));
+      return Response.success(action.type);
     }
   }
 
