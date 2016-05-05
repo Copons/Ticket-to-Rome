@@ -39,13 +39,14 @@ class Rooms {
     else return false;
   }
 
-  create = room => {
+  create = (room, client) => {
     const newRoom = {
       ...room,
       players: [],
       status: 'open',
     };
     store.dispatch(this.createThunk(newRoom));
+    client.join(room.id);
     return Response.success(CREATE_ROOM);
   }
 
@@ -55,12 +56,13 @@ class Rooms {
       dispatch(joinRoom(room.id, room.owner));
     }
 
-  join = (roomId, playerId) => {
+  join = (roomId, playerId, client) => {
     const action = store.dispatch(joinRoom(roomId, playerId));
+    client.join(roomId);
     return Response.success(action.type);
   }
 
-  leave = (roomId, playerId) => {
+  leave = (roomId, playerId, client) => {
     const room = this.one(roomId);
     if (!room) {
       return Response.error(LEAVE_ROOM);
@@ -75,21 +77,22 @@ class Rooms {
     } else {
       action = store.dispatch(leaveRoom(roomId, playerId));
     }
+    client.leave(roomId);
 
     return Response.success(action.type);
   }
 
-  leaveAll = clientId =>
+  leaveAll = client =>
     new Promise((resolve, reject) => {
-      const player = Players.oneByClient(clientId);
+      const player = Players.oneByClient(client.id);
       if (!player) {
         reject();
       }
       const rooms = this.all().map(room => room.get('id'));
       for (const roomId of rooms) {
-        this.leave(roomId, player.get('id'));
+        this.leave(roomId, player.get('id'), client);
       }
-      resolve(clientId);
+      resolve(client.id);
     })
 
   updateReducer = (state, action) => {

@@ -40,28 +40,28 @@ export default function socket(server) {
     });
 
     client.on(API.CREATE_ROOM, (room, callback) => {
-      Rooms.create(room);
+      Rooms.create(room, client);
       Rooms.emitAll(io.sockets);
       callback();
     });
 
     client.on(API.JOIN_ROOM, (data, callback) => {
-      Rooms.join(data.roomId, data.playerId);
+      Rooms.join(data.roomId, data.playerId, client);
       Rooms.emitAll(io.sockets);
       callback();
     });
 
     client.on(API.LEAVE_ROOM, (data, callback) => {
-      Rooms.leave(data.roomId, data.playerId);
+      Rooms.leave(data.roomId, data.playerId, client);
       Rooms.emitAll(io.sockets);
       callback();
     });
 
     client.on(API.DISCONNECT, () => {
-      Rooms.leaveAll(client.id)
+      Rooms.leaveAll(client)
         .then(clientId => {
           Players.delete(clientId);
-          Rooms.emitAll(io.sockets);
+          Rooms.emitAll(io);
         })
         .catch(error => {
           console.error(error);
