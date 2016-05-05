@@ -18,3 +18,6 @@ export const JOIN_ROOM = 'JOIN_ROOM';
 export const LEAVE_ROOM = 'LEAVE_ROOM';
 export const DELETE_ROOM = 'DELETE_ROOM';
 export const UPDATE_PLAYER_IN_ROOMS = 'UPDATE_PLAYER_IN_ROOMS';
+
+// Games
+export const START_GAME = 'START_GAME';

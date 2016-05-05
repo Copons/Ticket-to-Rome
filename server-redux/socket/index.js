@@ -57,6 +57,11 @@ export default function socket(server) {
       callback();
     });
 
+    client.on(API.START_GAME, (roomId, callback) => {
+      console.log(roomId);
+      callback();
+    });
+
     client.on(API.DISCONNECT, () => {
       Rooms.leaveAll(client)
         .then(clientId => {

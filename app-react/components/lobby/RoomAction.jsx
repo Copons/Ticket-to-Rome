@@ -2,11 +2,15 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { findEntryById } from '../../helpers/find';
 import IO from '../../socket/IO';
-import { JOIN_ROOM, LEAVE_ROOM } from '../../actions/actionTypes';
+import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions/actionTypes';
 
 
 function handleClick(action, roomId, playerId) {
-  IO.emit(action, { roomId, playerId });
+  if (action === START_GAME) {
+    IO.emit(action, roomId);
+  } else {
+    IO.emit(action, { roomId, playerId });
+  }
 }
 
 export const RoomAction = ({
@@ -19,18 +23,27 @@ export const RoomAction = ({
   const playerInRoom = findEntryById(room.get('players'), player.get('id'));
 
   switch (action) {
-    case JOIN_ROOM:
+    case JOIN_ROOM: {
       if (room.get('status') !== 'open' || playerInRoom) {
         return <span></span>;
       }
       inputValue = 'Join Room';
       break;
-    case LEAVE_ROOM:
+    }
+    case LEAVE_ROOM: {
       if (!playerInRoom) {
         return <span></span>;
       }
       inputValue = 'Leave Room';
       break;
+    }
+    case START_GAME: {
+      if (player.get('id') !== room.get('owner').get('id')) {
+        return <span></span>;
+      }
+      inputValue = 'Start Game';
+      break;
+    }
   }
 
   return (

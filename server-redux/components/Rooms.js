@@ -16,7 +16,7 @@ class Rooms {
   }
 
   oneReadable = room => {
-    const owner = Players.one(room.get('owner')).get('name');
+    const owner = Players.one(room.get('owner'));
     const players = room.get('players').map(p => {
       const player = Players.one(p);
       return {
@@ -24,7 +24,13 @@ class Rooms {
         name: player.get('name'),
       };
     });
-    return room.merge({ owner, players });
+    return room.merge({
+      players,
+      owner: {
+        id: owner.get('id'),
+        name: owner.get('name'),
+      },
+    });
   }
 
   allReadable = () => this.all().map(room => this.oneReadable(room))
