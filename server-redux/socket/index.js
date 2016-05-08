@@ -1,5 +1,6 @@
 import socketIo from 'socket.io';
 import * as API from '../actions/actionTypes';
+import Games from '../components/Games';
 import Players from '../components/Players';
 import Rooms from '../components/Rooms';
 import store from '../store';
@@ -58,7 +59,7 @@ export default function socket(server) {
     });
 
     client.on(API.START_GAME, (roomId, callback) => {
-      console.log(roomId);
+      Games.start(roomId);
       callback();
     });
 

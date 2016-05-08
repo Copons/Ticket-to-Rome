@@ -14,4 +14,5 @@ export {
   leaveRoom,
   deleteRoom,
   updatePlayerInRooms,
+  changeRoomStatus,
 } from './roomActions';

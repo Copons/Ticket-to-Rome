@@ -4,6 +4,7 @@ import {
   LEAVE_ROOM,
   DELETE_ROOM,
   UPDATE_PLAYER_IN_ROOMS,
+  CHANGE_ROOM_STATUS,
  } from './actionTypes';
 
 export function createRoom(room) {
@@ -40,5 +41,13 @@ export function updatePlayerInRooms(player) {
   return {
     type: UPDATE_PLAYER_IN_ROOMS,
     player,
+  };
+}
+
+export function changeRoomStatus(roomId, status) {
+  return {
+    type: CHANGE_ROOM_STATUS,
+    roomId,
+    status,
   };
 }

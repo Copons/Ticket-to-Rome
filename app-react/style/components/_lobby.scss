@@ -1,0 +1,46 @@
+.lobby {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px;
+  background-color: $ui-light;
+
+  form {
+    padding: 30px;
+  }
+
+  .rooms {
+    width: 100%;
+    border: 1px solid $ui-medium;
+    border-collapse: collapse;
+    font-size: 14px;
+    thead {
+      background-color: $ui-dark;
+      color: $ui-medium;
+    }
+    td, th {
+      padding: 5px;
+      border: 1px solid $ui-medium;
+    }
+
+    td.name {
+      font-weight: 700;
+    }
+    td.status {
+      font-style: italic;
+      text-align: center;
+      text-transform: capitalize;
+    }
+    td.actions {
+      text-align: center;
+      input {
+        margin: 0 5px;
+        font-size: 14px;
+      }
+    }
+  }
+
+}

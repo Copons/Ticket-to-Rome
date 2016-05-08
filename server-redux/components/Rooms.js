@@ -1,7 +1,13 @@
 import store from '../store';
 import Players from './Players';
 import Response from './Response';
-import { SET_ROOMS, CREATE_ROOM, JOIN_ROOM, LEAVE_ROOM } from '../actions/actionTypes';
+import {
+  SET_ROOMS,
+  CREATE_ROOM,
+  JOIN_ROOM,
+  LEAVE_ROOM,
+  CHANGE_ROOM_STATUS,
+} from '../actions/actionTypes';
 import { createRoom, joinRoom, leaveRoom, deleteRoom, updatePlayerInRooms } from '../actions';
 import { findEntryById } from '../helpers/find';
 
@@ -114,6 +120,11 @@ class Rooms {
           return state.set(
             room[0],
             room[1].merge({ players: room[1].get('players').filter(p => p !== action.playerId) })
+          );
+        case CHANGE_ROOM_STATUS:
+          return state.set(
+            room[0],
+            room[1].set('status', action.status)
           );
         default:
           return state;

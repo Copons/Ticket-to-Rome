@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
-const precss = require('precss');
 
 const PATHS = {
   app: path.resolve(__dirname, 'app-react', 'index'),
@@ -38,6 +37,10 @@ const config = {
         exclude: [PATHS.node],
       },
       {
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'postcss', 'sass'],
+      },
+      {
         test: /\.css$/,
         loaders: ['style', 'css', 'postcss'],
       },
@@ -48,7 +51,7 @@ const config = {
     ],
   },
 
-  postcss: () => [autoprefixer, precss],
+  postcss: () => [autoprefixer],
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

@@ -1,0 +1,16 @@
+@import url(https://fonts.googleapis.com/css?family=Hammersmith+One);
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+}

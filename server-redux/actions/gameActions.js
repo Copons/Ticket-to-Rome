@@ -1,8 +1,8 @@
 import { START_GAME } from './actionTypes';
 
-export function startGame(roomId) {
+export function startGame(game) {
   return {
     type: START_GAME,
-    roomId,
+    game,
   };
 }
