@@ -1,6 +1,5 @@
 import { List, fromJS } from 'immutable';
 import { START_GAME } from '../actions/actionTypes';
-//import Games from '../components/Games';
 
 
 const defaultState = new List();

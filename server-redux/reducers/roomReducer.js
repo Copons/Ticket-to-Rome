@@ -6,7 +6,7 @@ import {
   DELETE_ROOM,
   UPDATE_PLAYER_IN_ROOMS,
 } from '../actions/actionTypes';
-import Rooms from '../components/Rooms';
+import Rooms from '../services/Rooms';
 
 
 const defaultState = new List();

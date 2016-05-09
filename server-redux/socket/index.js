@@ -1,8 +1,8 @@
 import socketIo from 'socket.io';
 import * as API from '../actions/actionTypes';
-import Games from '../components/Games';
-import Players from '../components/Players';
-import Rooms from '../components/Rooms';
+import Games from '../services/Games';
+import Players from '../services/Players';
+import Rooms from '../services/Rooms';
 import store from '../store';
 
 export default function socket(server) {
@@ -12,17 +12,6 @@ export default function socket(server) {
   store.subscribe(() => {
     //console.log(JSON.stringify(store.getState()));
   });
-
-  /*
-  store.dispatch(deletePlayer(1));
-
-  store.dispatch(joinRoom(1, 1));
-  store.dispatch(joinRoom(1, 2));
-
-  store.dispatch(leaveRoom(1, 1));
-
-  store.dispatch(deleteRoom(1));
-  */
 
   //unsubscribe();
 

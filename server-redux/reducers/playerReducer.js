@@ -1,6 +1,6 @@
 import { List, fromJS } from 'immutable';
 import { CREATE_PLAYER, UPDATE_PLAYER, DELETE_PLAYER } from '../actions/actionTypes';
-import Players from '../components/Players';
+import Players from '../services/Players';
 
 
 const defaultState = new List();
