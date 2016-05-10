@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import RoomAction from './RoomAction';
-import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions/actionTypes';
+import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions';
 
 export const Room = ({ room }) =>
   <tr key={room.get('id')}>

@@ -1,17 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { findEntryById } from '../../helpers/find';
-import IO from '../../socket/IO';
-import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions/actionTypes';
+import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions';
+import Rooms from '../../services/Rooms';
 
-
-function handleClick(action, roomId, playerId) {
-  if (action === START_GAME) {
-    IO.emit(action, roomId);
-  } else {
-    IO.emit(action, { roomId, playerId });
-  }
-}
 
 export const RoomAction = ({
   action,
@@ -20,11 +11,11 @@ export const RoomAction = ({
 }) => {
   let inputValue = '';
 
-  const playerInRoom = findEntryById(room.get('players'), player.get('id'));
+  const playerInRoom = Rooms.containsPlayer(room, player);
 
   switch (action) {
     case JOIN_ROOM: {
-      if (room.get('status') !== 'open' || playerInRoom) {
+      if (Rooms.isOpen(room) || playerInRoom) {
         return <span></span>;
       }
       inputValue = 'Join Room';
@@ -38,7 +29,7 @@ export const RoomAction = ({
       break;
     }
     case START_GAME: {
-      if (player.get('id') !== room.get('owner').get('id')) {
+      if (!Rooms.isPlayerOwner(room, player)) {
         return <span></span>;
       }
       inputValue = 'Start Game';
@@ -52,7 +43,7 @@ export const RoomAction = ({
       value={inputValue}
       onClick={e => {
         e.preventDefault();
-        handleClick(action, room.get('id'), player.get('id'));
+        Rooms.onActionButtonClick(action, room, player);
       }}
     />
   );

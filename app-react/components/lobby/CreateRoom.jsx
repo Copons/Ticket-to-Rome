@@ -1,9 +1,6 @@
-import uuid from 'node-uuid';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import IO from '../../socket/IO';
-import { CREATE_ROOM } from '../../actions/actionTypes';
-
+import Rooms from '../../services/Rooms';
 
 export const CreateRoom = ({
   player,
@@ -38,20 +35,7 @@ const mapStateToProps = state => ({
   player: state.player,
 });
 
-function dispatchCreateRoom(name) {
-  return (dispatch, getState) => {
-    const player = getState().player;
-    if (name === '' || !player.has('name')) return;
-
-    IO.emit(CREATE_ROOM, {
-      name,
-      id: uuid.v4(),
-      owner: player.get('id'),
-    });
-  };
-}
-
 export default connect(
   mapStateToProps,
-  { handleSubmit: dispatchCreateRoom }
+  { handleSubmit: Rooms.createRoomDispatch }
 )(CreateRoom);

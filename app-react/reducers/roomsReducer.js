@@ -1,5 +1,5 @@
 import { List, fromJS } from 'immutable';
-import { SET_ROOMS } from '../actions/actionTypes';
+import { SET_ROOMS } from '../actions';
 
 const defaultState = new List();
 

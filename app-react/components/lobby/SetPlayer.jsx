@@ -1,9 +1,6 @@
-import uuid from 'node-uuid';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import IO from '../../socket/IO';
-import { CREATE_PLAYER, UPDATE_PLAYER } from '../../actions/actionTypes';
-import { setPlayer, setRooms } from '../../actions';
+import Player from '../../services/Player';
 
 
 export const SetPlayer = ({
@@ -42,32 +39,7 @@ const mapStateToProps = state => ({
   player: state.player,
 });
 
-function dispatchSetPlayer(name) {
-  return (dispatch, getState) => {
-    let action;
-    let player;
-    if (getState().player.has('name')) {
-      action = UPDATE_PLAYER;
-      player = {
-        ...getState().player.toJS(),
-        name,
-      };
-    } else {
-      action = CREATE_PLAYER;
-      player = {
-        ...getState().player.toJS(),
-        id: uuid.v4(),
-        name,
-      };
-    }
-
-    IO.emit(action, player).then(() => {
-      dispatch(setPlayer(player));
-    });
-  };
-}
-
 export default connect(
   mapStateToProps,
-  { handleSubmit: dispatchSetPlayer }
+  { handleSubmit: Player.setPlayerDispatch }
 )(SetPlayer);

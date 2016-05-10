@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lobby } from './lobby/Lobby';
+import { Lobby } from './Lobby';
 
 export const App = () =>
   <div>
