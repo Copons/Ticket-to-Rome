@@ -1,5 +1,9 @@
 import chalk from 'chalk';
-import { SUCCESS, ERROR } from '../actions/actionTypes';
+import {
+  SUCCESS,
+  ERROR,
+} from '../actions';
+
 
 export default class Response {
 

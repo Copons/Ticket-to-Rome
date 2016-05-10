@@ -6,13 +6,15 @@ import {
   CREATE_ROOM,
   JOIN_ROOM,
   LEAVE_ROOM,
+  DELETE_ROOM,
   CHANGE_ROOM_STATUS,
-} from '../actions/actionTypes';
-import { createRoom, joinRoom, leaveRoom, deleteRoom, updatePlayerInRooms } from '../actions';
+} from '../actions';
 
 
 class Rooms {
 
+
+  // Utilities
 
   all = () => store.getState().rooms;
 
@@ -54,46 +56,45 @@ class Rooms {
   }
 
 
-  create = (room, client) => {
+
+  // Services
+
+  create = (room, client) => new Promise(resolve => {
     store.dispatch(this.createThunk({
       ...room,
       players: [],
       status: 'open',
     }));
     client.join(room.id);
-    return Response.success(CREATE_ROOM);
-  }
+    resolve(Response.success(CREATE_ROOM));
+  });
 
 
-  createThunk = room => dispatch => {
-    dispatch(createRoom(room));
-    dispatch(joinRoom(room.id, room.owner));
-  };
-
-
-  join = (roomId, playerId, client) => {
-    const action = store.dispatch(joinRoom(roomId, playerId));
+  join = (roomId, playerId, client) => new Promise(resolve => {
+    store.dispatch(this.joinRoomAction(roomId, playerId));
     client.join(roomId);
-    return Response.success(action.type);
-  }
+    resolve(Response.success(JOIN_ROOM));
+  });
 
 
-  leave = (roomId, playerId, client) => {
+  leave = (roomId, playerId, client) => new Promise((resolve, reject) => {
     const room = this.one(roomId);
-    if (!room) return Response.error(LEAVE_ROOM);
-
-    let action;
-    if (
-      room.get('owner') === playerId ||
-      room.get('players').size === 1 && this.containsPlayer(room.get('id'), playerId)
-    ) {
-      action = store.dispatch(deleteRoom(roomId));
+    if (!room) {
+      reject(Response.error(LEAVE_ROOM));
     } else {
-      action = store.dispatch(leaveRoom(roomId, playerId));
+      let action;
+      if (
+        room.get('owner') === playerId ||
+        room.get('players').size === 1 && this.containsPlayer(room.get('id'), playerId)
+      ) {
+        action = store.dispatch(this.deleteRoomAction(roomId));
+      } else {
+        action = store.dispatch(this.leaveRoomAction(roomId, playerId));
+      }
+      client.leave(roomId);
+      resolve(Response.success(action.type));
     }
-    client.leave(roomId);
-    return Response.success(action.type);
-  }
+  });
 
 
   leaveAll = client => new Promise((resolve, reject) => {
@@ -108,6 +109,48 @@ class Rooms {
       resolve(client.id);
     }
   });
+
+
+
+
+  // Actions
+
+  createRoomAction = room => ({
+    type: CREATE_ROOM,
+    room,
+  });
+
+  joinRoomAction = (roomId, playerId) => ({
+    type: JOIN_ROOM,
+    roomId,
+    playerId,
+  });
+
+  leaveRoomAction = (roomId, playerId) => ({
+    type: LEAVE_ROOM,
+    roomId,
+    playerId,
+  });
+
+  deleteRoomAction = id => ({
+    type: DELETE_ROOM,
+    id,
+  });
+
+  changeRoomStatusAction = (roomId, status) => ({
+    type: CHANGE_ROOM_STATUS,
+    roomId,
+    status,
+  });
+
+
+
+  // Helpers
+
+  createThunk = room => dispatch => {
+    dispatch(this.createRoomAction(room));
+    dispatch(this.joinRoomAction(room.id, room.owner));
+  };
 
 
   updateReducer = (state, action) => {
@@ -134,21 +177,6 @@ class Rooms {
         return state;
     }
   }
-
-
-  updatePlayer = player => {
-    const action = store.dispatch(updatePlayerInRooms(player));
-    return Response.success(action.type);
-  }
-
-
-  updatePlayerReducer = (state, action) => state.map(r => {
-    if (r.get('owner') === action.player.id) {
-      return r.merge({ owner: action.player.id });
-    } else {
-      return r;
-    }
-  });
 
 }
 

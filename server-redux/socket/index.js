@@ -1,5 +1,5 @@
 import socketIo from 'socket.io';
-import * as API from '../actions/actionTypes';
+import * as API from '../actions';
 import Games from '../services/Games';
 import Players from '../services/Players';
 import Rooms from '../services/Rooms';
@@ -19,47 +19,64 @@ export default function socket(server) {
     console.log(`Client ${client.id} connected.`);
 
     client.on(API.CREATE_PLAYER, (player, callback) => {
-      Players.create(player);
-      callback();
+      Players.create(player)
+        .then(res => {
+          callback(res);
+        });
     });
 
     client.on(API.UPDATE_PLAYER, (player, callback) => {
-      Players.update(player);
-      Rooms.emitAll(io.sockets);
-      callback();
+      Players.update(player)
+        .then(res => {
+          Rooms.emitAll(io.sockets);
+          callback(res);
+        });
     });
 
     client.on(API.CREATE_ROOM, (room, callback) => {
-      Rooms.create(room, client);
-      Rooms.emitAll(io.sockets);
-      callback();
+      Rooms.create(room, client)
+        .then(res => {
+          Rooms.emitAll(io.sockets);
+          callback(res);
+        });
     });
 
     client.on(API.JOIN_ROOM, (data, callback) => {
-      Rooms.join(data.roomId, data.playerId, client);
-      Rooms.emitAll(io.sockets);
-      callback();
+      Rooms.join(data.roomId, data.playerId, client)
+        .then(res => {
+          Rooms.emitAll(io.sockets);
+          callback(res);
+        });
     });
 
     client.on(API.LEAVE_ROOM, (data, callback) => {
-      Rooms.leave(data.roomId, data.playerId, client);
-      Rooms.emitAll(io.sockets);
-      callback();
+      Rooms.leave(data.roomId, data.playerId, client)
+        .then(res => {
+          Rooms.emitAll(io.sockets);
+          callback(res);
+        })
+        .catch(err => {
+          callback(err);
+        });
     });
 
     client.on(API.START_GAME, (roomId, callback) => {
-      Games.start(roomId);
-      callback();
+      Games.start(roomId)
+        .then(res => {
+          Rooms.emitAll(io.sockets);
+          callback(res);
+        })
+        .catch(err => {
+          callback(err);
+        });
     });
 
     client.on(API.DISCONNECT, () => {
       Rooms.leaveAll(client)
-        .then(clientId => {
-          Players.delete(clientId);
-          Rooms.emitAll(io);
-        })
-        .catch(error => {
-          console.error(error);
+        .then(clientId => Players.delete(clientId))
+        .then(() => Rooms.emitAll(io))
+        .catch(err => {
+          console.log(err);
         });
     });
   });

@@ -3,9 +3,9 @@ import {
   CREATE_ROOM,
   JOIN_ROOM,
   LEAVE_ROOM,
+  CHANGE_ROOM_STATUS,
   DELETE_ROOM,
-  UPDATE_PLAYER_IN_ROOMS,
-} from '../actions/actionTypes';
+} from '../actions';
 import Rooms from '../services/Rooms';
 
 
@@ -19,10 +19,10 @@ export default function roomReducer(state = defaultState, action) {
       return Rooms.updateReducer(state, action);
     case LEAVE_ROOM:
       return Rooms.updateReducer(state, action);
+    case CHANGE_ROOM_STATUS:
+      return Rooms.updateReducer(state, action);
     case DELETE_ROOM:
       return state.filter(r => r.get('id') !== action.id);
-    case UPDATE_PLAYER_IN_ROOMS:
-      return Rooms.updatePlayerReducer(state, action);
     default:
       return state;
   }

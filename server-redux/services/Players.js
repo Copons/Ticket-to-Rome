@@ -1,11 +1,17 @@
 import { fromJS } from 'immutable';
 import store from '../store';
 import Response from './Response';
-import { DELETE_PLAYER } from '../actions/actionTypes';
-import { createPlayer, updatePlayer, deletePlayer, updatePlayerInRooms } from '../actions';
+import {
+  CREATE_PLAYER,
+  UPDATE_PLAYER,
+  DELETE_PLAYER,
+} from '../actions';
 
 
 class Players {
+
+
+  // Utilities
 
   all = () => store.getState().players;
 
@@ -14,18 +20,56 @@ class Players {
   oneByClient = clientId => this.all().find(p => clientId.includes(p.get('client')));
 
 
-  create = player => {
-    const action = store.dispatch(createPlayer(player));
-    return Response.success(action.type);
-  }
 
 
-  update = player => {
-    const action = store.dispatch(updatePlayer(player));
-    store.dispatch(updatePlayerInRooms(player));
-    return Response.success(action.type);
-  }
+  // Services
 
+  create = player => new Promise(resolve => {
+    store.dispatch(this.createPlayerAction(player));
+    resolve(Response.success(CREATE_PLAYER));
+  });
+
+
+  update = player => new Promise(resolve => {
+    store.dispatch(this.updatePlayerAction(player));
+    resolve(Response.success(UPDATE_PLAYER));
+  });
+
+
+  delete = clientId => new Promise((resolve, reject) => {
+    const player = this.oneByClient(clientId);
+    if (!player) {
+      reject(Response.error(DELETE_PLAYER));
+    } else {
+      store.dispatch(this.deletePlayerAction(player.get('id')));
+      resolve(Response.success(DELETE_PLAYER));
+    }
+  });
+
+
+
+
+  // Actions
+
+  createPlayerAction = player => ({
+    type: CREATE_PLAYER,
+    player,
+  });
+
+  updatePlayerAction = player => ({
+    type: UPDATE_PLAYER,
+    player,
+  });
+
+  deletePlayerAction = id => ({
+    type: DELETE_PLAYER,
+    id,
+  });
+
+
+
+
+  // Helpers
 
   updateReducer = (state, action) => {
     const player = state.findEntry(p => p.get('id') === action.player.id);
@@ -35,15 +79,6 @@ class Players {
       player[0],
       player[1].merge(fromJS(action.player))
     );
-  }
-
-
-  delete = clientId => {
-    const player = this.oneByClient(clientId);
-    if (!player) return Response.error(DELETE_PLAYER);
-
-    const action = store.dispatch(deletePlayer(player.get('id')));
-    return Response.success(action.type);
   }
 
 }

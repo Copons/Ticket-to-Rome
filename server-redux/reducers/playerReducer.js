@@ -1,5 +1,9 @@
 import { List, fromJS } from 'immutable';
-import { CREATE_PLAYER, UPDATE_PLAYER, DELETE_PLAYER } from '../actions/actionTypes';
+import {
+  CREATE_PLAYER,
+  UPDATE_PLAYER,
+  DELETE_PLAYER,
+} from '../actions';
 import Players from '../services/Players';
 
 
