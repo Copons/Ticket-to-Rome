@@ -23,10 +23,10 @@ class Games {
   start = roomId => new Promise((resolve, reject) => {
     const room = Rooms.one(roomId);
     if (!room) {
-      reject(Response.error(START_GAME));
+      reject(Response.error('Error in starting a game.'));
     } else {
       store.dispatch(this.startThunk(room));
-      resolve(Response.success(START_GAME));
+      resolve(Response.success('Started a game.'));
     }
   });
 

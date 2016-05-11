@@ -1,5 +1,7 @@
 import uuid from 'node-uuid';
+import store from '../store';
 import IO from '../socket/IO';
+import Messages from './Messages';
 import {
   SET_ROOMS,
   CREATE_ROOM,
@@ -27,12 +29,18 @@ class Rooms {
 
   onActionButtonClick = (action, room, player) => {
     if (action === START_GAME) {
-      IO.emit(action, room.get('id'));
+      IO.emit(action, room.get('id'))
+        .then(response => {
+          store.dispatch(Messages.addThunk(response));
+        });
     } else {
       IO.emit(action, {
         roomId: room.get('id'),
         playerId: player.get('id'),
-      });
+      })
+        .then(response => {
+          store.dispatch(Messages.addThunk(response));
+        });
     }
   };
 
@@ -59,7 +67,10 @@ class Rooms {
       name,
       id: uuid.v4(),
       owner: player.get('id'),
-    });
+    })
+      .then(response => {
+        dispatch(Messages.addThunk(response));
+      });
   };
 
 }

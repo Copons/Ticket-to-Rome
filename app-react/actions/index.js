@@ -1,9 +1,11 @@
 // Socket.io
 export const CONNECT = 'connect';
 
-// Response
+// Responses and Messages
 export const SUCCESS = 'SUCCESS';
 export const ERROR = 'ERROR';
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 
 // Player
 export const SET_PLAYER = 'SET_PLAYER';

@@ -1,5 +1,6 @@
 import uuid from 'node-uuid';
 import IO from '../socket/IO';
+import Messages from './Messages';
 import {
   SET_PLAYER,
   CREATE_PLAYER,
@@ -41,8 +42,9 @@ class Player {
     }
 
     IO.emit(action, player)
-      .then(() => {
+      .then(response => {
         dispatch(this.setPlayerAction(player));
+        dispatch(Messages.addThunk(response));
       });
   };
 

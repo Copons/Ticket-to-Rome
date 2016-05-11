@@ -66,33 +66,32 @@ class Rooms {
       status: 'open',
     }));
     client.join(room.id);
-    resolve(Response.success(CREATE_ROOM));
+    resolve(Response.success(`Room ${room.name} created.`));
   });
 
 
   join = (roomId, playerId, client) => new Promise(resolve => {
     store.dispatch(this.joinRoomAction(roomId, playerId));
     client.join(roomId);
-    resolve(Response.success(JOIN_ROOM));
+    resolve(Response.success('Joined a room.'));
   });
 
 
   leave = (roomId, playerId, client) => new Promise((resolve, reject) => {
     const room = this.one(roomId);
     if (!room) {
-      reject(Response.error(LEAVE_ROOM));
+      reject(Response.error('Error in leaving a room.'));
     } else {
-      let action;
       if (
         room.get('owner') === playerId ||
         room.get('players').size === 1 && this.containsPlayer(room.get('id'), playerId)
       ) {
-        action = store.dispatch(this.deleteRoomAction(roomId));
+        store.dispatch(this.deleteRoomAction(roomId));
       } else {
-        action = store.dispatch(this.leaveRoomAction(roomId, playerId));
+        store.dispatch(this.leaveRoomAction(roomId, playerId));
       }
       client.leave(roomId);
-      resolve(Response.success(action.type));
+      resolve(Response.success('Left a room.'));
     }
   });
 

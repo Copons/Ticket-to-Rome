@@ -26,23 +26,23 @@ class Players {
 
   create = player => new Promise(resolve => {
     store.dispatch(this.createPlayerAction(player));
-    resolve(Response.success(CREATE_PLAYER));
+    resolve(Response.success(`Player ${player.name} created.`));
   });
 
 
   update = player => new Promise(resolve => {
     store.dispatch(this.updatePlayerAction(player));
-    resolve(Response.success(UPDATE_PLAYER));
+    resolve(Response.success(`Player ${player.name} updated.`));
   });
 
 
   delete = clientId => new Promise((resolve, reject) => {
     const player = this.oneByClient(clientId);
     if (!player) {
-      reject(Response.error(DELETE_PLAYER));
+      reject(Response.error(`Error in deleting player ${clientId}.`));
     } else {
       store.dispatch(this.deletePlayerAction(player.get('id')));
-      resolve(Response.success(DELETE_PLAYER));
+      resolve(Response.success(`Player ${player.name} deleted.`));
     }
   });
 

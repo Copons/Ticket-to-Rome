@@ -1,0 +1,6 @@
+@mixin ttr-transition ($properties, $duration : 0.2s) {
+  transition-property: #{$properties};
+  will-change: #{$properties};
+  transition-duration: $duration;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
