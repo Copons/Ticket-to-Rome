@@ -1,4 +1,6 @@
+import uuid from 'node-uuid';
 import store from '../store';
+import Games from './Games';
 import Players from './Players';
 import Response from './Response';
 import {
@@ -59,28 +61,29 @@ class Rooms {
 
   // Services
 
-  create = (room, client) => new Promise(resolve => {
-    store.dispatch(this.createThunk({
+  create = room => new Promise(resolve => {
+    const newRoom = {
       ...room,
+      id: uuid.v4(),
       players: [],
       status: 'open',
-    }));
-    client.join(room.id);
-    resolve(Response.success(`Room ${room.name} created.`));
+    };
+    store.dispatch(this.createThunk(newRoom));
+    resolve(Response.success(`Created room ${newRoom.name}.`, newRoom));
   });
 
 
-  join = (roomId, playerId, client) => new Promise(resolve => {
+  join = (roomId, playerId) => new Promise(resolve => {
+    const room = this.one(roomId);
     store.dispatch(this.joinRoomAction(roomId, playerId));
-    client.join(roomId);
-    resolve(Response.success('Joined a room.'));
+    resolve(Response.success(`Joined room ${room.get('name')}.`, room));
   });
 
 
-  leave = (roomId, playerId, client) => new Promise((resolve, reject) => {
+  leave = (roomId, playerId) => new Promise((resolve, reject) => {
     const room = this.one(roomId);
     if (!room) {
-      reject(Response.error('Error in leaving a room.'));
+      reject(Response.error('Error in leaving room.'));
     } else {
       if (
         room.get('owner') === playerId ||
@@ -90,8 +93,7 @@ class Rooms {
       } else {
         store.dispatch(this.leaveRoomAction(roomId, playerId));
       }
-      client.leave(roomId);
-      resolve(Response.success('Left a room.'));
+      resolve(Response.success(`Left room ${room.get('name')}.`, room));
     }
   });
 
@@ -107,6 +109,20 @@ class Rooms {
       }
       resolve(client.id);
     }
+  });
+
+
+  clientJoin = (client, roomId) => new Promise(resolve => {
+    client.join(roomId);
+    console.log(`Client ${client.id} joined socket room ${roomId}`);
+    resolve(roomId);
+  });
+
+
+  clientLeave = (client, roomId) => new Promise(resolve => {
+    client.leave(roomId);
+    console.log(`Client ${client.id} left socket room ${roomId}`);
+    resolve(roomId);
   });
 
 
@@ -149,6 +165,12 @@ class Rooms {
   createThunk = room => dispatch => {
     dispatch(this.createRoomAction(room));
     dispatch(this.joinRoomAction(room.id, room.owner));
+  };
+
+
+  leaveThunk = (roomId, playerId) => dispatch => {
+    dispatch(Games.killGameAction(roomId));
+    dispatch(this.leaveRoomAction(roomId, playerId));
   };
 
 

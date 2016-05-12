@@ -1,4 +1,7 @@
 .lobby {
+  position: fixed;
+  top: 0;
+  left: -150vw;
   display: flex;
   flex-flow: column;
   justify-content: center;
@@ -7,6 +10,12 @@
   min-height: 100vh;
   padding: 30px;
   background-color: $ui-light;
+
+  @include ttr-transition('left');
+
+  &.visible {
+    left: 0;
+  }
 
   form {
     padding: 30px;

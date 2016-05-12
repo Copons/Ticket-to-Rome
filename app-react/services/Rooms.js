@@ -30,7 +30,7 @@ class Rooms {
   onActionButtonClick = (action, room, player) => {
     if (action === START_GAME) {
       IO.emit(action, room.get('id'))
-        .then(response => {
+        .catch(response => {
           store.dispatch(Messages.addThunk(response));
         });
     } else {

@@ -35,27 +35,38 @@ export default function socket(server) {
 
 
     client.on(API.CREATE_ROOM, (room, callback) =>
-      Rooms.create(room, client)
-        .then(res => callback(res))
+      Rooms.create(room)
+        .then(res => {
+          Rooms.clientJoin(client, res.body.id);
+          callback(res);
+        })
         .then(() => Rooms.emitAll(io.sockets))
     );
 
     client.on(API.JOIN_ROOM, (data, callback) =>
-      Rooms.join(data.roomId, data.playerId, client)
-        .then(res => callback(res))
+      Rooms.join(data.roomId, data.playerId)
+        .then(res => {
+          Rooms.clientJoin(client, res.body.get('id'));
+          callback(res);
+        })
         .then(() => Rooms.emitAll(io.sockets))
     );
 
     client.on(API.LEAVE_ROOM, (data, callback) =>
-      Rooms.leave(data.roomId, data.playerId, client)
-        .then(res => callback(res))
+      Rooms.leave(data.roomId, data.playerId)
+        .then(res => {
+          callback(res);
+          return Games.kill(res.body.get('id'));
+        })
+        .then(gameId => Games.emitKill(gameId, io))
+        .then(res => Rooms.clientLeave(client, res.body))
         .then(() => Rooms.emitAll(io.sockets))
         .catch(err => callback(err))
     );
 
     client.on(API.START_GAME, (roomId, callback) =>
       Games.start(roomId)
-        .then(res => callback(res))
+        .then(room => Games.emitStart(room, io))
         .then(() => Rooms.emitAll(io.sockets))
         .catch(err => callback(err))
     );

@@ -22,3 +22,4 @@ export const CHANGE_ROOM_STATUS = 'CHANGE_ROOM_STATUS';
 
 // Games
 export const START_GAME = 'START_GAME';
+export const KILL_GAME = 'KILL_GAME';

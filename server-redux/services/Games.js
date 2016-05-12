@@ -3,6 +3,7 @@ import Response from './Response';
 import Rooms from './Rooms';
 import {
   START_GAME,
+  KILL_GAME,
 } from '../actions';
 
 
@@ -16,6 +17,24 @@ class Games {
   one = id => this.all().find(g => g.get('id') === id);
 
 
+  emitStart = (room, io) => {
+    const response = Response.success(
+      `Game started in room ${room.get('name')}.`,
+      Rooms.humanizeOne(room)
+    );
+    io.in(room.get('id')).emit(START_GAME, response);
+    return response;
+  }
+
+
+  emitKill = (roomId, io) => {
+    console.log(roomId);
+    const response = Response.success('Game closed.', roomId);
+    io.in(roomId).emit(KILL_GAME, response);
+    return response;
+  }
+
+
 
 
   // Services
@@ -26,9 +45,17 @@ class Games {
       reject(Response.error('Error in starting a game.'));
     } else {
       store.dispatch(this.startThunk(room));
-      resolve(Response.success('Started a game.'));
+      resolve(room);
     }
   });
+
+
+  kill = gameId => new Promise(resolve => {
+    console.log(gameId);
+    store.dispatch(this.killThunk(gameId));
+    resolve(gameId);
+  });
+
 
 
 
@@ -39,6 +66,11 @@ class Games {
     room,
   });
 
+  killGameAction = id => ({
+    type: KILL_GAME,
+    id,
+  });
+
 
 
   // Helpers
@@ -47,6 +79,11 @@ class Games {
     dispatch(Rooms.changeRoomStatusAction(room.get('id'), 'playing'));
     dispatch(this.startGameAction(room));
   };
+
+  killThunk = gameId => dispatch => {
+    dispatch(Rooms.changeRoomStatusAction(gameId, 'open'));
+    dispatch(this.killGameAction(gameId));
+  }
 
 }
 

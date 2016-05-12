@@ -2,20 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Message } from './Message';
 
-/*export const Log = ({ messages }) => {
-  let cssClasses = 'log visible';
-
-  return (
-    <section
-      className={cssClasses}
-    >
-      {messages.map((message, i) =>
-        <Message key={i} message={message} />
-      )}
-    </section>
-  );
-};*/
-
 
 class Log extends Component {
 

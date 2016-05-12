@@ -15,7 +15,7 @@ export const RoomAction = ({
 
   switch (action) {
     case JOIN_ROOM: {
-      if (Rooms.isOpen(room) || playerInRoom) {
+      if (!Rooms.isOpen(room) || playerInRoom) {
         return <span></span>;
       }
       inputValue = 'Join Room';
