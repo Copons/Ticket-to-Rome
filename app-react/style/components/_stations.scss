@@ -5,12 +5,27 @@
   stroke-width: 2.5;
   fill: $ui-white;
 
+  transform: scale(1);
+  transform-origin: center;
+
   @include ttr-transition('fill');
 
   &.highlight {
     fill: $ui-highlight;
   }
 }
+
+.game.visible .station {
+  animation: bump 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes bump {
+  0% { transform: scale(0); }
+  20% { transform: scale(0); }
+  90% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
 
 .station-names {
   pointer-events: none;
