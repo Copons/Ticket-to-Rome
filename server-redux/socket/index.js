@@ -77,10 +77,7 @@ export default function socket(server) {
     client.on(API.DISCONNECT, () => {
       Rooms.leaveAll(client)
         .then(clientId => Players.delete(clientId))
-        .then(() => Rooms.emitAll(io.sockets))
-        .catch(err => {
-          console.log(err);
-        });
+        .then(() => Rooms.emitAll(io.sockets));
     });
   });
 

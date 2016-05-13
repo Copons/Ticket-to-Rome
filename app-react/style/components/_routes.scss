@@ -2,6 +2,9 @@
   stroke-width: 6;
   fill: transparent;
 
+  transform: scale(1);
+  transform-origin: left center;
+
   @include ttr-transition('opacity');
 
   &.unclaimed {
@@ -27,4 +30,14 @@
   &.black { stroke: $black; }
   &.white { stroke: $white; }
   &.wild { stroke: $wild-route; }
+}
+
+.game.visible .route {
+  animation: route-bump 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes route-bump {
+  0% { transform: scale(0); }
+  20% { transform: scale(0); }
+  100% { transform: scale(1); }
 }

@@ -42,7 +42,7 @@ class Players {
       reject(Response.error(`Error in deleting player ${clientId}.`));
     } else {
       store.dispatch(this.deletePlayerAction(player.get('id')));
-      resolve(Response.success(`Player ${player.name} deleted.`));
+      resolve(Response.success(`Client ${clientId} deleted.`));
     }
   });
 

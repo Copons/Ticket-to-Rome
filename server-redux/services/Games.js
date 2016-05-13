@@ -20,7 +20,7 @@ class Games {
   emitStart = (room, io) => {
     const response = Response.success(
       `Game started in room ${room.get('name')}.`,
-      Rooms.humanizeOne(room)
+      Rooms.humanizeOne(room.delete('status'))
     );
     io.in(room.get('id')).emit(START_GAME, response);
     return response;
@@ -28,7 +28,6 @@ class Games {
 
 
   emitKill = (roomId, io) => {
-    console.log(roomId);
     const response = Response.success('Game closed.', roomId);
     io.in(roomId).emit(KILL_GAME, response);
     return response;
@@ -51,7 +50,6 @@ class Games {
 
 
   kill = gameId => new Promise(resolve => {
-    console.log(gameId);
     store.dispatch(this.killThunk(gameId));
     resolve(gameId);
   });

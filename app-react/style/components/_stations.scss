@@ -16,18 +16,19 @@
 }
 
 .game.visible .station {
-  animation: bump 0.5s cubic-bezier(0, 0, 0.2, 1);
+  animation: station-bump 0.5s cubic-bezier(0, 0, 0.2, 1);
 }
 
-@keyframes bump {
+@keyframes station-bump {
   0% { transform: scale(0); }
   20% { transform: scale(0); }
-  90% { transform: scale(1.3); }
+  80% { transform: scale(1.3); }
   100% { transform: scale(1); }
 }
 
 
-.station-names {
+.station-name {
+  opacity: 1;
   pointer-events: none;
   font-family: 'Hammersmith One', Arial, sans-serif;
   font-size: 6pt;
@@ -36,10 +37,20 @@
   stroke: $ui-black;
   stroke-width: 0.1;
 
-  @include ttr-transition('stroke');
+  @include ttr-transition('stroke opacity');
 
   &.highlight {
     stroke: $ui-highlight;
   }
 
+}
+
+.game.visible .station-name {
+  animation: station-name-bump 2s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes station-name-bump {
+  0% { opacity: 0; }
+  20% { opacity: 0; }
+  100% { opacity: 1; }
 }
