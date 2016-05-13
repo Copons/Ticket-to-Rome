@@ -1,0 +1,30 @@
+.route {
+  stroke-width: 6;
+  fill: transparent;
+
+  @include ttr-transition('opacity');
+
+  &.unclaimed {
+    opacity: 0.4;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &.unclaimable {
+    opacity: 0.4;
+  }
+  &.claimed {
+    opacity: 1;
+  }
+
+  &.red { stroke: $red; }
+  &.orange { stroke: $orange; }
+  &.yellow { stroke: $yellow; }
+  &.green { stroke: $green; }
+  &.blue { stroke: $blue; }
+  &.purple { stroke: $purple; }
+  &.black { stroke: $black; }
+  &.white { stroke: $white; }
+  &.wild { stroke: $wild-route; }
+}

@@ -1,38 +1,34 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Rooms from './Rooms';
-import CreateRoom from './CreateRoom';
-import SetPlayer from './SetPlayer';
+import { Board } from './Board';
 
 
-class Lobby extends Component {
+class Game extends Component {
 
   constructor(props) {
     super(props);
     this.game = props.game;
-    this.state = { cssClasses: 'lobby visible' };
+    this.state = { cssClasses: 'game' };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.game.has('name')) {
-      this.setState({ cssClasses: 'lobby' });
+      this.setState({ cssClasses: 'game visible' });
     } else {
-      this.setState({ cssClasses: 'lobby visible' });
+      this.setState({ cssClasses: 'game' });
     }
   }
 
   render() {
     return (
       <section className={this.state.cssClasses}>
-        <SetPlayer />
-        <Rooms />
-        <CreateRoom />
+        <Board />
       </section>
     );
   }
 }
 
-Lobby.propTypes = {
+Game.propTypes = {
   game: PropTypes.object.isRequired,
 };
 
@@ -43,4 +39,4 @@ const mapStateToProps = state => ({
   game: state.game,
 });
 
-export default connect(mapStateToProps)(Lobby);
+export default connect(mapStateToProps)(Game);

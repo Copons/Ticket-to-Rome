@@ -1,0 +1,30 @@
+.station {
+  pointer-events: none;
+  r: 7;
+  stroke: $ui-black;
+  stroke-width: 2.5;
+  fill: $ui-white;
+
+  @include ttr-transition('fill');
+
+  &.highlight {
+    fill: $ui-highlight;
+  }
+}
+
+.station-names {
+  pointer-events: none;
+  font-family: 'Hammersmith One', Arial, sans-serif;
+  font-size: 6pt;
+  letter-spacing: -0.2pt;
+
+  stroke: $ui-black;
+  stroke-width: 0.1;
+
+  @include ttr-transition('stroke');
+
+  &.highlight {
+    stroke: $ui-highlight;
+  }
+
+}

@@ -7,7 +7,7 @@ class Log extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { cssClasses: 'log visible' };
+    this.state = { cssClasses: 'log' };
   }
 
   toggle = () => {
