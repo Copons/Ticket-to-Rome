@@ -7,6 +7,10 @@ export const ERROR = 'ERROR';
 export const ADD_MESSAGE = 'ADD_MESSAGE';
 export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
 
+// UI
+export const OPEN_ROUTE_POPUP = 'OPEN_ROUTE_POPUP';
+export const CLOSE_ROUTE_POPUP = 'CLOSE_ROUTE_POPUP';
+
 // Player
 export const SET_PLAYER = 'SET_PLAYER';
 export const CREATE_PLAYER = 'CREATE_PLAYER';

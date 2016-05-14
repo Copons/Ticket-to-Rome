@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import UI from '../services/UI';
 import { Board } from './Board';
 
 
@@ -8,6 +9,9 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.game = props.game;
+    this.ui = props.ui;
+    this.handleClick = props.handleClick;
+
     this.state = { cssClasses: 'game' };
   }
 
@@ -21,7 +25,17 @@ class Game extends Component {
 
   render() {
     return (
-      <section className={this.state.cssClasses}>
+      <section
+        className={this.state.cssClasses}
+        onClick={e => {
+          if (
+            !e.target.classList.contains('route')
+            && !e.target.classList.contains('route-popup')
+          ) {
+            this.handleClick(false);
+          }
+        }}
+      >
         <Board />
       </section>
     );
@@ -30,6 +44,8 @@ class Game extends Component {
 
 Game.propTypes = {
   game: PropTypes.object.isRequired,
+  ui: PropTypes.object.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 
@@ -37,6 +53,10 @@ Game.propTypes = {
 
 const mapStateToProps = state => ({
   game: state.game,
+  ui: state.ui,
 });
 
-export default connect(mapStateToProps)(Game);
+export default connect(
+  mapStateToProps,
+  { handleClick: UI.toggleRoutePopupThunk }
+)(Game);

@@ -1,14 +1,23 @@
 import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
 import { STATIONS } from '../../config/stations';
+import UI from '../../services/UI';
 
 
-export default class Route extends Component {
+export class Route extends Component {
 
   constructor(props) {
     super(props);
-    this.route = this.props.route;
+    this.route = props.route;
+    this.handleClick = props.handleClick;
 
-    this.stations = {
+    this.stations = this.setCoordinates();
+
+    this.state = { strokeDasharray: '' };
+  }
+
+  setCoordinates = () => {
+    const stations = {
       start: Object.assign({},
         STATIONS.find(s => s.slug === this.route.start)
       ),
@@ -17,13 +26,12 @@ export default class Route extends Component {
       ),
     };
     if (this.route.displace) {
-      this.stations.start.x += this.route.displace.x1;
-      this.stations.start.y += this.route.displace.y1;
-      this.stations.end.x += this.route.displace.x2;
-      this.stations.end.y += this.route.displace.y2;
+      stations.start.x += this.route.displace.x1;
+      stations.start.y += this.route.displace.y1;
+      stations.end.x += this.route.displace.x2;
+      stations.end.y += this.route.displace.y2;
     }
-
-    this.state = { strokeDasharray: '' };
+    return stations;
   }
 
   setPathD = () =>
@@ -57,10 +65,15 @@ export default class Route extends Component {
       <path
         ref="path"
         className={`route unclaimed ${this.route.type}`}
-        start={this.route.start}
-        end={this.route.end}
         d={this.setPathD()}
         strokeDasharray={this.state.strokeDasharray}
+        data-start={this.route.start}
+        data-end={this.route.end}
+        onClick={e => {
+          if (e.target.classList.contains('unclaimed')) {
+            this.handleClick(this.route);
+          }
+        }}
       />
     );
   }
@@ -69,4 +82,13 @@ export default class Route extends Component {
 
 Route.propTypes = {
   route: PropTypes.object.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
+
+
+
+
+export default connect(
+  null,
+  { handleClick: UI.toggleRoutePopupThunk }
+)(Route);

@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes } from './Routes';
 import { Stations } from './Stations';
 import { StationNames } from './StationNames';
+import RoutePopup from './RoutePopup';
 
 
 export const Board = () =>
@@ -11,4 +12,5 @@ export const Board = () =>
       <Stations />
       <StationNames />
     </svg>
+    <RoutePopup />
   </div>;
