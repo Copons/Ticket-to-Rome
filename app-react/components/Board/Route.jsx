@@ -71,7 +71,10 @@ export class Route extends Component {
         data-end={this.route.end}
         onClick={e => {
           if (e.target.classList.contains('unclaimed')) {
-            this.handleClick(this.route);
+            this.handleClick({
+              route: this.route,
+              stations: this.stations,
+            });
           }
         }}
       />

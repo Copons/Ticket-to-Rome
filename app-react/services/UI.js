@@ -1,4 +1,3 @@
-import store from '../store';
 import {
   OPEN_ROUTE_POPUP,
   CLOSE_ROUTE_POPUP,
@@ -14,9 +13,9 @@ class UI {
 
   // Actions
 
-  openRoutePopupAction = route => ({
+  openRoutePopupAction = routeInfo => ({
     type: OPEN_ROUTE_POPUP,
-    route,
+    routeInfo,
   });
 
   closeRoutePopupAction = () => ({
@@ -28,10 +27,10 @@ class UI {
 
   // Helpers
 
-  toggleRoutePopupThunk = route => dispatch => {
+  toggleRoutePopupThunk = routeInfo => dispatch => {
     dispatch(this.closeRoutePopupAction());
-    if (route) {
-      dispatch(this.openRoutePopupAction(route));
+    if (routeInfo) {
+      dispatch(this.openRoutePopupAction(routeInfo));
     }
   };
 

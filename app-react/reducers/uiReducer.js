@@ -9,7 +9,7 @@ const defaultState = new Map();
 export default function uiReducer(state = defaultState, action) {
   switch (action.type) {
     case OPEN_ROUTE_POPUP:
-      return state.set('routePopup', fromJS(action.route));
+      return state.set('routePopup', fromJS(action.routeInfo));
     case CLOSE_ROUTE_POPUP:
       return state.remove('routePopup');
     default:

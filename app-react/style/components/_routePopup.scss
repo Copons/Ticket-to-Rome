@@ -1,23 +1,91 @@
 .route-popup {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transform-style: preserve-3d;
-  width: 200px;
-  padding: 10px;
+  position: relative;
+  margin-left: -9999px;
+  width: 250px;
   z-index: 20;
   border-radius: 5px;
   background-color: $ui-dark;
   opacity: 0;
   color: $ui-white;
-  font-size: 12px;
 
   @extend %ttr-shadow-high;
 
   @include ttr-transition('opacity');
 
   &.visible {
-    opacity: 1;
+    opacity: 0.95;
+    margin: auto;
   }
+
+  .title {
+    padding: 10px 10px 5px 10px;
+    border-bottom: 3px solid;
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    .start:after {
+      content: ' - ';
+    }
+  }
+
+  .content {
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .parts {
+    padding-bottom: 3px;
+    span {
+      display: inline-block;
+      width: 33px;
+      height: 15px;
+      margin-right: 5px;
+      @extend %ttr-shadow-low;
+    }
+  }
+
+
+  &.red {
+    .title { border-bottom-color: $red; }
+    .parts span { background-color: $red; }
+  }
+  &.orange {
+    .title { border-bottom-color: $orange; }
+    .parts span { background-color: $orange; }
+  }
+  &.yellow {
+    .title { border-bottom-color: $yellow; }
+    .parts span { background-color: $yellow; }
+  }
+  &.green {
+    .title { border-bottom-color: $green; }
+    .parts span { background-color: $green; }
+  }
+  &.blue {
+    .title { border-bottom-color: $blue; }
+    .parts span { background-color: $blue; }
+  }
+  &.purple {
+    .title { border-bottom-color: $purple; }
+    .parts span { background-color: $purple; }
+  }
+  &.black {
+    .title { border-bottom-color: $ui-black; }
+    .parts span { background-color: $ui-black; }
+  }
+  &.white {
+    .title { border-bottom-color: $white; }
+    .parts span { background-color: $white; }
+  }
+  &.wild {
+    .title { border-bottom-color: $wild-route; }
+    .parts span { background-color: $wild-route; }
+  }
+
+
+
+
+
+
 }

@@ -8,7 +8,7 @@ import { App } from './components/App';
 import './socket/listeners';
 
 store.subscribe(() => {
-  console.log(JSON.stringify(store.getState()));
+  //console.log(JSON.stringify(store.getState()));
 });
 
 IO.connect().then(() => {

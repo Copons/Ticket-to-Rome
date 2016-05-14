@@ -28,12 +28,14 @@ class Game extends Component {
       <section
         className={this.state.cssClasses}
         onClick={e => {
+          const popup = document.querySelector('.route-popup');
           if (
-            !e.target.classList.contains('route')
-            && !e.target.classList.contains('route-popup')
-          ) {
-            this.handleClick(false);
-          }
+            e.target.classList.contains('route-popup') ||
+            popup.contains(e.target) ||
+            e.target.classList.contains('route')
+          ) return;
+
+          this.handleClick(false);
         }}
       >
         <Board />
