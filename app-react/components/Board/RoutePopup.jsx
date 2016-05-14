@@ -7,21 +7,22 @@ export class RoutePopup extends Component {
   constructor(props) {
     super(props);
 
-    if (props.ui.has('routePopup')) {
-      this.popup = props.ui.get('routePopup');
-    } else {
-      this.popup = false;
-    }
-
-    this.state = { cssClasses: 'route-popup' };
+    this.popup = props.ui.has('routePopup') ? props.ui.get('routePopup') : false;
+    this.state = {
+      cssClasses: 'route-popup',
+    };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps = nextProps => {
     if (nextProps.ui.has('routePopup')) {
       this.popup = nextProps.ui.get('routePopup');
-      this.setState({ cssClasses: 'route-popup visible' });
+      this.setState({
+        cssClasses: `route-popup ${this.popup.get('route').get('type')} visible`,
+      });
     } else {
-      this.setState({ cssClasses: 'route-popup' });
+      this.setState({
+        cssClasses: 'route-popup',
+      });
       setTimeout(() => {
         this.popup = false;
       }, 200);
@@ -29,9 +30,24 @@ export class RoutePopup extends Component {
   }
 
   render() {
+    if (!this.popup) return <div className={this.state.cssClasses}></div>;
     return (
       <div className={this.state.cssClasses}>
-        {this.popup.toString()}
+        <div className="title">
+          <span className="start">
+            {this.popup.get('stations').get('start').get('name')}
+          </span>
+          <span className="end">
+            {this.popup.get('stations').get('end').get('name')}
+          </span>
+        </div>
+        <div className="content">
+          <div className="parts">
+            {[...Array(this.popup.get('route').get('parts'))].map((part, i) =>
+              <span key={i}></span>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
