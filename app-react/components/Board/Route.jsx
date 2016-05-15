@@ -74,6 +74,7 @@ export class Route extends Component {
             this.handleClick({
               route: this.route,
               stations: this.stations,
+              path: this.refs.path.getBoundingClientRect(),
             });
           }
         }}

@@ -10,7 +10,46 @@ export class RoutePopup extends Component {
     this.popup = props.ui.has('routePopup') ? props.ui.get('routePopup') : false;
     this.state = {
       cssClasses: 'route-popup',
+      cssStyle: {},
     };
+  }
+
+  getWindowCenter() {
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    };
+  }
+
+  getPathCenter = () => {
+    const pathRect = this.popup.get('path');
+    return {
+      x: (pathRect.left + pathRect.right) / 2,
+      y: (pathRect.top + pathRect.bottom) / 2,
+    };
+  }
+
+  setPopupPosition = () => {
+    const position = {
+      top: 'auto', rigth: 'auto', bottom: 'auto', left: 'auto',
+    };
+    const windowCenter = this.getWindowCenter();
+    const pathCenter = this.getPathCenter();
+
+    const offset = 20;
+
+    if (pathCenter.x > windowCenter.x) {
+      position.right = window.innerWidth - pathCenter.x + offset;
+    } else {
+      position.left = pathCenter.x + offset;
+    }
+    if (pathCenter.y > windowCenter.y) {
+      position.bottom = window.innerHeight - pathCenter.y + offset;
+    } else {
+      position.top = pathCenter.y + offset;
+    }
+
+    return position;
   }
 
   componentWillReceiveProps = nextProps => {
@@ -18,10 +57,12 @@ export class RoutePopup extends Component {
       this.popup = nextProps.ui.get('routePopup');
       this.setState({
         cssClasses: `route-popup ${this.popup.get('route').get('type')} visible`,
+        cssStyle: this.setPopupPosition(),
       });
     } else {
       this.setState({
         cssClasses: 'route-popup',
+        cssStyle: {},
       });
       setTimeout(() => {
         this.popup = false;
@@ -30,9 +71,17 @@ export class RoutePopup extends Component {
   }
 
   render() {
-    if (!this.popup) return <div className={this.state.cssClasses}></div>;
+    if (!this.popup) return (
+      <div
+        className={this.state.cssClasses}
+        style={this.state.cssStyle}
+      />
+    );
     return (
-      <div className={this.state.cssClasses}>
+      <div
+        className={this.state.cssClasses}
+        style={this.state.cssStyle}
+      >
         <div className="title">
           <span className="start">
             {this.popup.get('stations').get('start').get('name')}
@@ -47,6 +96,7 @@ export class RoutePopup extends Component {
               <span key={i}></span>
             )}
           </div>
+          {this.popup.toString()}
         </div>
       </div>
     );

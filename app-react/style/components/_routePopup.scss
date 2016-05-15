@@ -1,6 +1,9 @@
 .route-popup {
-  position: relative;
-  margin-left: -9999px;
+  //position: relative;
+  //margin-left: -9999px;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
   width: 250px;
   z-index: 20;
   border-radius: 5px;
@@ -14,14 +17,13 @@
 
   &.visible {
     opacity: 0.95;
-    margin: auto;
+    //margin: auto;
   }
 
   .title {
     padding: 10px 10px 5px 10px;
     border-bottom: 3px solid;
     font-family: 'Hammersmith One', Arial, sans-serif;
-    letter-spacing: -0.2px;
     line-height: 1.2;
     .start:after {
       content: ' - ';
