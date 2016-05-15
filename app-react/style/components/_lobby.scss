@@ -8,7 +8,7 @@
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  padding: 30px;
+  padding: $ui-large-padding;
   background-color: $ui-light;
 
   @include ttr-transition('left');
@@ -18,7 +18,7 @@
   }
 
   form {
-    padding: 30px;
+    padding: $ui-large-padding;
   }
 
   .rooms {
@@ -31,7 +31,7 @@
       color: $ui-medium;
     }
     td, th {
-      padding: 5px;
+      padding: $ui-margin;
       border: 1px solid $ui-medium;
     }
 
@@ -46,7 +46,7 @@
     td.actions {
       text-align: center;
       input {
-        margin: 0 5px;
+        margin: 0 $ui-margin;
         font-size: 14px;
       }
     }

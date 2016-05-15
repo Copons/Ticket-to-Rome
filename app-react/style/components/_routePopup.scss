@@ -1,10 +1,8 @@
 .route-popup {
-  //position: relative;
-  //margin-left: -9999px;
   position: absolute;
   top: -9999px;
   left: -9999px;
-  width: 250px;
+  width: $popup-width;
   z-index: 20;
   border-radius: 5px;
   background-color: $ui-dark;
@@ -21,8 +19,8 @@
   }
 
   .title {
-    padding: 10px 10px 5px 10px;
-    border-bottom: 3px solid;
+    padding: $ui-padding $ui-padding $ui-margin $ui-padding;
+    border-bottom: $ui-border solid;
     font-family: 'Hammersmith One', Arial, sans-serif;
     line-height: 1.2;
     .start:after {
@@ -31,7 +29,7 @@
   }
 
   .content {
-    padding: 10px;
+    padding: $ui-padding;
     font-size: 12px;
     line-height: 1.5;
   }
@@ -42,7 +40,7 @@
       display: inline-block;
       width: 33px;
       height: 15px;
-      margin-right: 5px;
+      margin-right: $ui-margin;
       @extend %ttr-shadow-low;
     }
   }

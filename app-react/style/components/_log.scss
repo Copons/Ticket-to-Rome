@@ -1,14 +1,14 @@
 .log {
   position: fixed;
   top: 0;
-  right: -250px;
+  right: -$log-width;
   z-index: 10;
-  width: 250px;
+  width: $log-width;
   height: 100vh;
   background-color: $ui-dark;
   color: $ui-white;
   cursor: pointer;
-  @extend %ttr-shadow-low;
+  @extend %ttr-shadow-high;
 
   @include ttr-transition('right');
 
@@ -19,22 +19,23 @@
   &:before {
     position: absolute;
     top: 0;
-    left: -40px;
+    left: -$log-label-width;
     display: block;
-    width: 40px;
-    height: 30px;
+    width: $log-label-width;
+    height: $log-label-height;
     border-radius: 0 0 0 5px;
     background-color: $ui-dark;
     content: 'Log';
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 30px;
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    font-size: 14px;
+    line-height: $log-label-height;
     text-align: center;
+    text-transform: uppercase;
   }
 
   .message {
-    padding: 10px;
-    border-bottom: 3px solid $ui-medium;
+    padding: $ui-padding;
+    border-bottom: $ui-border solid $ui-medium;
     font-size: 12px;
     &.success {
       border-bottom-color: $green;

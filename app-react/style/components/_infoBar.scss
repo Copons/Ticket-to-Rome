@@ -1,0 +1,74 @@
+.info-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  z-index: 10;
+  height: $info-bar-height;
+  background-color: $ui-light;
+  font-family: 'Hammersmith One', Arial, sans-serif;
+  line-height: $info-bar-height / 2;
+
+  @extend %ttr-shadow-low;
+
+  & > div {
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: $info-bar-height;
+  }
+
+  .turn {
+    padding: 0 $ui-padding;
+    background-color: $ui-dark;
+    color: $ui-medium;
+    text-align: center;
+    div:last-child {
+      color: $ui-light;
+      font-size: 20px;
+    }
+  }
+
+  .player {
+    padding: 0 $ui-padding;
+    color: $ui-dark;
+    &.active {
+      background-color: $ui-medium;
+    }
+
+    .name {
+      font-size: 18px;
+    }
+
+    .info {
+      & > div {
+        display: inline-block;
+      }
+      .icon {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin: 0 $ui-padding 2px $ui-margin;
+        background-position: center center;
+        vertical-align: middle;
+      }
+
+      .points .icon {
+        background-image: url('../assets/ic_star_white_18px.svg');
+      }
+      .cards .icon {
+        background-image: url('../assets/ic_crop_portrait_white_18px.svg');
+      }
+      .pieces .icon {
+        background-image: url('../assets/ic_directions_subway_white_18px.svg');
+      }
+      .destinations .icon {
+        width: 18px;
+        background-image: url('../assets/ic_timeline_white_18px.svg');
+      }
+    }
+  }
+}

@@ -7,7 +7,10 @@ import RoutePopup from './RoutePopup';
 
 export const Board = () =>
   <div className="board">
-    <svg viewBox="0 0 640 360">
+    <svg
+      viewBox="0 0 640 360"
+      preserveAspectRatio="xMinYMid meet"
+    >
       <Routes />
       <Stations />
       <StationNames />

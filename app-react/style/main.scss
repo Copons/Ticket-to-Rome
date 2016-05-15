@@ -1,4 +1,5 @@
 @import 'utilities/colors';
+@import 'utilities/metrics';
 @import 'utilities/reset';
 @import 'utilities/shadows';
 @import 'utilities/transitions';
@@ -6,6 +7,7 @@
 @import 'layout/forms';
 
 @import 'components/board';
+@import 'components/infoBar';
 @import 'components/game';
 @import 'components/lobby';
 @import 'components/log';

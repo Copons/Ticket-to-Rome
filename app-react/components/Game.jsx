@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import UI from '../services/UI';
 import { Board } from './Board';
+import { InfoBar } from './InfoBar';
 
 
 class Game extends Component {
@@ -38,6 +39,7 @@ class Game extends Component {
           this.handleClick(false);
         }}
       >
+        <InfoBar />
         <Board />
       </section>
     );
