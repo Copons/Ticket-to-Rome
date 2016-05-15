@@ -18,7 +18,8 @@ export const Room = ({ room }) =>
       )}
     </td>
     <td className="status">
-      {room.get('status')}</td>
+      {room.get('status')}
+    </td>
     <td className="actions">
       <RoomAction action={START_GAME} room={room} />
       <RoomAction action={JOIN_ROOM} room={room} />

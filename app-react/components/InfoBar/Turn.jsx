@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 
-export const Turn = () =>
-<div className="turn">
-  <div>Turn</div>
-  <div>0</div>
-</div>;
+export const Turn = ({
+  turn,
+}) =>
+  <div className="turn">
+    <div>Turn</div>
+    <div>{turn}</div>
+  </div>;
+
+Turn.propTypes = {
+  turn: PropTypes.number,
+};

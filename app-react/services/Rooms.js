@@ -1,4 +1,3 @@
-import uuid from 'node-uuid';
 import store from '../store';
 import IO from '../socket/IO';
 import Messages from './Messages';
@@ -65,7 +64,6 @@ class Rooms {
 
     IO.emit(CREATE_ROOM, {
       name,
-      id: uuid.v4(),
       owner: player.get('id'),
     })
       .then(response => {

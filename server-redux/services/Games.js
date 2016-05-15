@@ -1,4 +1,5 @@
 import store from '../store';
+import Players from './Players';
 import Response from './Response';
 import Rooms from './Rooms';
 import {
@@ -17,19 +18,16 @@ class Games {
   one = id => this.all().find(g => g.get('id') === id);
 
 
-  emitStart = (room, io) => {
-    const response = Response.success(
-      `Game started in room ${room.get('name')}.`,
-      Rooms.humanizeOne(room.delete('status'))
-    );
-    io.in(room.get('id')).emit(START_GAME, response);
+  emitStart = (game, io) => {
+    const response = Response.success(`Game started in room ${game.get('name')}.`, game);
+    io.in(game.get('id')).emit(START_GAME, response);
     return response;
   }
 
 
-  emitKill = (roomId, io) => {
-    const response = Response.success('Game closed.', roomId);
-    io.in(roomId).emit(KILL_GAME, response);
+  emitKill = (gameId, io) => {
+    const response = Response.success('Game closed.', gameId);
+    io.in(gameId).emit(KILL_GAME, response);
     return response;
   }
 
@@ -43,8 +41,18 @@ class Games {
     if (!room) {
       reject(Response.error('Error in starting a game.'));
     } else {
-      store.dispatch(this.startThunk(room));
-      resolve(room);
+      const game = room
+        .delete('status')
+        .set('turn', 0)
+        .set('players', room.get('players').map(p => ({
+          ...p,
+          points: 0,
+          cards: 0,
+          pieces: 0,
+          destinations: 0,
+        })));
+      store.dispatch(this.startThunk(game));
+      resolve(game);
     }
   });
 
@@ -73,9 +81,9 @@ class Games {
 
   // Helpers
 
-  startThunk = room => dispatch => {
-    dispatch(Rooms.changeRoomStatusAction(room.get('id'), 'playing'));
-    dispatch(this.startGameAction(room));
+  startThunk = game => dispatch => {
+    dispatch(Rooms.changeRoomStatusAction(game.get('id'), 'playing'));
+    dispatch(this.startGameAction(game));
   };
 
   killThunk = gameId => dispatch => {

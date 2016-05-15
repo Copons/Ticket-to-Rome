@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import UI from '../services/UI';
 import { Board } from './Board';
-import { InfoBar } from './InfoBar';
+import InfoBar from './InfoBar';
 
 
 class Game extends Component {

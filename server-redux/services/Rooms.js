@@ -23,30 +23,8 @@ class Rooms {
   one = id => this.all().find(r => r.get('id') === id);
 
 
-  humanizeOne = room => {
-    const owner = Players.one(room.get('owner'));
-    const players = room.get('players').map(p => {
-      const player = Players.one(p);
-      return {
-        id: player.get('id'),
-        name: player.get('name'),
-      };
-    });
-    return room.merge({
-      players,
-      owner: {
-        id: owner.get('id'),
-        name: owner.get('name'),
-      },
-    });
-  }
-
-
-  humanizeAll = () => this.all().map(room => this.humanizeOne(room));
-
-
   emitAll = clients => {
-    const response = Response.success(SET_ROOMS, this.humanizeAll());
+    const response = Response.success(SET_ROOMS, this.all().toJS());
     clients.emit(SET_ROOMS, response);
     return response;
   }
@@ -54,7 +32,15 @@ class Rooms {
 
   containsPlayer = (roomId, playerId) => {
     const room = this.one(roomId);
-    return room && room.get('players').indexOf(playerId) > -1;
+    if (!room) return false;
+    let foundPlayer = false;
+    room.get('players').forEach(p => {
+      if (p.get('id') === playerId) {
+        foundPlayer = true;
+        return false;
+      }
+    });
+    return foundPlayer;
   }
 
 
@@ -63,8 +49,12 @@ class Rooms {
 
   create = room => new Promise(resolve => {
     const newRoom = {
-      ...room,
       id: uuid.v4(),
+      name: room.name,
+      owner: {
+        id: room.owner,
+        name: Players.one(room.owner).get('name'),
+      },
       players: [],
       status: 'open',
     };
@@ -75,7 +65,8 @@ class Rooms {
 
   join = (roomId, playerId) => new Promise(resolve => {
     const room = this.one(roomId);
-    store.dispatch(this.joinRoomAction(roomId, playerId));
+    const player = Players.one(playerId);
+    store.dispatch(this.joinRoomAction(roomId, player));
     resolve(Response.success(`Joined room ${room.get('name')}.`, room));
   });
 
@@ -86,7 +77,7 @@ class Rooms {
       reject(Response.error('Error in leaving room.'));
     } else {
       if (
-        room.get('owner') === playerId ||
+        room.get('owner').get('id') === playerId ||
         room.get('players').size === 1 && this.containsPlayer(room.get('id'), playerId)
       ) {
         store.dispatch(this.deleteRoomAction(roomId));
@@ -135,10 +126,10 @@ class Rooms {
     room,
   });
 
-  joinRoomAction = (roomId, playerId) => ({
+  joinRoomAction = (roomId, player) => ({
     type: JOIN_ROOM,
     roomId,
-    playerId,
+    player,
   });
 
   leaveRoomAction = (roomId, playerId) => ({
@@ -182,12 +173,16 @@ class Rooms {
       case JOIN_ROOM:
         return state.set(
           room[0],
-          room[1].merge({ players: room[1].get('players').push(action.playerId) })
+          room[1].merge({
+            players: room[1].get('players').push(action.player),
+          })
         );
       case LEAVE_ROOM:
         return state.set(
           room[0],
-          room[1].merge({ players: room[1].get('players').filter(p => p !== action.playerId) })
+          room[1].merge({
+            players: room[1].get('players').filter(p => p.get('id') !== action.playerId),
+          })
         );
       case CHANGE_ROOM_STATUS:
         return state.set(

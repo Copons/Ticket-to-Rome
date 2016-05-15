@@ -17,7 +17,7 @@ export default class Response {
   }
 
   static error = (msg = '', body = {}) => {
-    console.log(`${chalk.red(ERROR)}: ${msg}`);
+    console.trace(`${chalk.red(ERROR)}: ${msg}`);
     return {
       type: ERROR,
       msg,

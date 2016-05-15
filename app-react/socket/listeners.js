@@ -20,7 +20,6 @@ IO.on(START_GAME, response => {
 });
 
 IO.on(KILL_GAME, response => {
-  console.log(KILL_GAME);
   store.dispatch(Game.killGameAction());
   store.dispatch(Messages.addThunk(response));
 });

@@ -1,3 +1,4 @@
+import store from '../store';
 import {
   START_GAME,
   KILL_GAME,
@@ -8,7 +9,17 @@ class Game {
 
   // Services
 
-  start() {}
+  start = game => {
+    const newGame = game;
+    newGame.players = newGame.players.map(p => ({
+      ...p,
+      points: 0,
+      cards: 0,
+      pieces: 0,
+      destinations: 0,
+    }));
+    store.dispatch(this.startGameAction(newGame));
+  }
 
 
 

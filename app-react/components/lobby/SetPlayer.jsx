@@ -22,7 +22,10 @@ export const SetPlayer = ({
           input = node;
         }}
       />
-      <input type="submit" value={ player.has('name') ? 'Change name' : 'Create new player' } />
+      <input
+        type="submit"
+        value={ player.has('name') ? 'Change name' : 'Create new player' }
+      />
     </form>
   );
 };

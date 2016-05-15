@@ -9,6 +9,7 @@ import './socket/listeners';
 
 store.subscribe(() => {
   //console.log(JSON.stringify(store.getState()));
+  console.log(store.getState().game.toJS());
 });
 
 IO.connect().then(() => {
