@@ -4,6 +4,7 @@ import Games from '../services/Games';
 import Players from '../services/Players';
 import Response from '../services/Response';
 import Rooms from '../services/Rooms';
+import Tables from '../services/Tables';
 import store from '../store';
 
 
@@ -68,6 +69,7 @@ export default function socket(server) {
     client.on(API.START_GAME, (roomId, callback) =>
       Games.start(roomId)
         .then(game => Games.emitStart(game, io))
+        .then(response => Tables.emitOne(response.body.get('id'), io))
         .then(() => Rooms.emitAll(io.sockets))
         .catch(err => callback(Response.error(err)))
     );

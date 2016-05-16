@@ -1,0 +1,29 @@
+.table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: $table-width;
+  height: 100vh;
+  padding-top: $info-bar-height;
+  background: $ui-light;
+
+  span {
+    display: inline-block;
+    width: 14px;
+    height: 10px;
+    margin: 2px;
+    font-size: 10px;
+    line-height: 10px;
+    text-align: center;
+    &.red { background-color: $red; }
+    &.orange { background-color: $orange; }
+    &.yellow { background-color: $yellow; }
+    &.green { background-color: $green; }
+    &.blue { background-color: $blue; }
+    &.purple { background-color: $purple; color: #fff; }
+    &.black { background-color: $black; color: #fff; }
+    &.white { background-color: $white; }
+    &.wild { background-color: $wild-route; }
+  }
+}

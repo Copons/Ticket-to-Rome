@@ -1,8 +1,9 @@
 .board {
   position: relative;
-  width: 100%;
+  width: calc(100% - #{$table-width});
   height: calc(100vh - #{$info-bar-height + $ui-margin});
   margin-top: $info-bar-height + $ui-margin;
+  margin-left: $table-width;
   background-color: $ui-pink;
 
   svg {

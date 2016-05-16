@@ -3,6 +3,7 @@ import store from '../store';
 import { DECK } from '../config/deck';
 import Response from './Response';
 import Rooms from './Rooms';
+import Tables from './Tables';
 import {
   START_GAME,
   KILL_GAME,
@@ -87,6 +88,7 @@ class Games {
   startThunk = game => dispatch => {
     dispatch(Rooms.changeRoomStatusAction(game.get('id'), 'playing'));
     dispatch(this.startGameAction(game));
+    dispatch(Tables.createThunk(game.get('id')));
   };
 
   killThunk = gameId => dispatch => {

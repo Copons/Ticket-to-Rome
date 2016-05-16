@@ -9,7 +9,8 @@ import './socket/listeners';
 
 store.subscribe(() => {
   //console.log(JSON.stringify(store.getState()));
-  console.log(store.getState().game.toJS());
+  //console.log(store.getState().game.toJS());
+  console.log(store.getState().table.toJS());
 });
 
 IO.connect().then(() => {

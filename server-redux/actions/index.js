@@ -23,3 +23,15 @@ export const CHANGE_ROOM_STATUS = 'CHANGE_ROOM_STATUS';
 // Games
 export const START_GAME = 'START_GAME';
 export const KILL_GAME = 'KILL_GAME';
+
+// Tables
+export const SET_TABLE = 'SET_TABLE';
+export const CREATE_TABLE = 'CREATE_TABLE';
+export const DELETE_TABLE = 'DELETE_TABLE';
+export const CREATE_DECK = 'CREATE_DECK';
+export const SHUFFLE_DECK = 'SHUFFLE_DECK';
+export const DRAW_FROM_DECK = 'DRAW_FROM_DECK';
+export const DRAW_FROM_PILE = 'DRAW_FROM_PILE';
+export const DISCARD_CARD = 'DISCARD_CARD';
+export const CREATE_DESTINATION_DECK = 'CREATE_DESTINATION_DECK';
+export const DRAW_DESTINATION = 'DRAW_DESTINATION';

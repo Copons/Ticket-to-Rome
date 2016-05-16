@@ -25,3 +25,6 @@ export const LEAVE_ROOM = 'LEAVE_ROOM';
 // Game
 export const START_GAME = 'START_GAME';
 export const KILL_GAME = 'KILL_GAME';
+
+// Table
+export const SET_TABLE = 'SET_TABLE';

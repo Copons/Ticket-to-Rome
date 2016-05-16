@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import UI from '../services/UI';
 import { Board } from './Board';
 import InfoBar from './InfoBar';
+import { Table } from './Table';
 
 
 class Game extends Component {
@@ -40,6 +41,7 @@ class Game extends Component {
         }}
       >
         <InfoBar />
+        <Table />
         <Board />
       </section>
     );

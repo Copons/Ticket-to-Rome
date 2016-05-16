@@ -80,7 +80,7 @@
   }
   &.wild {
     .title { border-bottom-color: $wild-route; }
-    .parts span { background-color: $wild-route; }
+    .parts span { background: $wild-card; }
   }
 
 
