@@ -1,5 +1,6 @@
+import { fromJS } from 'immutable';
 import store from '../store';
-import Players from './Players';
+import { DECK } from '../config/deck';
 import Response from './Response';
 import Rooms from './Rooms';
 import {
@@ -41,16 +42,18 @@ class Games {
     if (!room) {
       reject(Response.error('Error in starting a game.'));
     } else {
+      const players = room.get('players').toJS().map((p, i) => ({
+        ...p,
+        points: 0,
+        cards: 0,
+        pieces: 0,
+        destinations: 0,
+        color: DECK[i].type,
+      }));
       const game = room
         .delete('status')
         .set('turn', 0)
-        .set('players', room.get('players').map(p => ({
-          ...p,
-          points: 0,
-          cards: 0,
-          pieces: 0,
-          destinations: 0,
-        })));
+        .set('players', fromJS(players));
       store.dispatch(this.startThunk(game));
       resolve(game);
     }
@@ -67,9 +70,9 @@ class Games {
 
   // Actions
 
-  startGameAction = room => ({
+  startGameAction = game => ({
     type: START_GAME,
-    room,
+    game,
   });
 
   killGameAction = id => ({

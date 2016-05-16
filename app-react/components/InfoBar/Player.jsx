@@ -7,6 +7,7 @@ export const Player = ({
 }) =>
   <div className="player">
     <div className="name">
+      <span className={player.get('color')}></span>
       {player.get('name')}
     </div>
     <div className="info">

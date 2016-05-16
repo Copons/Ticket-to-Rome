@@ -66,6 +66,7 @@ class Rooms {
   join = (roomId, playerId) => new Promise(resolve => {
     const room = this.one(roomId);
     const player = Players.one(playerId);
+    console.log(player);
     store.dispatch(this.joinRoomAction(roomId, player));
     resolve(Response.success(`Joined room ${room.get('name')}.`, room));
   });

@@ -41,6 +41,18 @@
 
     .name {
       font-size: 18px;
+      span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: $ui-margin;
+        border-radius: 50%;
+        &.red { background-color: $red; }
+        &.blue { background-color: $blue; }
+        &.yellow { background-color: $yellow; }
+        &.green { background-color: $green; }
+        &.purple { background-color: $purple; }
+      }
     }
 
     .info {
