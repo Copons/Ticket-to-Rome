@@ -11,7 +11,7 @@ const PATHS = {
 
 const config = {
 
-  devtool: 'eval-source-map',
+  devtool: 'cheap-module-source-map',
 
   entry: [
     'webpack-dev-server/client?http://localhost:8080',

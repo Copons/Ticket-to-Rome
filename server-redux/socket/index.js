@@ -1,11 +1,12 @@
 import socketIo from 'socket.io';
 import * as API from '../actions';
-import Games from '../services/Games';
-import Players from '../services/Players';
-import Response from '../services/Response';
-import Rooms from '../services/Rooms';
-import Tables from '../services/Tables';
 import store from '../store';
+
+import * as games from './async/games';
+import * as players from './async/players';
+import * as rooms from './async/rooms';
+
+
 
 
 export default function socket(server) {
@@ -19,69 +20,22 @@ export default function socket(server) {
     console.log(`Client ${client.id} connected.`);
 
 
+    client.on(API.CREATE_PLAYER, players.create.bind({ io }));
+
+    client.on(API.UPDATE_PLAYER, players.update.bind({ io }));
 
 
-    client.on(API.CREATE_PLAYER, (player, callback) =>
-      Players.create(player)
-        .then(res => callback(res))
-        .then(() => Rooms.emitAll(io.sockets))
-    );
+    client.on(API.CREATE_ROOM, rooms.create.bind({ client, io }));
 
-    client.on(API.UPDATE_PLAYER, (player, callback) =>
-      Players.update(player)
-        .then(res => callback(res))
-        .then(() => Rooms.emitAll(io.sockets))
-    );
+    client.on(API.JOIN_ROOM, rooms.join.bind({ client, io }));
+
+    client.on(API.LEAVE_ROOM, rooms.leave.bind({ client, io }));
 
 
+    client.on(API.START_GAME, games.start.bind({ io }));
 
 
-    client.on(API.CREATE_ROOM, (room, callback) =>
-      Rooms.create(room)
-        .then(res => {
-          Rooms.clientJoin(client, res.body.id);
-          callback(res);
-        })
-        .then(() => Rooms.emitAll(io.sockets))
-    );
-
-    client.on(API.JOIN_ROOM, (data, callback) =>
-      Rooms.join(data.roomId, data.playerId)
-        .then(res => {
-          Rooms.clientJoin(client, res.body.get('id'));
-          callback(res);
-        })
-        .then(() => Rooms.emitAll(io.sockets))
-    );
-
-    client.on(API.LEAVE_ROOM, (data, callback) =>
-      Rooms.leave(data.roomId, data.playerId)
-        .then(res => {
-          callback(res);
-          return Games.kill(res.body.get('id'));
-        })
-        .then(gameId => Games.emitKill(gameId, io))
-        .then(res => Rooms.clientLeave(client, res.body))
-        .then(() => Rooms.emitAll(io.sockets))
-        .catch(err => callback(err))
-    );
-
-    client.on(API.START_GAME, (roomId, callback) =>
-      Games.start(roomId)
-        .then(game => Games.emitStart(game, io))
-        .then(response => Tables.emitOne(response.body.get('id'), io))
-        .then(() => Rooms.emitAll(io.sockets))
-        .catch(err => callback(Response.error(err)))
-    );
-
-
-
-
-    client.on(API.DISCONNECT, () => {
-      Rooms.leaveAll(client)
-        .then(clientId => Players.delete(clientId))
-        .then(() => Rooms.emitAll(io.sockets));
-    });
+    client.on(API.DISCONNECT, players.disconnect.bind({ client, io }));
   });
 
   return io;
