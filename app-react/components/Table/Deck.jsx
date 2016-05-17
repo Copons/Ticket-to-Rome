@@ -6,7 +6,7 @@ export const Deck = ({
   deck,
 }) =>
   <div className="deck">
-    {deck.map((c, i) =>
+    {deck && deck.map((c, i) =>
       <span key={i} className={c.get('type')}>
         {c.get('id')}
       </span>

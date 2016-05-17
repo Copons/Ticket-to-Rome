@@ -1,3 +1,4 @@
+import store from '../store';
 import {
   OPEN_ROUTE_POPUP,
   CLOSE_ROUTE_POPUP,
@@ -28,7 +29,9 @@ class UI {
   // Helpers
 
   toggleRoutePopupThunk = routeInfo => dispatch => {
-    dispatch(this.closeRoutePopupAction());
+    if (store.getState().ui.has('routePopup')) {
+      dispatch(this.closeRoutePopupAction());
+    }
     if (routeInfo) {
       dispatch(this.openRoutePopupAction(routeInfo));
     }

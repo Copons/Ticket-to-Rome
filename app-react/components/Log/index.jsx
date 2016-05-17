@@ -22,10 +22,7 @@ class Log extends Component {
     return (
       <section
         className={this.state.cssClasses}
-        onClick={e => {
-          e.preventDefault();
-          this.toggle();
-        }}
+        onClick={this.toggle}
       >
         {this.props.messages.map((message, i) =>
           <Message key={i} message={message} />
