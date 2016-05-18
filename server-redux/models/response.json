@@ -1,6 +1,6 @@
 {
   "type": "SUCCESS|ERROR",
   "msg": "string",
-  "payload": {},
-  "action": "ACTION"
+  "action": "ACTION",
+  "payload": {}
 }

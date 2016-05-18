@@ -6,9 +6,9 @@ export async function create (player, callback) {
   try {
     const res = await Players.create(player);
     callback(res);
-    Rooms.emitAll(this.io.sockets);
+    Rooms.emit(this.io.sockets);
   } catch (e) {
-    console.error(e);
+    callback(e);
   }
 }
 
@@ -16,9 +16,9 @@ export async function changeName ({ id, name }, callback) {
   try {
     const res = await Players.changeName(id, name);
     callback(res);
-    Rooms.emitAll(this.io.sockets);
+    Rooms.emit(this.io.sockets);
   } catch (e) {
-    console.error(e);
+    callback(e);
   }
 }
 
@@ -27,16 +27,16 @@ export async function reset (id, callback) {
     const res = await Players.reset(id);
     callback(res);
   } catch (e) {
-    console.error(e);
+    callback(e);
   }
 }
 
 export async function disconnect () {
-  try {
-    const clientId = await Rooms.leaveAll(this.client);
-    await Players.delete(clientId);
-    Rooms.emitAll(this.io.sockets);
-  } catch (e) {
-    console.error(e);
-  }
+  //try {
+  const clientId = await Rooms.leaveAll(this.client);
+  await Players.delete(clientId);
+  Rooms.emit(this.io.sockets);
+  //} catch (e) {
+  //  console.error(e);
+  //}
 }

@@ -13,7 +13,7 @@ import Table from '../services/Table';
 
 
 IO.on(SET_ROOMS, response => {
-  store.dispatch(Rooms.setRoomsAction(response.body));
+  store.dispatch(Rooms.setRoomsAction(response.payload));
 });
 
 IO.on(START_GAME, response => {

@@ -1,6 +1,6 @@
+import { Map, fromJS } from 'immutable';
 import uuid from 'node-uuid';
 import store from '../store';
-import Games from './Games';
 import Players from './Players';
 import Response from './Response';
 import {
@@ -22,99 +22,132 @@ class Rooms {
 
   one = id => this.all().find(r => r.get('id') === id);
 
+  oneEntry = id => this.all().findEntry(r => r.get('id') === id);
 
-  emitAll = clients => {
-    const response = Response.success(SET_ROOMS, this.all().toJS());
-    clients.emit(SET_ROOMS, response);
-    return response;
-  }
-
-
-  containsPlayer = (roomId, playerId) => {
-    const room = this.one(roomId);
-    if (!room) return false;
-    let foundPlayer = false;
-    room.get('players').forEach(p => {
-      if (p.get('id') === playerId) {
-        foundPlayer = true;
-        return false;
-      }
+  emit = clients => {
+    const rooms = this.all().toJS().map(r => {
+      const room = r;
+      room.owner = Players.oneSimple(r.owner);
+      room.players = r.players.map(p => Players.oneSimple(p));
+      return room;
     });
-    return foundPlayer;
+    const res = Response.success({
+      msg: SET_ROOMS,
+      action: SET_ROOMS,
+      payload: rooms,
+    });
+    clients.emit(SET_ROOMS, res);
+    return res;
   }
+
 
 
 
   // Services
 
   create = room => new Promise(resolve => {
-    const newRoom = {
+    const newRoom = new Map(fromJS({
       id: uuid.v4(),
       name: room.name,
-      owner: {
-        id: room.owner,
-        name: Players.one(room.owner).get('name'),
-      },
+      owner: room.owner,
       players: [],
       status: 'open',
-    };
-    store.dispatch(this.createThunk(newRoom));
-    resolve(Response.success(`Created room ${newRoom.name}.`, newRoom));
+    }));
+    store.dispatch(this.createAction(newRoom));
+    resolve(Response.success({
+      msg: `Room ${newRoom.get('name')} created.`,
+      action: CREATE_ROOM,
+      payload: newRoom,
+    }));
   });
 
-
-  join = (roomId, playerId) => new Promise(resolve => {
-    const room = this.one(roomId);
+  join = (roomId, playerId) => new Promise((resolve, reject) => {
+    const entry = this.oneEntry(roomId);
     const player = Players.one(playerId);
-    console.log(player);
-    store.dispatch(this.joinRoomAction(roomId, player));
-    resolve(Response.success(`Joined room ${room.get('name')}.`, room));
-  });
-
-
-  leave = (roomId, playerId) => new Promise((resolve, reject) => {
-    const room = this.one(roomId);
-    if (!room) {
-      reject(Response.error('Error in leaving room.'));
+    if (!entry) {
+      reject(Response.error({ msg: 'Room does not exist.' }));
+    } else if (!player) {
+      reject(Response.error({ msg: 'Player does not exist.' }));
     } else {
-      if (
-        room.get('owner').get('id') === playerId ||
-        room.get('players').size === 1 && this.containsPlayer(room.get('id'), playerId)
-      ) {
-        store.dispatch(this.deleteRoomAction(roomId));
-      } else {
-        store.dispatch(this.leaveRoomAction(roomId, playerId));
-      }
-      resolve(Response.success(`Left room ${room.get('name')}.`, room));
+      store.dispatch(this.joinAction(entry, playerId));
+      resolve(Response.success({
+        msg: `Player ${player.get('name')} joined room ${entry[1].get('name')}.`,
+        action: JOIN_ROOM,
+      }));
     }
   });
 
+  leave = (roomId, playerId) => new Promise((resolve, reject) => {
+    const entry = this.oneEntry(roomId);
+    const player = Players.one(playerId);
+    if (!entry) {
+      reject(Response.error({ msg: 'Room does not exist.' }));
+    } else if (!player) {
+      reject(Response.error({ msg: 'Player does not exist.' }));
+    } else {
+      const room = entry[1];
+      if (
+        room.get('owner') === playerId ||
+        room.get('players').size === 1 && room.get('players').includes(playerId)
+      ) {
+        store.dispatch(this.deleteAction(entry[0]));
+        resolve(Response.success({
+          msg: `Room ${entry[1].get('name')} deleted.`,
+          action: DELETE_ROOM,
+        }));
+      } else {
+        store.dispatch(this.leaveAction(entry, playerId));
+        resolve(Response.success({
+          msg: `Player ${player.get('name')} left room ${entry[1].get('name')}.`,
+          action: LEAVE_ROOM,
+        }));
+      }
+    }
+  });
 
   leaveAll = client => new Promise((resolve, reject) => {
     const player = Players.oneByClient(client.id);
     if (!player) {
       reject();
     } else {
-      const rooms = this.all().map(r => r.get('id'));
-      for (const roomId of rooms) {
-        this.leave(roomId, player.get('id'), client);
-      }
-      resolve(client.id);
+      this.all().forEach(r => {
+        this.leave(r.get('id'), player.get('id'));
+      });
+      resolve(Response.success({
+        msg: `Client ${client.id} left all rooms.`,
+        action: LEAVE_ROOM,
+      }));
     }
   });
 
-
-  clientJoin = (client, roomId) => new Promise(resolve => {
-    client.join(roomId);
-    console.log(`Client ${client.id} joined socket room ${roomId}`);
-    resolve(roomId);
+  changeStatus = (roomId, status) => new Promise((resolve, reject) => {
+    const entry = this.oneEntry(roomId);
+    if (!entry) {
+      reject(Response.error({ msg: 'Room does not exist.' }));
+    } else {
+      store.dispatch(this.changeStatusAction(entry, status));
+      resolve(Response.success({
+        msg: `Room ${entry[1].get('name')} is now ${status}.`,
+        action: CHANGE_ROOM_STATUS,
+        payload: status,
+      }));
+    }
   });
 
+  clientJoin = (roomId, client) => new Promise(resolve => {
+    client.join(roomId);
+    resolve(Response.success({
+      msg: `Client ${client.id} joined socket room ${roomId}`,
+      action: JOIN_ROOM,
+    }));
+  });
 
-  clientLeave = (client, roomId) => new Promise(resolve => {
+  clientLeave = (roomId, client) => new Promise(resolve => {
     client.leave(roomId);
-    console.log(`Client ${client.id} left socket room ${roomId}`);
-    resolve(roomId);
+    resolve(Response.success({
+      msg: `Client ${client.id} left socket room ${roomId}`,
+      action: LEAVE_ROOM,
+    }));
   });
 
 
@@ -122,78 +155,33 @@ class Rooms {
 
   // Actions
 
-  createRoomAction = room => ({
+  createAction = room => ({
     type: CREATE_ROOM,
     room,
   });
 
-  joinRoomAction = (roomId, player) => ({
+  joinAction = (entry, playerId) => ({
     type: JOIN_ROOM,
-    roomId,
-    player,
-  });
-
-  leaveRoomAction = (roomId, playerId) => ({
-    type: LEAVE_ROOM,
-    roomId,
+    entry,
     playerId,
   });
 
-  deleteRoomAction = id => ({
-    type: DELETE_ROOM,
-    id,
+  leaveAction = (entry, playerId) => ({
+    type: LEAVE_ROOM,
+    entry,
+    playerId,
   });
 
-  changeRoomStatusAction = (roomId, status) => ({
+  deleteAction = index => ({
+    type: DELETE_ROOM,
+    index,
+  });
+
+  changeStatusAction = (entry, status) => ({
     type: CHANGE_ROOM_STATUS,
-    roomId,
+    entry,
     status,
   });
-
-
-
-  // Helpers
-
-  createThunk = room => dispatch => {
-    dispatch(this.createRoomAction(room));
-    dispatch(this.joinRoomAction(room.id, room.owner));
-  };
-
-
-  leaveThunk = (roomId, playerId) => dispatch => {
-    dispatch(Games.killGameAction(roomId));
-    dispatch(this.leaveRoomAction(roomId, playerId));
-  };
-
-
-  updateReducer = (state, action) => {
-    const room = state.findEntry(r => r.get('id') === action.roomId);
-    if (!room) return state;
-
-    switch (action.type) {
-      case JOIN_ROOM:
-        return state.set(
-          room[0],
-          room[1].merge({
-            players: room[1].get('players').push(action.player),
-          })
-        );
-      case LEAVE_ROOM:
-        return state.set(
-          room[0],
-          room[1].merge({
-            players: room[1].get('players').filter(p => p.get('id') !== action.playerId),
-          })
-        );
-      case CHANGE_ROOM_STATUS:
-        return state.set(
-          room[0],
-          room[1].set('status', action.status)
-        );
-      default:
-        return state;
-    }
-  }
 
 }
 

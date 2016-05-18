@@ -42,7 +42,6 @@ class Player {
 
     IO.emit(action, payload)
       .then(response => {
-        console.log(response);
         dispatch(this.setPlayerAction(response.payload));
         dispatch(Messages.addThunk(response));
       });

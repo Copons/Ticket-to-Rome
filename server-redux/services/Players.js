@@ -85,7 +85,7 @@ class Players {
     }
   });
 
-  delete = clientId => new Promise((resolve, reject) => {
+  delete = (clientId = '') => new Promise((resolve, reject) => {
     const player = this.oneByClient(clientId);
     if (!player) {
       reject(Response.error({ msg: `Client ${clientId} does not exist.` }));
