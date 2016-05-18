@@ -18,7 +18,7 @@ class Game extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.game.has('name')) {
+    if (nextProps.game.has('id')) {
       this.setState({ cssClasses: 'game visible' });
     } else {
       this.setState({ cssClasses: 'game' });

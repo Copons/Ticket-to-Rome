@@ -2,6 +2,7 @@ import { List, fromJS } from 'immutable';
 import {
   CREATE_PLAYER,
   CHANGE_PLAYER_NAME,
+  SET_PLAYER_COLOR,
   RESET_PLAYER_STATS,
   DELETE_PLAYER,
 } from '../actions';
@@ -16,6 +17,8 @@ export default function playerReducer(state = defaultState, action) {
       return state.push(action.player);
     case CHANGE_PLAYER_NAME:
       return state.set(action.entry[0], action.entry[1].set('name', action.name));
+    case SET_PLAYER_COLOR:
+      return state.set(action.entry[0], action.entry[1].set('color', action.color));
     case RESET_PLAYER_STATS:
       return state.set(action.entry[0], action.entry[1].merge(fromJS(Players.resetStats())));
     case DELETE_PLAYER:

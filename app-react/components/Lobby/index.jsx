@@ -14,7 +14,7 @@ class Lobby extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.game.has('name')) {
+    if (nextProps.game.has('id')) {
       this.setState({ cssClasses: 'lobby' });
     } else {
       this.setState({ cssClasses: 'lobby visible' });

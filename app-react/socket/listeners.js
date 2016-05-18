@@ -17,7 +17,7 @@ IO.on(SET_ROOMS, response => {
 });
 
 IO.on(START_GAME, response => {
-  store.dispatch(Game.startGameAction(response.body));
+  store.dispatch(Game.startGameAction(response.payload));
   store.dispatch(Messages.addThunk(response));
 });
 

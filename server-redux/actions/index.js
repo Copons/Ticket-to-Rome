@@ -9,8 +9,8 @@ export const ERROR = 'ERROR';
 // Players
 export const CREATE_PLAYER = 'CREATE_PLAYER';
 export const CHANGE_PLAYER_NAME = 'CHANGE_PLAYER_NAME';
+export const SET_PLAYER_COLOR = 'SET_PLAYER_COLOR';
 export const RESET_PLAYER_STATS = 'RESET_PLAYER';
-//export const UPDATE_PLAYER = 'UPDATE_PLAYER';
 export const DELETE_PLAYER = 'DELETE_PLAYER';
 
 // Rooms

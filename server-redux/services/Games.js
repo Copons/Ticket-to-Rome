@@ -1,9 +1,8 @@
-import { fromJS } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import store from '../store';
-import { DECK } from '../config/deck';
+import Players from './Players';
 import Response from './Response';
 import Rooms from './Rooms';
-import Tables from './Tables';
 import {
   START_GAME,
   KILL_GAME,
@@ -19,18 +18,26 @@ class Games {
 
   one = id => this.all().find(g => g.get('id') === id);
 
+  oneEntry = id => this.all().findEntry(g => g.get('id') === id);
 
-  emitStart = (game, io) => {
-    const response = Response.success(`Game started in room ${game.get('name')}.`, game);
-    io.in(game.get('id')).emit(START_GAME, response);
-    return response;
+  emitStart = (id, io) => {
+    const game = this.one(id);
+    const room = Rooms.one(id);
+    const res = Response.success({
+      msg: `Game in room ${room.get('name')} started.`,
+      action: START_GAME,
+      payload: game.set('players', room.get('players').map(p => Players.one(p))),
+    });
+    io.in(id).emit(START_GAME, res);
+    return res;
   }
 
-
-  emitKill = (gameId, io) => {
-    const response = Response.success('Game closed.', gameId);
-    io.in(gameId).emit(KILL_GAME, response);
-    return response;
+  emitKill = (id, io) => {
+    const res = Response.success({
+      msg: `Game ${id} closed.`,
+      action: KILL_GAME,
+    });
+    io.in(id).emit(KILL_GAME, res);
   }
 
 
@@ -38,32 +45,37 @@ class Games {
 
   // Services
 
-  start = roomId => new Promise((resolve, reject) => {
-    const room = Rooms.one(roomId);
+  start = id => new Promise((resolve, reject) => {
+    const room = Rooms.one(id);
     if (!room) {
-      reject(Response.error('Error in starting a game.'));
+      reject(Response.error({ msg: 'Room does not exist.' }));
     } else {
-      const players = room.get('players').toJS().map((p, i) => ({
-        ...p,
-        points: 0,
-        cards: 0,
-        pieces: 0,
-        destinations: 0,
-        color: DECK[i].type,
+      const game = new Map(fromJS({
+        id,
+        turn: 0,
+        active: false,
       }));
-      const game = room
-        .delete('status')
-        .set('turn', 0)
-        .set('players', fromJS(players));
-      store.dispatch(this.startThunk(game));
-      resolve(game);
+      store.dispatch(this.startAction(game));
+      resolve(Response.success({
+        msg: `Game in room ${room.get('name')} started.`,
+        action: START_GAME,
+        payload: { game, room },
+      }));
     }
   });
 
-
-  kill = gameId => new Promise(resolve => {
-    store.dispatch(this.killThunk(gameId));
-    resolve(gameId);
+  kill = id => new Promise((resolve, reject) => {
+    const entry = this.oneEntry(id);
+    if (!entry) {
+      reject();
+    } else {
+      store.dispatch(this.killAction(entry[0]));
+      resolve(Response.success({
+        msg: `Game ${entry[1].get('id')} closed.`,
+        action: KILL_GAME,
+        payload: entry[1],
+      }));
+    }
   });
 
 
@@ -71,30 +83,15 @@ class Games {
 
   // Actions
 
-  startGameAction = game => ({
+  startAction = game => ({
     type: START_GAME,
     game,
   });
 
-  killGameAction = id => ({
+  killAction = index => ({
     type: KILL_GAME,
-    id,
+    index,
   });
-
-
-
-  // Helpers
-
-  startThunk = game => dispatch => {
-    dispatch(Rooms.changeRoomStatusAction(game.get('id'), 'playing'));
-    dispatch(this.startGameAction(game));
-    dispatch(Tables.createThunk(game.get('id')));
-  };
-
-  killThunk = gameId => dispatch => {
-    dispatch(Rooms.changeRoomStatusAction(gameId, 'open'));
-    dispatch(this.killGameAction(gameId));
-  }
 
 }
 

@@ -1,10 +1,12 @@
 import { Map, fromJS } from 'immutable';
 import uuid from 'node-uuid';
 import store from '../store';
+import { DECK } from '../config/deck';
 import Response from './Response';
 import {
   CREATE_PLAYER,
   CHANGE_PLAYER_NAME,
+  SET_PLAYER_COLOR,
   RESET_PLAYER_STATS,
   DELETE_PLAYER,
 } from '../actions';
@@ -71,6 +73,16 @@ class Players {
     }
   });
 
+  setColors = playerIdList => new Promise(resolve => {
+    playerIdList.forEach((id, i) => {
+      store.dispatch(this.setColorAction(this.oneEntry(id), DECK[i].type));
+    });
+    resolve(Response.success({
+      msg: 'Colors updated.',
+      action: SET_PLAYER_COLOR,
+    }));
+  });
+
   reset = id => new Promise((resolve, reject) => {
     const entry = this.oneEntry(id);
     if (!entry) {
@@ -112,6 +124,12 @@ class Players {
     type: CHANGE_PLAYER_NAME,
     entry,
     name,
+  });
+
+  setColorAction = (entry, color) => ({
+    type: SET_PLAYER_COLOR,
+    entry,
+    color,
   });
 
   resetStatsAction = entry => ({
