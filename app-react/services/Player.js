@@ -1,10 +1,9 @@
-import uuid from 'node-uuid';
 import IO from '../socket/IO';
 import Messages from './Messages';
 import {
   SET_PLAYER,
   CREATE_PLAYER,
-  UPDATE_PLAYER,
+  CHANGE_PLAYER_NAME,
 } from '../actions';
 
 
@@ -25,25 +24,26 @@ class Player {
 
   setPlayerDispatch = name => (dispatch, getState) => {
     let action;
-    let player;
-    if (getState().player.has('name')) {
-      action = UPDATE_PLAYER;
-      player = {
-        ...getState().player.toJS(),
+    let payload;
+    const player = getState().player;
+    if (player.has('name')) {
+      action = CHANGE_PLAYER_NAME;
+      payload = {
         name,
+        id: player.get('id'),
       };
     } else {
       action = CREATE_PLAYER;
-      player = {
-        ...getState().player.toJS(),
-        id: uuid.v4(),
+      payload = {
         name,
+        client: player.get('client'),
       };
     }
 
-    IO.emit(action, player)
+    IO.emit(action, payload)
       .then(response => {
-        dispatch(this.setPlayerAction(player));
+        console.log(response);
+        dispatch(this.setPlayerAction(response.payload));
         dispatch(Messages.addThunk(response));
       });
   };

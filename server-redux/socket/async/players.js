@@ -12,11 +12,20 @@ export async function create (player, callback) {
   }
 }
 
-export async function update (player, callback) {
+export async function changeName ({ id, name }, callback) {
   try {
-    const res = await Players.update(player);
+    const res = await Players.changeName(id, name);
     callback(res);
     Rooms.emitAll(this.io.sockets);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function reset (id, callback) {
+  try {
+    const res = await Players.reset(id);
+    callback(res);
   } catch (e) {
     console.error(e);
   }

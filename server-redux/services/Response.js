@@ -7,21 +7,23 @@ import {
 
 export default class Response {
 
-  static success = (msg = '', body = {}) => {
+  static success = ({ msg = '', payload = {}, action = '' }) => {
     console.log(`${chalk.green(SUCCESS)}: ${msg}`);
     return {
       type: SUCCESS,
       msg,
-      body,
+      action,
+      payload,
     };
   }
 
-  static error = (msg = '', body = {}) => {
+  static error = ({ msg = '', payload = {}, action = '' }) => {
     console.trace(`${chalk.red(ERROR)}: ${msg}`);
     return {
       type: ERROR,
       msg,
-      body,
+      action,
+      payload,
     };
   }
 

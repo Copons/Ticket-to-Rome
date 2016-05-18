@@ -22,7 +22,7 @@ export default function socket(server) {
 
     client.on(API.CREATE_PLAYER, players.create.bind({ io }));
 
-    client.on(API.UPDATE_PLAYER, players.update.bind({ io }));
+    client.on(API.CHANGE_PLAYER_NAME, players.changeName.bind({ io }));
 
 
     client.on(API.CREATE_ROOM, rooms.create.bind({ client, io }));
