@@ -1,0 +1,5 @@
+{
+  "id": "room.id",
+  "turn": 0,
+  "active": "player.id",
+}

@@ -1,0 +1,10 @@
+{
+  "game": "game.id",
+  "player": "player.id",
+  "cards": [
+    {
+      "id": "card.id",
+      "type": "card.color"
+    }
+  ]
+}

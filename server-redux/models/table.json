@@ -1,0 +1,29 @@
+{
+  "game": "game.id",
+  "deck": [
+    {
+      "id": "card.id",
+      "type": "card.color"
+    }
+  ],
+  "pile": [
+    {
+      "id": "card.id",
+      "type": "card.color"
+    }
+  ],
+  "discards": [
+    {
+      "id": "card.id",
+      "type": "card.color"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "destination.id",
+      "start": "station.name",
+      "end": "station.name",
+      "points": 0
+    }
+  ]
+}

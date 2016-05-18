@@ -1,0 +1,9 @@
+{
+  "id": "uuid",
+  "name": "name",
+  "status": "open|playing",
+  "owner": "player.id",
+  "players": [
+    "player.id"
+  ]
+}

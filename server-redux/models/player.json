@@ -1,0 +1,8 @@
+{
+  "id": "uuid",
+  "client": "socket.io.engine.id",
+  "name": "name",
+  "color": "color",
+  "points": 0,
+  "pieces": 0,
+}

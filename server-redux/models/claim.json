@@ -1,0 +1,7 @@
+{
+  "game": "game.id",
+  "player": "player.id",
+  "color": "player.color",
+  "start": "station.name",
+  "end": "station.name"
+}

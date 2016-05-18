@@ -1,0 +1,10 @@
+{
+  "type": "SUCCESS|ERROR",
+  "msg": "string",
+  "body": [
+    {
+      "action": "ACTION",
+      "payload": {}
+    }
+  ]
+}
