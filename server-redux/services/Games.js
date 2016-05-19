@@ -1,5 +1,6 @@
 import { Map, fromJS } from 'immutable';
 import store from '../store';
+import Hands from './Hands';
 import Players from './Players';
 import Response from './Response';
 import Rooms from './Rooms';
@@ -23,7 +24,12 @@ class Games {
   oneExpanded = id => {
     const game = this.one(id);
     const room = Rooms.one(id);
-    return game.set('players', room.get('players').map(p => Players.one(p)));
+    return game.set('players', room.get('players').map(p => {
+      const hand = Hands.one(p);
+      return Players.one(p)
+        .set('cards', hand.get('cards').size)
+        .set('destinations', hand.get('destinations').size);
+    }));
   };
 
   emitStart = (id, io) => {

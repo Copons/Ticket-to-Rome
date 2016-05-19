@@ -1,3 +1,4 @@
+import Hands from '../../services/Hands';
 import Players from '../../services/Players';
 import Rooms from '../../services/Rooms';
 
@@ -5,6 +6,7 @@ import Rooms from '../../services/Rooms';
 export async function create (player, callback) {
   try {
     const res = await Players.create(player);
+    await Hands.create(res.payload.get('id'));
     callback(res);
     Rooms.emit(this.io.sockets);
   } catch (e) {

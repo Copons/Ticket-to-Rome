@@ -1,3 +1,4 @@
+import Hands from '../../services/Hands';
 import Games from '../../services/Games';
 import Players from '../../services/Players';
 import Rooms from '../../services/Rooms';
@@ -8,6 +9,7 @@ export async function start (id, callback) {
     const res = await Games.start(id);
     await Rooms.changeStatus(id, 'playing');
     await Players.setColors(res.payload.room.get('players'));
+    await Hands.resetList(res.payload.room.get('players'));
     await Tables.create(id);
     await Tables.createDeck(id);
     await Tables.emit(id, this.io);

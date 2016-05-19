@@ -37,3 +37,8 @@ export const DRAW_FROM_PILE = 'DRAW_FROM_PILE';
 export const DISCARD_CARD = 'DISCARD_CARD';
 export const CREATE_DESTINATION_DECK = 'CREATE_DESTINATION_DECK';
 export const DRAW_DESTINATION = 'DRAW_DESTINATION';
+
+// Hands
+export const CREATE_HAND = 'CREATE_HAND';
+export const DELETE_HAND = 'DELETE_HAND';
+export const RESET_HAND = 'RESET_HAND';

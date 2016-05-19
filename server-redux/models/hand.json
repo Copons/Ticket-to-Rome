@@ -1,10 +1,17 @@
 {
-  "game": "game.id",
   "player": "player.id",
   "cards": [
     {
       "id": "card.id",
       "type": "card.color"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "destination.id",
+      "start": "station.name",
+      "end": "station.name",
+      "points": 0
     }
   ]
 }

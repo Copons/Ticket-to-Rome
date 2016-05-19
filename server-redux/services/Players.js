@@ -72,8 +72,8 @@ class Players {
     }
   });
 
-  setColors = playerIdList => new Promise(resolve => {
-    playerIdList.forEach((id, i) => {
+  setColors = idList => new Promise(resolve => {
+    idList.forEach((id, i) => {
       store.dispatch(this.setColorAction(this.oneEntry(id), DECK[i].type));
     });
     resolve(Response.success({
