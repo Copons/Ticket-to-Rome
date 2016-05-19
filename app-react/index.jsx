@@ -9,11 +9,11 @@ import './socket/listeners';
 
 store.subscribe(() => {
   //console.log(JSON.stringify(store.getState()));
-  if (store.getState().game.get('players')) {
+  /*if (store.getState().game.get('players')) {
     console.log('PLAYER', store.getState().player.toJS());
     console.log('GAME PLAYERS', store.getState().game.get('players').toJS());
     console.log('TABLE', store.getState().table.toJS());
-  }
+  }*/
 });
 
 IO.connect().then(() => {

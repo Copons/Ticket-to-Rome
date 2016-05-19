@@ -12,9 +12,9 @@ export const Player = ({
     </div>
     <div className="info">
       <PlayerInfo type="points" amount={player.get('points')} />
-      <PlayerInfo type="cards" amount={0/*player.get('cards').size*/} />
+      <PlayerInfo type="cards" amount={player.get('cards')} />
       <PlayerInfo type="pieces" amount={player.get('pieces')} />
-      <PlayerInfo type="destinations" amount={0/*player.get('destinations').size*/} />
+      <PlayerInfo type="destinations" amount={player.get('destinations')} />
     </div>
   </div>;
 

@@ -20,7 +20,6 @@ class IO {
 
   emit = (action, data) => new Promise((resolve, reject) => {
     this.socket.emit(action, data, response => {
-      console.log(response);
       if (!response) {
         resolve();
       } else if (response && response.type === SUCCESS) {
