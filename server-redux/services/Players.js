@@ -33,7 +33,6 @@ class Players {
     };
   };
 
-
   resetStats = () => ({
     colors: '',
     points: 0,

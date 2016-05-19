@@ -28,5 +28,5 @@ IO.on(KILL_GAME, response => {
 
 IO.on(SET_TABLE, response => {
   console.log(response);
-  store.dispatch(Table.setTableAction(response.body));
+  store.dispatch(Table.setTableAction(response.payload));
 });

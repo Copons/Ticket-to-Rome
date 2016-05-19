@@ -8,8 +8,9 @@ export async function start (id, callback) {
     const res = await Games.start(id);
     await Rooms.changeStatus(id, 'playing');
     await Players.setColors(res.payload.room.get('players'));
-    //await Tables.create(id);
-    //await Tables.emitOne(game.get('id'), this.io);
+    await Tables.create(id);
+    await Tables.createDeck(id);
+    await Tables.emit(id, this.io);
     await Games.emitStart(id, this.io);
     Rooms.emit(this.io.sockets);
   } catch (e) {

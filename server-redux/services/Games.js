@@ -20,13 +20,18 @@ class Games {
 
   oneEntry = id => this.all().findEntry(g => g.get('id') === id);
 
-  emitStart = (id, io) => {
+  oneExpanded = id => {
     const game = this.one(id);
+    const room = Rooms.one(id);
+    return game.set('players', room.get('players').map(p => Players.one(p)));
+  };
+
+  emitStart = (id, io) => {
     const room = Rooms.one(id);
     const res = Response.success({
       msg: `Game in room ${room.get('name')} started.`,
       action: START_GAME,
-      payload: game.set('players', room.get('players').map(p => Players.one(p))),
+      payload: this.oneExpanded(id),
     });
     io.in(id).emit(START_GAME, res);
     return res;
@@ -64,10 +69,10 @@ class Games {
     }
   });
 
-  kill = id => new Promise((resolve, reject) => {
+  kill = id => new Promise(resolve => {
     const entry = this.oneEntry(id);
     if (!entry) {
-      reject();
+      resolve();
     } else {
       store.dispatch(this.killAction(entry[0]));
       resolve(Response.success({

@@ -30,8 +30,8 @@ export async function leave ({ roomId, playerId }, callback) {
   try {
     const res = await Rooms.leave(roomId, playerId);
     callback(res);
-    //const gameId = await Games.kill(roomId);
-    //Games.emitKill(gameId, this.io);
+    await Games.kill(roomId);
+    await Games.emitKill(roomId, this.io);
     await Rooms.clientLeave(roomId, this.client);
     Rooms.emit(this.io.sockets);
   } catch (e) {

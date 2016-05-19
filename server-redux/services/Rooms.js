@@ -24,13 +24,14 @@ class Rooms {
 
   oneEntry = id => this.all().findEntry(r => r.get('id') === id);
 
+  oneExpanded = room => ({
+    ...room,
+    owner: Players.oneSimple(room.owner),
+    players: room.players.map(p => Players.oneSimple(p)),
+  });
+
   emit = clients => {
-    const rooms = this.all().toJS().map(r => {
-      const room = r;
-      room.owner = Players.oneSimple(r.owner);
-      room.players = r.players.map(p => Players.oneSimple(p));
-      return room;
-    });
+    const rooms = this.all().toJS().map(r => this.oneExpanded(r));
     const res = Response.success({
       msg: SET_ROOMS,
       action: SET_ROOMS,
@@ -148,6 +149,20 @@ class Rooms {
       msg: `Client ${client.id} left socket room ${roomId}`,
       action: LEAVE_ROOM,
     }));
+  });
+
+  delete = id => new Promise((resolve, reject) => {
+    const entry = this.oneEntry(id);
+    if (!entry) {
+      reject();
+    } else {
+      store.dispatch(this.deleteAction(entry[0]));
+      resolve(Response.success({
+        msg: `Room ${entry[1].get('id')} deleted.`,
+        action: DELETE_ROOM,
+        payload: entry[1],
+      }));
+    }
   });
 
 
