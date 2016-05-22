@@ -55,7 +55,7 @@ class Hands {
     } else {
       store.dispatch(this.deleteAction(entry[0]));
       resolve(Response.success({
-        msg: `Hand ${entry[1].get('id')} deleted.`,
+        msg: `Hand ${entry[1].get('player')} deleted.`,
         action: DELETE_HAND,
         payload: entry[1],
       }));

@@ -101,10 +101,12 @@ class Players {
     if (!player) {
       reject(Response.error({ msg: `Client ${clientId} does not exist.` }));
     } else {
-      store.dispatch(this.deleteAction(player.get('id')));
+      const playerId = player.get('id');
+      store.dispatch(this.deleteAction(playerId));
       resolve(Response.success({
         msg: `Client ${clientId} deleted.`,
         action: DELETE_PLAYER,
+        payload: { playerId },
       }));
     }
   });

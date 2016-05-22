@@ -35,8 +35,9 @@ export async function reset (id, callback) {
 
 export async function disconnect () {
   //try {
-  const clientId = await Rooms.leaveAll(this.client);
-  await Players.delete(clientId);
+  const res = await Rooms.leaveAll(this.client);
+  await Hands.delete(res.payload.player.get('id'));
+  await Players.delete(res.payload.player.get('client'));
   Rooms.emit(this.io.sockets);
   //} catch (e) {
   //  console.error(e);

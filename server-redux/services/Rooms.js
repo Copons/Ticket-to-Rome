@@ -117,6 +117,7 @@ class Rooms {
       resolve(Response.success({
         msg: `Client ${client.id} left all rooms.`,
         action: LEAVE_ROOM,
+        payload: { player },
       }));
     }
   });
