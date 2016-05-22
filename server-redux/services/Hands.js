@@ -2,10 +2,12 @@ import { Map, fromJS } from 'immutable';
 import store from '../store';
 import Players from './Players';
 import Response from './Response';
+import Rooms from './Rooms';
 import {
   CREATE_HAND,
   DELETE_HAND,
   RESET_HAND,
+  ALL_HANDS_IN_GAME,
 } from '../actions';
 
 
@@ -24,6 +26,21 @@ class Hands {
     cards: [],
     destinations: [],
   });
+
+  emitAllInGame = (gameId, idList, io) => {
+    const room = Rooms.one(gameId);
+    const hands = [];
+    idList.forEach(id => {
+      hands.push(this.one(id));
+    });
+    const res = Response.success({
+      msg: `All hands in game ${room.get('name')} sent.`,
+      action: ALL_HANDS_IN_GAME,
+      payload: hands,
+    });
+    io.in(gameId).emit(ALL_HANDS_IN_GAME, res);
+    return res;
+  }
 
 
 
@@ -76,7 +93,7 @@ class Hands {
     }
   });
 
-  resetList = idList => new Promise(resolve => {
+  resetAllInGame = idList => new Promise(resolve => {
     idList.forEach(id => {
       store.dispatch(this.resetHandAction(this.oneEntry(id)));
     });

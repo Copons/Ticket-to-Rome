@@ -42,3 +42,4 @@ export const DRAW_DESTINATION = 'DRAW_DESTINATION';
 export const CREATE_HAND = 'CREATE_HAND';
 export const DELETE_HAND = 'DELETE_HAND';
 export const RESET_HAND = 'RESET_HAND';
+export const ALL_HANDS_IN_GAME = 'ALL_HANDS_IN_GAME';

@@ -29,3 +29,7 @@ export const KILL_GAME = 'KILL_GAME';
 
 // Table
 export const SET_TABLE = 'SET_TABLE';
+
+// Hand
+export const SET_HAND = 'SET_HAND';
+export const ALL_HANDS_IN_GAME = 'ALL_HANDS_IN_GAME';

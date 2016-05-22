@@ -1,3 +1,4 @@
+import store from '../store';
 import IO from '../socket/IO';
 import Messages from './Messages';
 import {
@@ -8,6 +9,12 @@ import {
 
 
 class Player {
+
+  // Utilities
+
+  getId = () => store.getState().player.get('id');
+
+
 
 
   // Actions

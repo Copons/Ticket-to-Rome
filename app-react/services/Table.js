@@ -5,8 +5,6 @@ import {
 
 class Table {
 
-
-
   // Actions
 
   setTableAction = table => ({
