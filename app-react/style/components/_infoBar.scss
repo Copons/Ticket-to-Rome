@@ -13,7 +13,7 @@
   font-family: 'Hammersmith One', Arial, sans-serif;
   line-height: $info-bar-height / 2;
 
-  @extend %ttr-shadow-low;
+  @extend %ttr-shadow-high;
 
   & > div {
     flex-grow: 0;

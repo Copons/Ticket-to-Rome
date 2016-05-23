@@ -1,20 +1,25 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Cards from '../../services/Cards';
 
 
 export const Deck = ({
   deck,
+  handleClick,
 }) =>
-  <div className="deck">
-    {deck && deck.map((c, i) =>
-      <span key={i} className={c.get('type')}>
-        {c.get('id')}
-      </span>
-    )}
+  <div
+    className="deck"
+    onClick={e => {
+      e.preventDefault();
+      handleClick();
+    }}
+  >
+    <span>{deck}</span>
   </div>;
 
 Deck.propTypes = {
-  deck: PropTypes.object,
+  deck: PropTypes.number,
+  handleClick: PropTypes.func.isRequired,
 };
 
 
@@ -24,4 +29,7 @@ const mapStateToProps = state => ({
   deck: state.table.get('deck'),
 });
 
-export default connect(mapStateToProps)(Deck);
+export default connect(
+  mapStateToProps,
+  { handleClick: Cards.drawFromDeckDispatch }
+)(Deck);

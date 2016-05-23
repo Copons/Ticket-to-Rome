@@ -2,7 +2,6 @@ import { Map, fromJS } from 'immutable';
 import store from '../store';
 import Players from './Players';
 import Response from './Response';
-import Rooms from './Rooms';
 import {
   CREATE_HAND,
   DELETE_HAND,
@@ -28,13 +27,12 @@ class Hands {
   });
 
   emitAllInGame = (gameId, idList, io) => {
-    const room = Rooms.one(gameId);
     const hands = [];
     idList.forEach(id => {
       hands.push(this.one(id));
     });
     const res = Response.success({
-      msg: `All hands in game ${room.get('name')} sent.`,
+      msg: ALL_HANDS_IN_GAME,
       action: ALL_HANDS_IN_GAME,
       payload: hands,
     });

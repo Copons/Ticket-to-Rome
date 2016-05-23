@@ -5,6 +5,7 @@ import Players from './Players';
 import Response from './Response';
 import Rooms from './Rooms';
 import {
+  SET_GAME,
   START_GAME,
   KILL_GAME,
 } from '../actions';
@@ -30,6 +31,16 @@ class Games {
         .set('cards', hand.get('cards').size)
         .set('destinations', hand.get('destinations').size);
     }));
+  };
+
+  emit = (id, io) => {
+    const res = Response.success({
+      msg: SET_GAME,
+      action: SET_GAME,
+      payload: this.oneExpanded(id),
+    });
+    io.in(id).emit(SET_GAME, res);
+    return res;
   };
 
   emitStart = (id, io) => {

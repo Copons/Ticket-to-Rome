@@ -2,6 +2,7 @@ import store from '../store';
 import IO from './IO';
 import {
   SET_ROOMS,
+  SET_GAME,
   START_GAME,
   KILL_GAME,
   SET_TABLE,
@@ -28,8 +29,12 @@ IO.on(KILL_GAME, response => {
   store.dispatch(Messages.addThunk(response));
 });
 
+IO.on(SET_GAME, response => {
+  store.dispatch(Game.setGameAction(response.payload));
+});
+
 IO.on(SET_TABLE, response => {
-  //console.log(response.payload);
+  console.log(response.payload);
   store.dispatch(Table.setTableAction(response.payload));
 });
 

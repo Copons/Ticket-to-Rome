@@ -1,5 +1,5 @@
-import store from '../store';
 import {
+  SET_GAME,
   START_GAME,
   KILL_GAME,
 } from '../actions';
@@ -7,24 +7,12 @@ import {
 
 class Game {
 
-  // Services
-
-  start = game => {
-    const newGame = game;
-    newGame.players = newGame.players.map(p => ({
-      ...p,
-      points: 0,
-      cards: 0,
-      pieces: 0,
-      destinations: 0,
-    }));
-    store.dispatch(this.startGameAction(newGame));
-  }
-
-
-
-
   // Actions
+
+  setGameAction = game => ({
+    type: SET_GAME,
+    game,
+  });
 
   startGameAction = game => ({
     type: START_GAME,
@@ -34,11 +22,6 @@ class Game {
   killGameAction = () => ({
     type: KILL_GAME,
   });
-
-
-
-
-  // Helpers
 
 }
 

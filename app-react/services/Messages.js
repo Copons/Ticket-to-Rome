@@ -9,7 +9,6 @@ const MAX_MESSAGES = 50;
 
 class Messages {
 
-
   // Utilities
 
   all = () => store.getState().messages;

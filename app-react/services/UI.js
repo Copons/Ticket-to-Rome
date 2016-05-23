@@ -7,11 +7,6 @@ import {
 
 class UI {
 
-  // Services
-
-
-
-
   // Actions
 
   openRoutePopupAction = routeInfo => ({

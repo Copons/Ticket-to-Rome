@@ -24,11 +24,13 @@ export const JOIN_ROOM = 'JOIN_ROOM';
 export const LEAVE_ROOM = 'LEAVE_ROOM';
 
 // Game
+export const SET_GAME = 'SET_GAME';
 export const START_GAME = 'START_GAME';
 export const KILL_GAME = 'KILL_GAME';
 
 // Table
 export const SET_TABLE = 'SET_TABLE';
+export const DRAW_FROM_DECK = 'DRAW_FROM_DECK';
 
 // Hand
 export const SET_HAND = 'SET_HAND';

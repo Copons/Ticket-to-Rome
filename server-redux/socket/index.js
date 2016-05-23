@@ -5,6 +5,7 @@ import store from '../store';
 import * as games from './async/games';
 import * as players from './async/players';
 import * as rooms from './async/rooms';
+import * as tables from './async/tables';
 
 
 
@@ -33,6 +34,9 @@ export default function socket(server) {
 
 
     client.on(API.START_GAME, games.start.bind({ io }));
+
+
+    client.on(API.DRAW_FROM_DECK, tables.drawFromDeck.bind({ io }));
 
 
     client.on(API.DISCONNECT, players.disconnect.bind({ client, io }));

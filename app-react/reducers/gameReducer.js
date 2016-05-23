@@ -1,5 +1,6 @@
 import { Map, fromJS } from 'immutable';
 import {
+  SET_GAME,
   START_GAME,
   KILL_GAME,
 } from '../actions';
@@ -12,6 +13,8 @@ export default function gameReducer(state = defaultState, action) {
       return new Map(fromJS(action.game));
     case KILL_GAME:
       return new Map();
+    case SET_GAME:
+      return state.merge(fromJS(action.game));
     default:
       return state;
   }

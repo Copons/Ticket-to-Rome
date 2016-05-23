@@ -1,3 +1,4 @@
+import Cards from '../../services/Cards';
 import Hands from '../../services/Hands';
 import Games from '../../services/Games';
 import Players from '../../services/Players';
@@ -11,7 +12,7 @@ export async function start (id, callback) {
     await Players.setColors(res.payload.room.get('players'));
     await Hands.resetAllInGame(res.payload.room.get('players'));
     await Tables.create(id);
-    await Tables.createDeck(id);
+    await Cards.createDeck(id);
     await Tables.emit(id, this.io);
     await Games.emitStart(id, this.io);
     await Hands.emitAllInGame(id, res.payload.room.get('players'), this.io);
