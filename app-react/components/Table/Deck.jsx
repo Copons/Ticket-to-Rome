@@ -14,7 +14,7 @@ export const Deck = ({
       handleClick();
     }}
   >
-    <span>{deck}</span>
+    Deck <span>{deck}</span>
   </div>;
 
 Deck.propTypes = {

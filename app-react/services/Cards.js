@@ -1,4 +1,5 @@
 import IO from '../socket/IO';
+import Hand from './Hand';
 import Messages from './Messages';
 import {
   DRAW_FROM_DECK,
@@ -16,6 +17,7 @@ class Cards {
       gameId,
     })
       .then(response => {
+        dispatch(Hand.addCardAction(response.payload));
         dispatch(Messages.addThunk(response));
       });
   };

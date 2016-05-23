@@ -35,3 +35,4 @@ export const DRAW_FROM_DECK = 'DRAW_FROM_DECK';
 // Hand
 export const SET_HAND = 'SET_HAND';
 export const ALL_HANDS_IN_GAME = 'ALL_HANDS_IN_GAME';
+export const ADD_CARD = 'ADD_CARD';

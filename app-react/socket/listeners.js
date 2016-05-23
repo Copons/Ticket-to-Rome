@@ -34,12 +34,10 @@ IO.on(SET_GAME, response => {
 });
 
 IO.on(SET_TABLE, response => {
-  console.log(response.payload);
   store.dispatch(Table.setTableAction(response.payload));
 });
 
 IO.on(ALL_HANDS_IN_GAME, response => {
   const hand = Hand.findPlayerHand(response.payload);
-  //console.log(hand);
   store.dispatch(Hand.setHandAction(hand));
 });
