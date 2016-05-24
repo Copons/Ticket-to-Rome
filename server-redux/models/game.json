@@ -1,5 +1,6 @@
 {
   "id": "room.id",
   "turn": 0,
+  "action": 0,
   "active": "player.id",
 }

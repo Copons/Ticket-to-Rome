@@ -1,12 +1,17 @@
 import { Map, fromJS } from 'immutable';
 import store from '../store';
+import { RULES } from '../config/rules';
+import Cards from './Cards';
 import Players from './Players';
 import Response from './Response';
+import Tables from './Tables';
 import {
   CREATE_HAND,
   DELETE_HAND,
   RESET_HAND,
   ALL_HANDS_IN_GAME,
+  DRAW_FROM_DECK,
+  MULTIPLE_DRAW_FROM_DECK,
 } from '../actions';
 
 
@@ -101,6 +106,58 @@ class Hands {
     }));
   });
 
+  drawFromDeck = (playerId, gameId) => new Promise((resolve, reject) => {
+    const hand = this.oneEntry(playerId);
+    const table = Tables.oneEntry(gameId);
+    if (!table) {
+      reject(Response.error({ msg: 'Table does not exist.' }));
+    } else if (!hand) {
+      reject(Response.error({ msg: 'Player does not exist.' }));
+    } else {
+      const player = Players.one(playerId);
+      const deck = table[1].get('deck');
+      const cardIndex = Math.floor(Math.random() * deck.size);
+      const card = deck.get(cardIndex);
+      store.dispatch(this.drawFromDeckThunk(table[0], cardIndex, hand, card));
+      resolve(Response.success({
+        msg: `Player ${player.get('name')} drew a card from the deck.`,
+        action: DRAW_FROM_DECK,
+        payload: card,
+      }));
+    }
+  });
+
+  dealFirstHand = (playerIdList, gameId) => new Promise((resolve, reject) => {
+    const table = Tables.oneEntry(gameId);
+    if (!table) {
+      reject(Response.error({ msg: 'Table does not exist.' }));
+    } else {
+      const deck = table[1].get('deck').toJS();
+      const hands = [];
+      playerIdList.forEach(playerId => {
+        const cards = [];
+        const hand = this.oneEntry(playerId);
+        for (let i = 0; i < RULES.player.startingHand; i++) {
+          const cardIndex = Math.floor(Math.random() * deck.length);
+          const card = deck.splice(cardIndex, 1)[0];
+          cards.push({
+            ...card,
+            cardIndex,
+          });
+        }
+        hands.push({
+          cards,
+          handIndex: hand[0],
+        });
+      });
+      store.dispatch(this.multipleDrawFromDeckThunk(table, hands));
+      resolve(Response.success({
+        msg: 'Dealt first hand to all players.',
+        action: MULTIPLE_DRAW_FROM_DECK,
+      }));
+    }
+  });
+
 
 
 
@@ -120,6 +177,46 @@ class Hands {
     type: RESET_HAND,
     entry,
   });
+
+  drawFromDeckAction = (entry, card) => ({
+    type: DRAW_FROM_DECK,
+    entry,
+    card,
+  });
+
+  multipleDrawFromDeckAction = hands => ({
+    type: MULTIPLE_DRAW_FROM_DECK,
+    hands,
+  });
+
+
+
+
+  // Helpers
+
+  drawFromDeckThunk = (tableIndex, cardIndex, hand, card) => dispatch => {
+    dispatch(Cards.removeFromDeckAction(tableIndex, cardIndex));
+    dispatch(this.drawFromDeckAction(hand, card));
+  };
+
+  multipleDrawFromDeckThunk = (table, hands) => dispatch => {
+    dispatch(Cards.multipleRemoveFromDeckAction(table[0],
+      hands.map(h => h.cards).reduce((a, b) => a.concat(b))
+    ));
+    dispatch(this.multipleDrawFromDeckAction(hands));
+  };
+
+  multipleDrawFromDeckReducer = (state, action) =>
+    state.map((h, i) => {
+      const hand = action.hands.find(ah => ah.handIndex === i);
+      if (hand) {
+        return h.set('cards', h.get('cards').push(
+          ...hand.cards.map(c => fromJS({ id: c.id, type: c.type }))
+        ));
+      } else {
+        return h;
+      }
+    });
 
 }
 

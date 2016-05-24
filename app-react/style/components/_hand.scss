@@ -21,7 +21,7 @@
     line-height: 20px;
     text-align: center;
 
-    @extend %ttr-shadow-low;
+    //@extend %ttr-shadow-low;
 
     &.red { background-color: $red; }
     &.orange {

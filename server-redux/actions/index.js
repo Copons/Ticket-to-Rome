@@ -31,8 +31,12 @@ export const KILL_GAME = 'KILL_GAME';
 export const SET_TABLE = 'SET_TABLE';
 export const CREATE_TABLE = 'CREATE_TABLE';
 export const DELETE_TABLE = 'DELETE_TABLE';
+
+// Cards
 export const CREATE_DECK = 'CREATE_DECK';
-export const DRAW_FROM_DECK = 'DRAW_FROM_DECK';
+export const REMOVE_FROM_DECK = 'REMOVE_FROM_DECK';
+export const MULTIPLE_REMOVE_FROM_DECK = 'MULTIPLE_REMOVE_FROM_DECK';
+export const ADD_TO_PILE = 'ADD_TO_PILE';
 export const DRAW_FROM_PILE = 'DRAW_FROM_PILE';
 export const DISCARD_CARD = 'DISCARD_CARD';
 export const CREATE_DESTINATION_DECK = 'CREATE_DESTINATION_DECK';
@@ -44,3 +48,5 @@ export const CREATE_HAND = 'CREATE_HAND';
 export const DELETE_HAND = 'DELETE_HAND';
 export const RESET_HAND = 'RESET_HAND';
 export const ALL_HANDS_IN_GAME = 'ALL_HANDS_IN_GAME';
+export const DRAW_FROM_DECK = 'DRAW_FROM_DECK';
+export const MULTIPLE_DRAW_FROM_DECK = 'MULTIPLE_DRAW_FROM_DECK';

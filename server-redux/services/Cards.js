@@ -1,14 +1,14 @@
-import { List } from 'immutable';
+import { List, fromJS } from 'immutable';
 import store from '../store';
 import { DECK } from '../config/deck';
 import { RULES } from '../config/rules';
-import Hands from './Hands';
-import Players from './Players';
 import Response from './Response';
 import Tables from './Tables';
 import {
   CREATE_DECK,
-  DRAW_FROM_DECK,
+  REMOVE_FROM_DECK,
+  MULTIPLE_REMOVE_FROM_DECK,
+  ADD_TO_PILE,
 } from '../actions';
 
 class Cards {
@@ -40,23 +40,25 @@ class Cards {
     }
   });
 
-  drawFromDeck = (playerId, gameId) => new Promise((resolve, reject) => {
-    const hand = Hands.oneEntry(playerId);
-    const table = Tables.oneEntry(gameId);
+  fillPile = id => new Promise((resolve, reject) => {
+    const table = Tables.oneEntry(id);
     if (!table) {
       reject(Response.error({ msg: 'Table does not exist.' }));
-    } else if (!hand) {
-      reject(Response.error({ msg: 'Player does not exist.' }));
     } else {
-      const player = Players.one(playerId);
-      const deck = table[1].get('deck');
-      const cardIndex = Math.floor(Math.random() * deck.size);
-      const card = deck.get(cardIndex);
-      store.dispatch(this.drawFromDeckAction(table, cardIndex, hand, card));
+      const deck = table[1].get('deck').toJS();
+      const cards = [];
+      for (let i = 0; i < RULES.pile.max; i++) {
+        const cardIndex = Math.floor(Math.random() * deck.length);
+        const card = deck.splice(cardIndex, 1)[0];
+        cards.push({
+          ...card,
+          cardIndex,
+        });
+      }
+      store.dispatch(this.addToPileThunk(table, cards));
       resolve(Response.success({
-        msg: `Player ${player.get('name')} drew a card from the deck.`,
-        action: DRAW_FROM_DECK,
-        payload: card,
+        msg: `Pile for game ${id} created.`,
+        action: ADD_TO_PILE,
       }));
     }
   });
@@ -72,14 +74,48 @@ class Cards {
     deck,
   });
 
-  drawFromDeckAction = (table, cardIndex, hand, card) => ({
-    type: DRAW_FROM_DECK,
-    table,
+  removeFromDeckAction = (tableIndex, cardIndex) => ({
+    type: REMOVE_FROM_DECK,
+    tableIndex,
     cardIndex,
-    hand,
-    card,
   });
 
+  multipleRemoveFromDeckAction = (index, cards) => ({
+    type: MULTIPLE_REMOVE_FROM_DECK,
+    index,
+    cards,
+  });
+
+  addToPileAction = (entry, cards) => ({
+    type: ADD_TO_PILE,
+    entry,
+    cards,
+  });
+
+
+
+
+  // Helpers
+
+  addToPileThunk = (table, cards) => dispatch => {
+    dispatch(this.multipleRemoveFromDeckAction(table[0], cards));
+    dispatch(this.addToPileAction(table, cards));
+  };
+
+  multipleRemoveFromDeckReducer = (state, action) =>
+    state.setIn(
+      [action.index, 'deck'],
+      state.get(action.index).get('deck').filter((x, i) =>
+        !action.cards.find(c => c.cardIndex === i)
+    ));
+
+  addToPileReducer = (state, action) =>
+    state.setIn(
+      [action.entry[0], 'pile'],
+      action.entry[1].get('pile').push(
+        ...action.cards.map(c => fromJS({ id: c.id, type: c.type }))
+      )
+    );
 }
 
 export default new Cards();

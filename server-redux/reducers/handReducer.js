@@ -4,6 +4,7 @@ import {
   DELETE_HAND,
   RESET_HAND,
   DRAW_FROM_DECK,
+  MULTIPLE_DRAW_FROM_DECK,
 } from '../actions';
 import Hands from '../services/Hands';
 
@@ -19,7 +20,12 @@ export default function handReducer(state = defaultState, action) {
     case RESET_HAND:
       return state.set(action.entry[0], action.entry[1].merge(fromJS(Hands.resetHand())));
     case DRAW_FROM_DECK:
-      return state.setIn([action.hand[0], 'cards'], action.hand[1].get('cards').push(action.card));
+      return state.setIn(
+        [action.entry[0], 'cards'],
+        action.entry[1].get('cards').push(action.card)
+      );
+    case MULTIPLE_DRAW_FROM_DECK:
+      return Hands.multipleDrawFromDeckReducer(state, action);
     default:
       return state;
   }

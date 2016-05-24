@@ -34,4 +34,41 @@
       font-size: 14px;
     }
   }
+
+  .pile {
+    padding: $ui-padding;
+    border-bottom: $ui-border solid $ui-dark;
+    color: $ui-dark;
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    font-size: 20px;
+    text-align: center;
+
+    .color {
+      display: inline-block;
+      width: 35px;
+      height: 45px;
+      margin: 4px;
+      line-height: 45px;
+      cursor: pointer;
+
+      @include ttr-transition('box-shadow background-color');
+
+      &:hover {
+        @extend %ttr-shadow-low;
+      }
+      &:active {
+        background-color: $ui-dark;
+      }
+
+      &.red { background-color: $red; }
+      &.orange { background-color: $orange; }
+      &.yellow { background-color: $yellow; }
+      &.green { background-color: $green; }
+      &.blue { background-color: $blue; }
+      &.purple { background-color: $purple; }
+      &.black { background-color: $black; }
+      &.white { background-color: $white; }
+      &.wild { background: $wild-card; }
+    }
+  }
 }
