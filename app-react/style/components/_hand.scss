@@ -15,20 +15,31 @@
     width: 35px;
     height: 20px;
     margin: 4px;
-    color: $ui-white;
+    @include text-with-shadow($ui-white, $ui-black);
     font-family: 'Hammersmith One', Arial, sans-serif;
     font-size: 18px;
     line-height: 20px;
     text-align: center;
+
     @extend %ttr-shadow-low;
+
     &.red { background-color: $red; }
-    &.orange { background-color: $orange; color: $ui-black; }
-    &.yellow { background-color: $yellow; color: $ui-black; }
+    &.orange {
+      background-color: $orange;
+      @include text-with-shadow($ui-black, $ui-light);
+    }
+    &.yellow {
+      background-color: $yellow;
+      @include text-with-shadow($ui-black, $ui-light);
+    }
     &.green { background-color: $green; }
     &.blue { background-color: $blue; }
     &.purple { background-color: $purple; }
     &.black { background-color: $black; }
-    &.white { background-color: $white; color: $ui-black; }
-    &.wild { background: $wild-card; text-shadow: 1px 1px $ui-black; }
+    &.white {
+      background-color: $white;
+      @include text-with-shadow($ui-black, $ui-light);
+    }
+    &.wild { background: $wild-card; }
   }
 }

@@ -11,7 +11,7 @@ export default function handReducer(state = defaultState, action) {
     case SET_HAND:
       return new Map(fromJS(action.hand));
     case ADD_CARD:
-      return state.setIn(['cards'], state.get('cards').push(action.card));
+      return state.setIn(['cards'], state.get('cards').push(fromJS(action.card)));
     default:
       return state;
   }

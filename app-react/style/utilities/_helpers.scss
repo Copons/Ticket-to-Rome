@@ -1,0 +1,4 @@
+@mixin text-with-shadow($text-color, $shadow-color) {
+  color: $text-color;
+  text-shadow: 1px 1px $shadow-color;
+}

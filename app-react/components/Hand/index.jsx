@@ -1,25 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Color } from './Color';
-
-
-/*class Hand extends Component {
-
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className="hand">
-        {this.state.colors.forEach((count, color) => {
-          <Color color={color} count={count} />;
-        })}
-      </div>
-    );
-  }
-
-}*/
 
 
 export const Hand = ({
@@ -28,10 +9,11 @@ export const Hand = ({
   const colors = new Map();
   if (hand.has('cards')) {
     hand.get('cards').forEach(card => {
-      if (colors.has(card.type)) {
-        colors.set(card.type, colors.get(card.type) + 1);
+      const type = card.get('type');
+      if (colors.has(type)) {
+        colors.set(type, colors.get(type) + 1);
       } else {
-        colors.set(card.type, 1);
+        colors.set(type, 1);
       }
     });
   }

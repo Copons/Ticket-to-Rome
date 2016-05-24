@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import store from '../store';
 import { DECK } from '../config/deck';
+import { RULES } from '../config/rules';
 import Hands from './Hands';
 import Players from './Players';
 import Response from './Response';

@@ -1,3 +1,4 @@
+import { RULES } from '../../config/rules';
 import Cards from '../../services/Cards';
 import Hands from '../../services/Hands';
 import Games from '../../services/Games';
@@ -13,6 +14,11 @@ export async function start (id, callback) {
     await Hands.resetAllInGame(res.payload.room.get('players'));
     await Tables.create(id);
     await Cards.createDeck(id);
+    res.payload.room.get('players').forEach(p => {
+      for (let i = 0; i < RULES.player.startingHand; i++) {
+        Cards.drawFromDeck(p, id);
+      }
+    });
     await Tables.emit(id, this.io);
     await Games.emitStart(id, this.io);
     await Hands.emitAllInGame(id, res.payload.room.get('players'), this.io);
