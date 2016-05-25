@@ -5,6 +5,7 @@ import {
   RESET_HAND,
   DRAW_FROM_DECK,
   MULTIPLE_DRAW_FROM_DECK,
+  DRAW_FROM_PILE,
 } from '../actions';
 import Hands from '../services/Hands';
 
@@ -26,6 +27,11 @@ export default function handReducer(state = defaultState, action) {
       );
     case MULTIPLE_DRAW_FROM_DECK:
       return Hands.multipleDrawFromDeckReducer(state, action);
+    case DRAW_FROM_PILE:
+      return state.setIn(
+        [action.entry[0], 'cards'],
+        action.entry[1].get('cards').push(action.card)
+      );
     default:
       return state;
   }

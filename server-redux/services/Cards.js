@@ -9,6 +9,7 @@ import {
   REMOVE_FROM_DECK,
   MULTIPLE_REMOVE_FROM_DECK,
   ADD_TO_PILE,
+  REMOVE_FROM_PILE,
 } from '../actions';
 
 class Cards {
@@ -46,8 +47,9 @@ class Cards {
       reject(Response.error({ msg: 'Table does not exist.' }));
     } else {
       const deck = table[1].get('deck').toJS();
+      const pile = table[1].get('pile');
       const cards = [];
-      for (let i = 0; i < RULES.pile.max; i++) {
+      for (let i = 0; i < RULES.pile.max - pile.size; i++) {
         const cardIndex = Math.floor(Math.random() * deck.length);
         const card = deck.splice(cardIndex, 1)[0];
         cards.push({
@@ -90,6 +92,12 @@ class Cards {
     type: ADD_TO_PILE,
     entry,
     cards,
+  });
+
+  removeFromPileAction = (tableIndex, cardIndex) => ({
+    type: REMOVE_FROM_PILE,
+    tableIndex,
+    cardIndex,
   });
 
 

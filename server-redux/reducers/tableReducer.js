@@ -6,6 +6,7 @@ import {
   REMOVE_FROM_DECK,
   MULTIPLE_REMOVE_FROM_DECK,
   ADD_TO_PILE,
+  REMOVE_FROM_PILE,
 } from '../actions';
 import Cards from '../services/Cards';
 
@@ -27,6 +28,8 @@ export default function tableReducer(state = defaultState, action) {
       return Cards.multipleRemoveFromDeckReducer(state, action);
     case ADD_TO_PILE:
       return Cards.addToPileReducer(state, action);
+    case REMOVE_FROM_PILE:
+      return state.deleteIn([action.tableIndex, 'pile', action.cardIndex]);
     case DELETE_TABLE:
       return state.delete(action.index);
     default:

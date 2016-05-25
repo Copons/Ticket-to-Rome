@@ -11,7 +11,7 @@ export default function messagesReducer(state = defaultState, action) {
     case ADD_MESSAGE:
       return state.unshift(fromJS(action.message));
     case REMOVE_MESSAGE:
-      return state.shift();
+      return state.pop();
     default:
       return state;
   }

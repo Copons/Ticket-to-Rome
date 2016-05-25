@@ -38,6 +38,8 @@ export default function socket(server) {
 
     client.on(API.DRAW_FROM_DECK, tables.drawFromDeck.bind({ io }));
 
+    client.on(API.DRAW_FROM_PILE, tables.drawFromPile.bind({ io }));
+
 
     client.on(API.DISCONNECT, players.disconnect.bind({ client, io }));
   });

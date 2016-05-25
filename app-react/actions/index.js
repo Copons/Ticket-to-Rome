@@ -31,6 +31,7 @@ export const KILL_GAME = 'KILL_GAME';
 // Table
 export const SET_TABLE = 'SET_TABLE';
 export const DRAW_FROM_DECK = 'DRAW_FROM_DECK';
+export const DRAW_FROM_PILE = 'DRAW_FROM_PILE';
 
 // Hand
 export const SET_HAND = 'SET_HAND';
