@@ -1,11 +1,22 @@
+import store from '../store';
 import {
   SET_GAME,
   START_GAME,
   KILL_GAME,
+  SET_TURN_ACTIONS,
 } from '../actions';
 
 
 class Game {
+
+  // Services
+
+  setTurnActions = actions => {
+    store.dispatch(this.setTurnActionsAction(store.getState().game.get('actions') + actions));
+  }
+
+
+
 
   // Actions
 
@@ -21,6 +32,11 @@ class Game {
 
   killGameAction = () => ({
     type: KILL_GAME,
+  });
+
+  setTurnActionsAction = actions => ({
+    type: SET_TURN_ACTIONS,
+    actions,
   });
 
 }

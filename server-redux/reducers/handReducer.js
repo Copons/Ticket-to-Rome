@@ -6,6 +6,7 @@ import {
   DRAW_FROM_DECK,
   MULTIPLE_DRAW_FROM_DECK,
   DRAW_FROM_PILE,
+  DRAW_DESTINATION,
 } from '../actions';
 import Hands from '../services/Hands';
 
@@ -31,6 +32,11 @@ export default function handReducer(state = defaultState, action) {
       return state.setIn(
         [action.entry[0], 'cards'],
         action.entry[1].get('cards').push(action.card)
+      );
+    case DRAW_DESTINATION:
+      return state.setIn(
+        [action.entry[0], 'destinations'],
+        action.entry[1].get('destinations').push(action.destination)
       );
     default:
       return state;

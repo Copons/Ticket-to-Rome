@@ -27,3 +27,15 @@ export async function drawFromPile ({ playerId, gameId, card }, callback) {
     callback(e);
   }
 }
+
+export async function drawDestination ({ playerId, gameId }, callback) {
+  try {
+    const res = await Hands.drawDestination(playerId, gameId);
+    callback(res);
+    Games.emit(gameId, this.io);
+    Tables.emit(gameId, this.io);
+  } catch (e) {
+    console.error(e);
+    callback(e);
+  }
+}

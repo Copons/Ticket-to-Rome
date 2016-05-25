@@ -13,6 +13,7 @@ import {
   DRAW_FROM_DECK,
   MULTIPLE_DRAW_FROM_DECK,
   DRAW_FROM_PILE,
+  DRAW_DESTINATION,
 } from '../actions';
 
 
@@ -148,6 +149,27 @@ class Hands {
     }
   });
 
+  drawDestination = (playerId, gameId) => new Promise((resolve, reject) => {
+    const hand = this.oneEntry(playerId);
+    const table = Tables.oneEntry(gameId);
+    if (!table) {
+      reject(Response.error({ msg: 'Table does not exist.' }));
+    } else if (!hand) {
+      reject(Response.error({ msg: 'Player does not exist.' }));
+    } else {
+      const player = Players.one(playerId);
+      const destinations = table[1].get('destinations');
+      const destinationIndex = Math.floor(Math.random() * destinations.size);
+      const destination = destinations.get(destinationIndex);
+      store.dispatch(this.drawDestinationThunk(table[0], destinationIndex, hand, destination));
+      resolve(Response.success({
+        msg: `Player ${player.get('name')} drew a new destination.`,
+        action: DRAW_DESTINATION,
+        payload: destination,
+      }));
+    }
+  });
+
   dealFirstHand = (playerIdList, gameId) => new Promise((resolve, reject) => {
     const table = Tables.oneEntry(gameId);
     if (!table) {
@@ -216,6 +238,12 @@ class Hands {
     card,
   });
 
+  drawDestinationAction = (entry, destination) => ({
+    type: DRAW_DESTINATION,
+    entry,
+    destination,
+  });
+
 
 
 
@@ -248,6 +276,11 @@ class Hands {
   drawFromPileThunk = (tableIndex, cardIndex, hand, card) => dispatch => {
     dispatch(Cards.removeFromPileAction(tableIndex, cardIndex));
     dispatch(this.drawFromPileAction(hand, fromJS(card)));
+  };
+
+  drawDestinationThunk = (tableIndex, destinationIndex, hand, destination) => dispatch => {
+    dispatch(Cards.removeFromDestinationDeckAction(tableIndex, destinationIndex));
+    dispatch(this.drawDestinationAction(hand, destination));
   };
 
 }

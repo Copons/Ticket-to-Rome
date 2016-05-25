@@ -9,14 +9,15 @@
   background-color: $ui-light;
   @extend %ttr-shadow-low;
 
-  .deck {
+  .deck,
+  .destination-deck {
     margin: $ui-padding;
     padding: $ui-padding;
     border-radius: 5px;
     background-color: $ui-medium;
     color: $ui-white;
     font-family: 'Hammersmith One', Arial, sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     text-align: center;
     cursor: pointer;
 
@@ -40,7 +41,7 @@
     border-bottom: $ui-border solid $ui-dark;
     color: $ui-dark;
     font-family: 'Hammersmith One', Arial, sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     text-align: center;
 
     .color {

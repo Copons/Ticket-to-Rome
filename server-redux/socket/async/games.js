@@ -13,6 +13,7 @@ export async function start (id, callback) {
     await Hands.resetAllInGame(res.payload.room.get('players'));
     await Tables.create(id);
     await Cards.createDeck(id);
+    await Cards.createDestinationDeck(id);
     await Cards.fillPile(id);
     await Hands.dealFirstHand(res.payload.room.get('players'), id);
     await Tables.emit(id, this.io);

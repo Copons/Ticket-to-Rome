@@ -3,23 +3,23 @@ import { connect } from 'react-redux';
 import Cards from '../../services/Cards';
 
 
-export const Deck = ({
-  deck,
+export const DestinationDeck = ({
+  destinations,
   handleClick,
 }) =>
   <div
-    className="deck"
+    className="destination-deck"
     onClick={e => {
       e.preventDefault();
       handleClick();
     }}
   >
-    Deck
-    <span>{deck}</span>
+    Destinations
+    <span>{destinations}</span>
   </div>;
 
-Deck.propTypes = {
-  deck: PropTypes.number,
+DestinationDeck.propTypes = {
+  destinations: PropTypes.number,
   handleClick: PropTypes.func.isRequired,
 };
 
@@ -27,10 +27,10 @@ Deck.propTypes = {
 
 
 const mapStateToProps = state => ({
-  deck: state.table.get('deck'),
+  destinations: state.table.get('destinations'),
 });
 
 export default connect(
   mapStateToProps,
-  { handleClick: Cards.drawFromDeckDispatch }
-)(Deck);
+  { handleClick: Cards.drawDestinationDispatch }
+)(DestinationDeck);

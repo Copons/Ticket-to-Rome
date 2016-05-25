@@ -75,7 +75,6 @@ class Games {
       const game = new Map(fromJS({
         id,
         turn: 0,
-        action: 0,
         active: false,
       }));
       store.dispatch(this.startAction(game));

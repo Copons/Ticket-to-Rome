@@ -2,6 +2,7 @@ import Player from './Player';
 import {
   SET_HAND,
   ADD_CARD,
+  ADD_DESTINATION,
 } from '../actions';
 
 class Hand {
@@ -23,6 +24,11 @@ class Hand {
   addCardAction = card => ({
     type: ADD_CARD,
     card,
+  });
+
+  addDestinationAction = destination => ({
+    type: ADD_DESTINATION,
+    destination,
   });
 
 }

@@ -1,6 +1,7 @@
 import { List, fromJS } from 'immutable';
 import store from '../store';
 import { DECK } from '../config/deck';
+import { DESTINATIONS } from '../config/destinations';
 import { RULES } from '../config/rules';
 import Response from './Response';
 import Tables from './Tables';
@@ -10,6 +11,8 @@ import {
   MULTIPLE_REMOVE_FROM_DECK,
   ADD_TO_PILE,
   REMOVE_FROM_PILE,
+  CREATE_DESTINATION_DECK,
+  REMOVE_FROM_DESTINATION_DECK,
 } from '../actions';
 
 class Cards {
@@ -36,6 +39,20 @@ class Cards {
       resolve(Response.success({
         msg: `Deck for game ${id} created.`,
         action: CREATE_DECK,
+        payload: id,
+      }));
+    }
+  });
+
+  createDestinationDeck = id => new Promise((resolve, reject) => {
+    const entry = Tables.oneEntry(id);
+    if (!entry) {
+      reject(Response.error({ msg: 'Table does not exist.' }));
+    } else {
+      store.dispatch(this.createDestinationDeckAction(entry, new List(DESTINATIONS)));
+      resolve(Response.success({
+        msg: `Destination deck for game ${id} created.`,
+        action: CREATE_DESTINATION_DECK,
         payload: id,
       }));
     }
@@ -98,6 +115,18 @@ class Cards {
     type: REMOVE_FROM_PILE,
     tableIndex,
     cardIndex,
+  });
+
+  createDestinationDeckAction = (entry, destinations) => ({
+    type: CREATE_DESTINATION_DECK,
+    entry,
+    destinations,
+  });
+
+  removeFromDestinationDeckAction = (tableIndex, destinationIndex) => ({
+    type: REMOVE_FROM_DESTINATION_DECK,
+    tableIndex,
+    destinationIndex,
   });
 
 
