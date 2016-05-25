@@ -3,4 +3,18 @@
   "turn": 0,
   "action": 0,
   "active": "player.id",
+  "setup": {
+    "destinationsToChoose": [
+      {
+        "player": "player.id",
+        "destination": {}
+      }
+    ],
+    "chosenDestinations": [
+      {
+        "player": "player.id",
+        "destination": {}
+      }
+    ]
+  }
 }

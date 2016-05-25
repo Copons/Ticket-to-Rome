@@ -4,7 +4,7 @@ import Messages from './Messages';
 import {
   SET_ROOMS,
   CREATE_ROOM,
-  START_GAME,
+  START_GAME_SETUP,
 } from '../actions';
 
 class Rooms {
@@ -27,7 +27,7 @@ class Rooms {
   // Services
 
   onActionButtonClick = (action, room, player) => {
-    if (action === START_GAME) {
+    if (action === START_GAME_SETUP) {
       IO.emit(action, room.get('id'))
         .catch(response => {
           store.dispatch(Messages.addThunk(response));

@@ -33,7 +33,7 @@ export default function socket(server) {
     client.on(API.LEAVE_ROOM, rooms.leave.bind({ client, io }));
 
 
-    client.on(API.START_GAME, games.start.bind({ io }));
+    client.on(API.START_GAME_SETUP, games.setup.bind({ io }));
 
 
     client.on(API.DRAW_FROM_DECK, tables.drawFromDeck.bind({ io }));

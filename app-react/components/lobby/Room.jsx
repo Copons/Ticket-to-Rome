@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import RoomAction from './RoomAction';
-import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions';
+import {
+  JOIN_ROOM,
+  LEAVE_ROOM,
+  START_GAME_SETUP,
+} from '../../actions';
 
 export const Room = ({ room }) =>
   <tr key={room.get('id')}>
@@ -21,7 +25,7 @@ export const Room = ({ room }) =>
       {room.get('status')}
     </td>
     <td className="actions">
-      <RoomAction action={START_GAME} room={room} />
+      <RoomAction action={START_GAME_SETUP} room={room} />
       <RoomAction action={JOIN_ROOM} room={room} />
       <RoomAction action={LEAVE_ROOM} room={room} />
     </td>

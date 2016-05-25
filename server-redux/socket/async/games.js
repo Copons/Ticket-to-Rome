@@ -5,9 +5,9 @@ import Players from '../../services/Players';
 import Rooms from '../../services/Rooms';
 import Tables from '../../services/Tables';
 
-export async function start (id, callback) {
+export async function setup (id, callback) {
   try {
-    const res = await Games.start(id);
+    const res = await Games.setup(id);
     await Rooms.changeStatus(id, 'playing');
     await Players.setColors(res.payload.room.get('players'));
     await Hands.resetAllInGame(res.payload.room.get('players'));
@@ -17,7 +17,7 @@ export async function start (id, callback) {
     await Cards.fillPile(id);
     await Hands.dealFirstHand(res.payload.room.get('players'), id);
     await Tables.emit(id, this.io);
-    await Games.emitStart(id, this.io);
+    await Games.emitSetup(id, this.io);
     await Hands.emitAllInGame(id, res.payload.room.get('players'), this.io);
     Rooms.emit(this.io.sockets);
   } catch (e) {

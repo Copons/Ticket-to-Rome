@@ -1,0 +1,67 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: -100vw;
+  z-index: 100;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: rgba($ui-dark, 0);
+
+  @include ttr-transition('left background-color');
+
+  &.visible {
+    left: 0;
+    background-color: rgba($ui-dark, 0.7);
+  }
+
+  .content {
+    padding: $ui-padding;
+    background-color: $ui-light;
+    text-align: center;
+    @extend %ttr-shadow-high;
+
+    .title {
+      color: $ui-dark;
+      font-family: 'Hammersmith One', Arial, sans-serif;
+      font-size: 20px;
+    }
+  }
+
+  .your-turn {
+    padding: $ui-padding;
+    color: $ui-dark;
+    font-family: 'Hammersmith One', Arial, sans-serif;
+    font-size: 40px;
+    text-transform: uppercase;
+  }
+
+  .pick-destination {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    .destination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 100px;
+      margin: $ui-padding;
+      padding: $ui-padding;
+      border-radius: 5px;
+      background-color: $ui-medium;
+      cursor: pointer;
+
+      @include ttr-transition('box-shadow');
+
+      &:hover {
+        @extend %ttr-shadow-low;
+      }
+    }
+  }
+
+}

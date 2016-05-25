@@ -1,7 +1,7 @@
 import store from '../store';
 import {
   SET_GAME,
-  START_GAME,
+  START_GAME_SETUP,
   KILL_GAME,
   SET_TURN_ACTIONS,
 } from '../actions';
@@ -25,8 +25,8 @@ class Game {
     game,
   });
 
-  startGameAction = game => ({
-    type: START_GAME,
+  startSetupAction = game => ({
+    type: START_GAME_SETUP,
     game,
   });
 

@@ -24,6 +24,7 @@ export const LEAVE_ROOM = 'LEAVE_ROOM';
 
 // Game
 export const SET_GAME = 'SET_GAME';
+export const START_GAME_SETUP = 'START_GAME_SETUP';
 export const START_GAME = 'START_GAME';
 export const KILL_GAME = 'KILL_GAME';
 export const INCREASE_TURN = 'INCREASE_TURN';

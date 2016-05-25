@@ -1,7 +1,7 @@
 import { Map, fromJS } from 'immutable';
 import {
   SET_GAME,
-  START_GAME,
+  START_GAME_SETUP,
   KILL_GAME,
   SET_TURN_ACTIONS,
 } from '../actions';
@@ -10,7 +10,7 @@ const defaultState = new Map();
 
 export default function gameReducer(state = defaultState, action) {
   switch (action.type) {
-    case START_GAME:
+    case START_GAME_SETUP:
       return new Map(fromJS({
         ...action.game,
         actions: 0,

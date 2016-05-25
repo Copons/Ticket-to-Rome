@@ -3,7 +3,7 @@ import IO from './IO';
 import {
   SET_ROOMS,
   SET_GAME,
-  START_GAME,
+  START_GAME_SETUP,
   KILL_GAME,
   SET_TABLE,
   ALL_HANDS_IN_GAME,
@@ -19,8 +19,8 @@ IO.on(SET_ROOMS, response => {
   store.dispatch(Rooms.setRoomsAction(response.payload));
 });
 
-IO.on(START_GAME, response => {
-  store.dispatch(Game.startGameAction(response.payload));
+IO.on(START_GAME_SETUP, response => {
+  store.dispatch(Game.startSetupAction(response.payload));
   store.dispatch(Messages.addThunk(response));
 });
 

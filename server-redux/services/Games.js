@@ -6,7 +6,7 @@ import Response from './Response';
 import Rooms from './Rooms';
 import {
   SET_GAME,
-  START_GAME,
+  START_GAME_SETUP,
   KILL_GAME,
 } from '../actions';
 
@@ -43,14 +43,14 @@ class Games {
     return res;
   };
 
-  emitStart = (id, io) => {
+  emitSetup = (id, io) => {
     const room = Rooms.one(id);
     const res = Response.success({
-      msg: `Game in room ${room.get('name')} started.`,
-      action: START_GAME,
+      msg: `Game setup in room ${room.get('name')} started.`,
+      action: START_GAME_SETUP,
       payload: this.oneExpanded(id),
     });
-    io.in(id).emit(START_GAME, res);
+    io.in(id).emit(START_GAME_SETUP, res);
     return res;
   }
 
@@ -67,7 +67,7 @@ class Games {
 
   // Services
 
-  start = id => new Promise((resolve, reject) => {
+  setup = id => new Promise((resolve, reject) => {
     const room = Rooms.one(id);
     if (!room) {
       reject(Response.error({ msg: 'Room does not exist.' }));
@@ -77,10 +77,10 @@ class Games {
         turn: 0,
         active: false,
       }));
-      store.dispatch(this.startAction(game));
+      store.dispatch(this.startSetupAction(game));
       resolve(Response.success({
-        msg: `Game in room ${room.get('name')} started.`,
-        action: START_GAME,
+        msg: `Game setup in room ${room.get('name')} started.`,
+        action: START_GAME_SETUP,
         payload: { game, room },
       }));
     }
@@ -105,8 +105,8 @@ class Games {
 
   // Actions
 
-  startAction = game => ({
-    type: START_GAME,
+  startSetupAction = game => ({
+    type: START_GAME_SETUP,
     game,
   });
 

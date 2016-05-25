@@ -25,6 +25,7 @@ export const CHANGE_ROOM_STATUS = 'CHANGE_ROOM_STATUS';
 // Games
 export const SET_GAME = 'SET_GAME';
 export const START_GAME = 'START_GAME';
+export const START_GAME_SETUP = 'START_GAME_SETUP';
 export const KILL_GAME = 'KILL_GAME';
 
 // Tables

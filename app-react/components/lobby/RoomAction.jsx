@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { JOIN_ROOM, LEAVE_ROOM, START_GAME } from '../../actions';
+import {
+  JOIN_ROOM,
+  LEAVE_ROOM,
+  START_GAME_SETUP,
+} from '../../actions';
 import Rooms from '../../services/Rooms';
 
 
@@ -28,7 +32,7 @@ export const RoomAction = ({
       inputValue = 'Leave Room';
       break;
     }
-    case START_GAME: {
+    case START_GAME_SETUP: {
       if (!Rooms.isPlayerOwner(room, player)) {
         return <span></span>;
       }
