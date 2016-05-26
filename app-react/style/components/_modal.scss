@@ -4,7 +4,7 @@
   left: -100vw;
   z-index: 100;
   display: flex;
-  flex-flow: column;
+  flex-flow: row;
   justify-content: center;;
   align-items: center;
   width: 100%;
@@ -16,7 +16,7 @@
 
   &.visible {
     left: 0;
-    background-color: rgba($ui-dark, 0.7);
+    background-color: rgba($ui-dark, 0.5);
   }
 
   .content {
@@ -32,7 +32,7 @@
     }
   }
 
-  .your-turn {
+  .change-turn .body {
     padding: $ui-padding;
     color: $ui-dark;
     font-family: 'Hammersmith One', Arial, sans-serif;
@@ -41,25 +41,43 @@
   }
 
   .pick-destination {
+    align-self: flex-start;
+    padding: $ui-margin;
+    opacity: 0.9;
+  }
+  .pick-destination .body {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
     .destination {
       display: flex;
+      flex-flow: column;
       justify-content: center;
       align-items: center;
       width: 200px;
-      height: 100px;
-      margin: $ui-padding;
-      padding: $ui-padding;
+      //height: 100px;
+      margin: $ui-margin;
+      padding: $ui-margin;
       border-radius: 5px;
       background-color: $ui-medium;
+      color: $ui-dark;
+      font-family: 'Hammersmith One', Arial, sans-serif;
       cursor: pointer;
 
       @include ttr-transition('box-shadow');
 
       &:hover {
         @extend %ttr-shadow-low;
+      }
+
+      .route {
+        font-size: 16px;
+        .start:after {
+          content: ' - ';
+        }
+      }
+      .points {
+        font-size: 20px;
       }
     }
   }

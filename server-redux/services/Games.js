@@ -8,6 +8,7 @@ import {
   SET_GAME,
   START_GAME_SETUP,
   KILL_GAME,
+  ADD_DESTINATIONS_TO_CHOOSE,
 } from '../actions';
 
 
@@ -48,7 +49,9 @@ class Games {
     const res = Response.success({
       msg: `Game setup in room ${room.get('name')} started.`,
       action: START_GAME_SETUP,
-      payload: this.oneExpanded(id),
+      payload: {
+        ...this.oneExpanded(id).toJS(),
+      },
     });
     io.in(id).emit(START_GAME_SETUP, res);
     return res;
@@ -76,6 +79,10 @@ class Games {
         id,
         turn: 0,
         active: false,
+        setup: {
+          destinationsToChoose: [],
+          chosenDestinations: [],
+        },
       }));
       store.dispatch(this.startSetupAction(game));
       resolve(Response.success({
@@ -100,6 +107,22 @@ class Games {
     }
   });
 
+  addDestinationsToChoose = (id, destinations) => new Promise((resolve, reject) => {
+    const room = Rooms.one(id);
+    const game = this.oneEntry(id);
+    if (!room) {
+      reject(Response.error({ msg: 'Game does not exist.' }));
+    } else {
+      const mappedDestinations = this.mapSetupDestinationsToPlayers(destinations, room);
+      store.dispatch(this.addDestinationsToChooseAction(game[0], fromJS(mappedDestinations)));
+      resolve(Response.success({
+        msg: `Added destinations to choose in game ${id}.`,
+        action: ADD_DESTINATIONS_TO_CHOOSE,
+        payload: mappedDestinations,
+      }));
+    }
+  });
+
 
 
 
@@ -114,6 +137,30 @@ class Games {
     type: KILL_GAME,
     index,
   });
+
+  addDestinationsToChooseAction = (index, destinations) => ({
+    type: ADD_DESTINATIONS_TO_CHOOSE,
+    index,
+    destinations,
+  });
+
+
+
+
+  // Helpers
+
+  mapSetupDestinationsToPlayers = (destinations, room) => {
+    const players = room.get('players');
+    let i = 0;
+    return destinations.map(destination => {
+      const player = players.get(Math.floor(i / 3));
+      i++;
+      return {
+        player,
+        destination,
+      };
+    });
+  };
 
 }
 

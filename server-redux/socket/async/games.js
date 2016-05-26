@@ -15,6 +15,8 @@ export async function setup (id, callback) {
     await Cards.createDeck(id);
     await Cards.createDestinationDeck(id);
     await Cards.fillPile(id);
+    const destinations = await Cards.multipleDrawDestinations(id, 3);
+    await Games.addDestinationsToChoose(id, destinations);
     await Hands.dealFirstHand(res.payload.room.get('players'), id);
     await Tables.emit(id, this.io);
     await Games.emitSetup(id, this.io);

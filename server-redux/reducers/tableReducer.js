@@ -9,6 +9,7 @@ import {
   REMOVE_FROM_PILE,
   CREATE_DESTINATION_DECK,
   REMOVE_FROM_DESTINATION_DECK,
+  MULTIPLE_REMOVE_FROM_DESTINATION_DECK,
 } from '../actions';
 import Cards from '../services/Cards';
 
@@ -17,31 +18,39 @@ const defaultState = new List();
 
 export default function tableReducer(state = defaultState, action) {
   switch (action.type) {
+
     case CREATE_TABLE:
       return state.push(action.table);
+
     case CREATE_DECK:
-      return state.set(
-        action.entry[0],
-        action.entry[1].set('deck', action.deck)
-      );
+      return state.set(action.entry[0], action.entry[1].set('deck', action.deck));
+
     case REMOVE_FROM_DECK:
       return state.deleteIn([action.tableIndex, 'deck', action.cardIndex]);
+
     case MULTIPLE_REMOVE_FROM_DECK:
       return Cards.multipleRemoveFromDeckReducer(state, action);
+
     case ADD_TO_PILE:
       return Cards.addToPileReducer(state, action);
+
     case REMOVE_FROM_PILE:
       return state.deleteIn([action.tableIndex, 'pile', action.cardIndex]);
+
     case CREATE_DESTINATION_DECK:
-      return state.set(
-        action.entry[0],
-        action.entry[1].set('destinations', action.destinations)
-      );
+      return state.set(action.entry[0], action.entry[1].set('destinations', action.destinations));
+
     case REMOVE_FROM_DESTINATION_DECK:
       return state.deleteIn([action.tableIndex, 'destinations', action.destinationIndex]);
+
+    case MULTIPLE_REMOVE_FROM_DESTINATION_DECK:
+      return Cards.multipleRemoveFromDestinationDeckReducer(state, action);
+
     case DELETE_TABLE:
       return state.delete(action.index);
+
     default:
       return state;
+
   }
 }

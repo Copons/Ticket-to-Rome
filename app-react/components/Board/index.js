@@ -1,7 +1,8 @@
 import React from 'react';
+import { STATIONS } from '../../config/stations';
 import { Routes } from './Routes';
-import { Stations } from './Stations';
-import { StationNames } from './StationNames';
+import { Station } from './Station';
+import { StationName } from './StationName';
 import RoutePopup from './RoutePopup';
 
 
@@ -12,8 +13,18 @@ export const Board = () =>
       preserveAspectRatio="xMinYMid meet"
     >
       <Routes />
-      <Stations />
-      <StationNames />
+      <g className="stations">
+        {STATIONS.map((station, i) => <Station key={i} station={station} />)}
+      </g>
+      <g className="station-names">
+        {STATIONS.map((station, i) => {
+          const coordinates = {
+            x: station.x + 11,
+            y: station.y + 1,
+          };
+          return <StationName  key={i} station={station} coordinates={coordinates} />;
+        })}
+      </g>
     </svg>
-    <RoutePopup />
+    <RoutePopup />,
   </div>;

@@ -11,7 +11,6 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.game = props.game;
-    this.ui = props.ui;
     this.handleClick = props.handleClick;
 
     this.state = { cssClasses: 'game' };
@@ -32,9 +31,9 @@ class Game extends Component {
         onClick={e => {
           const popup = document.querySelector('.route-popup');
           if (
-            e.target.classList.contains('route-popup') ||
-            popup.contains(e.target) ||
-            e.target.classList.contains('route')
+          e.target.classList.contains('route-popup') ||
+          popup.contains(e.target) ||
+          e.target.classList.contains('route')
           ) return;
 
           this.handleClick(false);
@@ -50,7 +49,6 @@ class Game extends Component {
 
 Game.propTypes = {
   game: PropTypes.object.isRequired,
-  ui: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
 };
 
@@ -59,7 +57,6 @@ Game.propTypes = {
 
 const mapStateToProps = state => ({
   game: state.game,
-  ui: state.ui,
 });
 
 export default connect(

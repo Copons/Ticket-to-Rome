@@ -2,6 +2,7 @@ import store from '../store';
 import {
   OPEN_ROUTE_POPUP,
   CLOSE_ROUTE_POPUP,
+  HIGHLIGHT_STATIONS,
 } from '../actions';
 
 
@@ -17,6 +18,11 @@ class UI {
   closeRoutePopupAction = () => ({
     type: CLOSE_ROUTE_POPUP,
   });
+
+  highlightStationsAction = stations => ({
+    type: HIGHLIGHT_STATIONS,
+    stations,
+  })
 
 
 

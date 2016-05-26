@@ -20,6 +20,7 @@ IO.on(SET_ROOMS, response => {
 });
 
 IO.on(START_GAME_SETUP, response => {
+  console.log(response.payload);
   store.dispatch(Game.startSetupAction(response.payload));
   store.dispatch(Messages.addThunk(response));
 });

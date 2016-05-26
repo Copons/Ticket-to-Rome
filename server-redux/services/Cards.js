@@ -13,6 +13,7 @@ import {
   REMOVE_FROM_PILE,
   CREATE_DESTINATION_DECK,
   REMOVE_FROM_DESTINATION_DECK,
+  MULTIPLE_REMOVE_FROM_DESTINATION_DECK,
 } from '../actions';
 
 class Cards {
@@ -82,6 +83,26 @@ class Cards {
     }
   });
 
+  multipleDrawDestinations = (id, amount) => new Promise((resolve, reject) => {
+    const table = Tables.oneEntry(id);
+    if (!table) {
+      reject(Response.error({ msg: 'Table does not exist.' }));
+    } else {
+      const destinations = [];
+      const destinationDeck = table[1].get('destinations').toJS();
+      for (let i = 0; i < amount; i++) {
+        const destinationIndex = Math.floor(Math.random() * destinationDeck.length);
+        const destination = destinationDeck.splice(destinationIndex, 1)[0];
+        destinations.push({
+          ...destination,
+          destinationIndex,
+        });
+      }
+      store.dispatch(this.multipleRemoveFromDestinationDeckAction(table[0], destinations));
+      resolve(destinations);
+    }
+  });
+
 
 
 
@@ -99,9 +120,9 @@ class Cards {
     cardIndex,
   });
 
-  multipleRemoveFromDeckAction = (index, cards) => ({
+  multipleRemoveFromDeckAction = (tableIndex, cards) => ({
     type: MULTIPLE_REMOVE_FROM_DECK,
-    index,
+    tableIndex,
     cards,
   });
 
@@ -129,6 +150,12 @@ class Cards {
     destinationIndex,
   });
 
+  multipleRemoveFromDestinationDeckAction = (tableIndex, destinations) => ({
+    type: MULTIPLE_REMOVE_FROM_DESTINATION_DECK,
+    tableIndex,
+    destinations,
+  });
+
 
 
 
@@ -141,8 +168,8 @@ class Cards {
 
   multipleRemoveFromDeckReducer = (state, action) =>
     state.setIn(
-      [action.index, 'deck'],
-      state.get(action.index).get('deck').filter((x, i) =>
+      [action.tableIndex, 'deck'],
+      state.get(action.tableIndex).get('deck').filter((x, i) =>
         !action.cards.find(c => c.cardIndex === i)
     ));
 
@@ -153,6 +180,14 @@ class Cards {
         ...action.cards.map(c => fromJS({ id: c.id, type: c.type }))
       )
     );
+
+  multipleRemoveFromDestinationDeckReducer = (state, action) =>
+    state.setIn(
+      [action.tableIndex, 'destinations'],
+      state.get(action.tableIndex).get('destinations').filter((x, i) =>
+        !action.destinations.find(d => d.destinationIndex === i)
+    ));
+
 }
 
 export default new Cards();

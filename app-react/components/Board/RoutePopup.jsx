@@ -82,7 +82,7 @@ export class RoutePopup extends Component {
         className={this.state.cssClasses}
         style={this.state.cssStyle}
       >
-        <div className="title">
+        <div className="route">
           <span className="start">
             {this.popup.get('stations').get('start').get('name')}
           </span>
