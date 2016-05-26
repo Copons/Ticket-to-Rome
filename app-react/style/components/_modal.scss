@@ -44,42 +44,56 @@
     align-self: flex-start;
     padding: $ui-margin;
     opacity: 0.9;
-  }
-  .pick-destination .body {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    .destination {
-      display: flex;
-      flex-flow: column;
-      justify-content: center;
-      align-items: center;
-      width: 200px;
-      //height: 100px;
-      margin: $ui-margin;
-      padding: $ui-margin;
-      border-radius: 5px;
+
+    button[disabled] {
       background-color: $ui-medium;
-      color: $ui-dark;
-      font-family: 'Hammersmith One', Arial, sans-serif;
-      cursor: pointer;
+      color: $ui-light;
+      cursor: not-allowed;
+    }
 
-      @include ttr-transition('box-shadow');
+    .body {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
 
-      &:hover {
-        @extend %ttr-shadow-low;
-      }
+      .destination-card {
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+        //height: 100px;
+        margin: $ui-margin;
+        padding: $ui-margin;
+        border-radius: 5px;
+        background-color: $ui-medium;
+        color: $ui-dark;
+        font-family: 'Hammersmith One', Arial, sans-serif;
+        cursor: pointer;
 
-      .route {
-        font-size: 16px;
-        .start:after {
-          content: ' - ';
+        @include ttr-transition('box-shadow background-color');
+
+        &:hover {
+          @extend %ttr-shadow-low;
         }
-      }
-      .points {
-        font-size: 20px;
+
+        &.selected {
+          color: $ui-white;
+          background-color: $green;
+        }
+
+        .route {
+          font-size: 16px;
+          .start:after {
+            content: ' - ';
+          }
+        }
+        .points {
+          font-size: 20px;
+        }
       }
     }
   }
+
 
 }

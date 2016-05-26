@@ -3,6 +3,7 @@ import {
   SET_HAND,
   ADD_CARD,
   ADD_DESTINATION,
+  MULTIPLE_ADD_DESTINATION,
 } from '../actions';
 
 class Hand {
@@ -29,6 +30,11 @@ class Hand {
   addDestinationAction = destination => ({
     type: ADD_DESTINATION,
     destination,
+  });
+
+  multipleAddDestinationAction = destinations => ({
+    type: MULTIPLE_ADD_DESTINATION,
+    destinations,
   });
 
 }

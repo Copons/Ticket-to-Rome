@@ -3,19 +3,26 @@ input[type='text'] {
   border: none;
   border-bottom: 3px solid $ui-medium;
   font-size: 18px;
+
+  @include ttr-transition('border-bottom-color');
+
   &:hover,
   &:focus {
     border-bottom-color: $ui-dark;
   }
 }
 
-input[type='submit'] {
+input[type='submit'],
+button[type='button'] {
   padding: 5px;
   border: none;
   background-color: $ui-medium;
   color: $ui-white;
   font-size: 18px;
   cursor: pointer;
+
+  @include ttr-transition('background-color');
+
   &:hover,
   &:focus {
     background-color: $ui-dark;

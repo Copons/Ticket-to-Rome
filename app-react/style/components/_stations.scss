@@ -37,7 +37,7 @@
   stroke: $ui-black;
   stroke-width: 0.1;
 
-  @include ttr-transition('stroke opacity');
+  @include ttr-transition('stroke');
 
   &.highlight {
     stroke: $ui-highlight;

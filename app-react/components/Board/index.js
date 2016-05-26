@@ -1,8 +1,8 @@
 import React from 'react';
 import { STATIONS } from '../../config/stations';
 import { Routes } from './Routes';
-import { Station } from './Station';
-import { StationName } from './StationName';
+import Station from './Station';
+import StationName from './StationName';
 import RoutePopup from './RoutePopup';
 
 

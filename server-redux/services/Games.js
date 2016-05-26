@@ -157,7 +157,11 @@ class Games {
       i++;
       return {
         player,
-        destination,
+        destination: {
+          start: destination.start,
+          end: destination.end,
+          points: destination.points,
+        },
       };
     });
   };

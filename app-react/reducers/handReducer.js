@@ -3,6 +3,7 @@ import {
   SET_HAND,
   ADD_CARD,
   ADD_DESTINATION,
+  MULTIPLE_ADD_DESTINATION,
 } from '../actions';
 
 const defaultState = new Map();
@@ -17,6 +18,11 @@ export default function handReducer(state = defaultState, action) {
       return state.setIn(
         ['destinations'],
         state.get('destinations').push(fromJS(action.destination))
+      );
+    case MULTIPLE_ADD_DESTINATION:
+      return state.setIn(
+        ['destinations'],
+        state.get('destinations').push(fromJS(...action.destinations))
       );
     default:
       return state;
