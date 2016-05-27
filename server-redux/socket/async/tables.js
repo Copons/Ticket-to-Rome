@@ -39,3 +39,18 @@ export async function drawDestination ({ playerId, gameId }, callback) {
     callback(e);
   }
 }
+
+export async function pickDestinations ({ playerId, gameId, destinations }, callback) {
+  try {
+    const res = await Hands.pickDestinations(playerId, gameId, destinations);
+    callback(res);
+    if (Games.emitIfGameIsReady(gameId, this.io)) {
+      await Games.removeSetup(gameId);
+      console.log(JSON.stringify(Games.one(gameId)));
+    }
+    Games.emit(gameId, this.io);
+  } catch (e) {
+    console.error(e);
+    callback(e);
+  }
+}

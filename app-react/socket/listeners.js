@@ -7,6 +7,7 @@ import {
   KILL_GAME,
   SET_TABLE,
   ALL_HANDS_IN_GAME,
+  START_GAME,
 } from '../actions';
 import Game from '../services/Game';
 import Hand from '../services/Hand';
@@ -20,8 +21,12 @@ IO.on(SET_ROOMS, response => {
 });
 
 IO.on(START_GAME_SETUP, response => {
-  console.log(response.payload);
   store.dispatch(Game.startSetupAction(response.payload));
+  store.dispatch(Messages.addThunk(response));
+});
+
+IO.on(START_GAME, response => {
+  store.dispatch(Game.removeSetupAction());
   store.dispatch(Messages.addThunk(response));
 });
 

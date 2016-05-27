@@ -58,7 +58,7 @@ class Rooms {
 
   // Helpers
 
-  createRoomDispatch = name => (dispatch, getState) => {
+  createRoomThunk = name => (dispatch, getState) => {
     const player = getState().player;
     if (name === '' || !player.has('name')) return;
 

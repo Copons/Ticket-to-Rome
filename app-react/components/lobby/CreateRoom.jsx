@@ -38,5 +38,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { handleSubmit: Rooms.createRoomDispatch }
+  { handleSubmit: Rooms.createRoomThunk }
 )(CreateRoom);

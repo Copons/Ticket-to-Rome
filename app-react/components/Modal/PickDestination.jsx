@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Cards from '../../services/Cards';
 import DestinationCard from '../Cards/DestinationCard';
 
 
@@ -7,6 +8,7 @@ import DestinationCard from '../Cards/DestinationCard';
 export const PickDestination = ({
   destinations,
   ui,
+  handleClick,
 }) => {
   let inputDisabled = true;
   if (ui.has('tmpDestinations') && ui.get('tmpDestinations').size >= 2) {
@@ -26,10 +28,8 @@ export const PickDestination = ({
         type="button"
         disabled={inputDisabled}
         onClick={() => {
-          if (inputDisabled) {
-            console.log('too few :(');
-          } else {
-            console.log(ui.get('tmpDestinations'));
+          if (!inputDisabled) {
+            handleClick();
           }
         }}
       >Pick</button>
@@ -41,6 +41,7 @@ export const PickDestination = ({
 PickDestination.propTypes = {
   destinations: PropTypes.object,
   ui: PropTypes.object,
+  handleClick: PropTypes.func,
 };
 
 
@@ -50,4 +51,7 @@ const mapStateToProps = state => ({
   ui: state.ui,
 });
 
-export default connect(mapStateToProps)(PickDestination);
+export default connect(
+  mapStateToProps,
+  { handleClick: Cards.pickDestinationsThunk }
+)(PickDestination);

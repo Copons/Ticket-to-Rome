@@ -4,6 +4,7 @@ import {
   START_GAME_SETUP,
   KILL_GAME,
   SET_TURN_ACTIONS,
+  REMOVE_GAME_SETUP,
 } from '../actions';
 
 
@@ -37,6 +38,10 @@ class Game {
   setTurnActionsAction = actions => ({
     type: SET_TURN_ACTIONS,
     actions,
+  });
+
+  removeSetupAction = () => ({
+    type: REMOVE_GAME_SETUP,
   });
 
 }

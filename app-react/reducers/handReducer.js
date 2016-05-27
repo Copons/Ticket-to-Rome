@@ -22,7 +22,7 @@ export default function handReducer(state = defaultState, action) {
     case MULTIPLE_ADD_DESTINATION:
       return state.setIn(
         ['destinations'],
-        state.get('destinations').push(fromJS(...action.destinations))
+        state.get('destinations').concat(fromJS(action.destinations))
       );
     default:
       return state;

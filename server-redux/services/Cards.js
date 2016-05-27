@@ -1,4 +1,5 @@
 import { List, fromJS } from 'immutable';
+import uuid from 'node-uuid';
 import store from '../store';
 import { DECK } from '../config/deck';
 import { DESTINATIONS } from '../config/destinations';
@@ -26,14 +27,12 @@ class Cards {
       reject(Response.error({ msg: 'Table does not exist.' }));
     } else {
       const deck = [];
-      let cardId = 1;
       for (const card of DECK) {
         for (let i = 0; i < card.amount; i++) {
           deck.push({
-            id: cardId,
+            id: uuid.v4(),
             type: card.type,
           });
-          cardId++;
         }
       }
       store.dispatch(this.createDeckAction(entry, new List(deck)));
@@ -50,7 +49,14 @@ class Cards {
     if (!entry) {
       reject(Response.error({ msg: 'Table does not exist.' }));
     } else {
-      store.dispatch(this.createDestinationDeckAction(entry, new List(DESTINATIONS)));
+      const destinationDeck = [];
+      for (const destination of DESTINATIONS) {
+        destinationDeck.push({
+          id: uuid.v4(),
+          ...destination,
+        });
+      }
+      store.dispatch(this.createDestinationDeckAction(entry, new List(destinationDeck)));
       resolve(Response.success({
         msg: `Destination deck for game ${id} created.`,
         action: CREATE_DESTINATION_DECK,
@@ -70,10 +76,7 @@ class Cards {
       for (let i = 0; i < RULES.pile.max - pile.size; i++) {
         const cardIndex = Math.floor(Math.random() * deck.length);
         const card = deck.splice(cardIndex, 1)[0];
-        cards.push({
-          ...card,
-          cardIndex,
-        });
+        cards.push(card);
       }
       store.dispatch(this.addToPileThunk(table, cards));
       resolve(Response.success({
@@ -93,10 +96,7 @@ class Cards {
       for (let i = 0; i < amount; i++) {
         const destinationIndex = Math.floor(Math.random() * destinationDeck.length);
         const destination = destinationDeck.splice(destinationIndex, 1)[0];
-        destinations.push({
-          ...destination,
-          destinationIndex,
-        });
+        destinations.push(destination);
       }
       store.dispatch(this.multipleRemoveFromDestinationDeckAction(table[0], destinations));
       resolve(destinations);
@@ -169,23 +169,21 @@ class Cards {
   multipleRemoveFromDeckReducer = (state, action) =>
     state.setIn(
       [action.tableIndex, 'deck'],
-      state.get(action.tableIndex).get('deck').filter((x, i) =>
-        !action.cards.find(c => c.cardIndex === i)
+      state.get(action.tableIndex).get('deck').filter(c =>
+        !action.cards.find(card => card.id === c.id)
     ));
 
   addToPileReducer = (state, action) =>
     state.setIn(
       [action.entry[0], 'pile'],
-      action.entry[1].get('pile').push(
-        ...action.cards.map(c => fromJS({ id: c.id, type: c.type }))
-      )
+      action.entry[1].get('pile').concat(fromJS(action.cards))
     );
 
   multipleRemoveFromDestinationDeckReducer = (state, action) =>
     state.setIn(
       [action.tableIndex, 'destinations'],
-      state.get(action.tableIndex).get('destinations').filter((x, i) =>
-        !action.destinations.find(d => d.destinationIndex === i)
+      state.get(action.tableIndex).get('destinations').filter(d =>
+        !action.destinations.find(destination => destination.id === d.id)
     ));
 
 }

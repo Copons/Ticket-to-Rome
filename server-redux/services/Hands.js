@@ -14,6 +14,7 @@ import {
   MULTIPLE_DRAW_FROM_DECK,
   DRAW_FROM_PILE,
   DRAW_DESTINATION,
+  PICK_DESTINATIONS,
 } from '../actions';
 
 
@@ -183,10 +184,7 @@ class Hands {
         for (let i = 0; i < RULES.player.startingHand; i++) {
           const cardIndex = Math.floor(Math.random() * deck.length);
           const card = deck.splice(cardIndex, 1)[0];
-          cards.push({
-            ...card,
-            cardIndex,
-          });
+          cards.push(card);
         }
         hands.push({
           cards,
@@ -197,6 +195,24 @@ class Hands {
       resolve(Response.success({
         msg: 'Dealt first hand to all players.',
         action: MULTIPLE_DRAW_FROM_DECK,
+      }));
+    }
+  });
+
+  pickDestinations = (playerId, gameId, destinations) => new Promise((resolve, reject) => {
+    const hand = this.oneEntry(playerId);
+    const table = Tables.oneEntry(gameId);
+    if (!table) {
+      reject(Response.error({ msg: 'Table does not exist.' }));
+    } else if (!hand) {
+      reject(Response.error({ msg: 'Player does not exist.' }));
+    } else {
+      const player = Players.one(playerId);
+      store.dispatch(this.pickDestinationsAction(hand, fromJS(destinations)));
+      resolve(Response.success({
+        msg: `Player ${player.get('name')} picked ${destinations.length} new destination(s).`,
+        action: PICK_DESTINATIONS,
+        payload: destinations,
       }));
     }
   });
@@ -244,6 +260,12 @@ class Hands {
     destination,
   });
 
+  pickDestinationsAction = (entry, destinations) => ({
+    type: PICK_DESTINATIONS,
+    entry,
+    destinations,
+  });
+
 
 
 
@@ -265,9 +287,7 @@ class Hands {
     state.map((h, i) => {
       const hand = action.hands.find(ah => ah.handIndex === i);
       if (hand) {
-        return h.set('cards', h.get('cards').push(
-          ...hand.cards.map(c => fromJS({ id: c.id, type: c.type }))
-        ));
+        return h.set('cards', h.get('cards').concat(fromJS(hand.cards)));
       } else {
         return h;
       }
@@ -282,6 +302,12 @@ class Hands {
     dispatch(Cards.removeFromDestinationDeckAction(tableIndex, destinationIndex));
     dispatch(this.drawDestinationAction(hand, destination));
   };
+
+  pickDestinationsReducer = (state, action) =>
+    state.setIn(
+      [action.entry[0], 'destinations'],
+      action.entry[1].get('destinations').concat(action.destinations)
+    );
 
 }
 

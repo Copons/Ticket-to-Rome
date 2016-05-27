@@ -35,6 +35,7 @@ export default function socket(server) {
 
     client.on(API.START_GAME_SETUP, games.setup.bind({ io }));
 
+    client.on(API.PICK_DESTINATIONS, tables.pickDestinations.bind({ io }));
 
     client.on(API.DRAW_FROM_DECK, tables.drawFromDeck.bind({ io }));
 

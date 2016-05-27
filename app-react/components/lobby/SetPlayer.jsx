@@ -44,5 +44,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { handleSubmit: Player.setPlayerDispatch }
+  { handleSubmit: Player.setPlayerThunk }
 )(SetPlayer);

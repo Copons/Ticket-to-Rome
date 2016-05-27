@@ -7,6 +7,7 @@ import {
   MULTIPLE_DRAW_FROM_DECK,
   DRAW_FROM_PILE,
   DRAW_DESTINATION,
+  PICK_DESTINATIONS,
 } from '../actions';
 import Hands from '../services/Hands';
 
@@ -45,6 +46,9 @@ export default function handReducer(state = defaultState, action) {
         [action.entry[0], 'destinations'],
         action.entry[1].get('destinations').push(action.destination)
       );
+
+    case PICK_DESTINATIONS:
+      return Hands.pickDestinationsReducer(state, action);
 
     default:
       return state;

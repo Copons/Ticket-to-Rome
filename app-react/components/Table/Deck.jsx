@@ -32,5 +32,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { handleClick: Cards.drawFromDeckDispatch }
+  { handleClick: Cards.drawFromDeckThunk }
 )(Deck);

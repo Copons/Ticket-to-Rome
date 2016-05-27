@@ -3,6 +3,7 @@ import {
   START_GAME_SETUP,
   KILL_GAME,
   ADD_DESTINATIONS_TO_CHOOSE,
+  REMOVE_GAME_SETUP,
 } from '../actions';
 
 
@@ -19,6 +20,9 @@ export default function gameReducer(state = defaultState, action) {
 
     case ADD_DESTINATIONS_TO_CHOOSE:
       return state.mergeIn([action.index, 'setup', 'destinationsToChoose'], action.destinations);
+
+    case REMOVE_GAME_SETUP:
+      return state.deleteIn([action.entry[0], 'setup']);
 
     default:
       return state;

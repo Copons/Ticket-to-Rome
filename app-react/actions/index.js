@@ -29,6 +29,7 @@ export const LEAVE_ROOM = 'LEAVE_ROOM';
 // Game
 export const SET_GAME = 'SET_GAME';
 export const START_GAME_SETUP = 'START_GAME_SETUP';
+export const REMOVE_GAME_SETUP = 'REMOVE_GAME_SETUP';
 export const START_GAME = 'START_GAME';
 export const KILL_GAME = 'KILL_GAME';
 export const INCREASE_TURN = 'INCREASE_TURN';
@@ -46,3 +47,4 @@ export const ALL_HANDS_IN_GAME = 'ALL_HANDS_IN_GAME';
 export const ADD_CARD = 'ADD_CARD';
 export const ADD_DESTINATION = 'ADD_DESTINATION';
 export const MULTIPLE_ADD_DESTINATION = 'MULTIPLE_ADD_DESTINATION';
+export const PICK_DESTINATIONS = 'PICK_DESTINATIONS';

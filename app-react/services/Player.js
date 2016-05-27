@@ -29,7 +29,7 @@ class Player {
 
   // Helpers
 
-  setPlayerDispatch = name => (dispatch, getState) => {
+  setPlayerThunk = name => (dispatch, getState) => {
     let action;
     let payload;
     const player = getState().player;

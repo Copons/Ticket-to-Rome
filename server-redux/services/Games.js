@@ -1,5 +1,6 @@
 import { Map, fromJS } from 'immutable';
 import store from '../store';
+import { RULES } from '../config/rules';
 import Hands from './Hands';
 import Players from './Players';
 import Response from './Response';
@@ -9,6 +10,8 @@ import {
   START_GAME_SETUP,
   KILL_GAME,
   ADD_DESTINATIONS_TO_CHOOSE,
+  START_GAME,
+  REMOVE_GAME_SETUP,
 } from '../actions';
 
 
@@ -55,7 +58,7 @@ class Games {
     });
     io.in(id).emit(START_GAME_SETUP, res);
     return res;
-  }
+  };
 
   emitKill = (id, io) => {
     const res = Response.success({
@@ -63,7 +66,26 @@ class Games {
       action: KILL_GAME,
     });
     io.in(id).emit(KILL_GAME, res);
-  }
+  };
+
+  emitIfGameIsReady = (id, io) => {
+    const game = this.oneExpanded(id);
+    let isReady = false;
+    for (const player of game.get('players')) {
+      if (player.get('destinations') >= RULES.player.minDestinations) {
+        isReady = true;
+      } else {
+        isReady = false;
+      }
+    }
+    if (isReady) {
+      io.in(id).emit(START_GAME, Response.success({
+        msg: `Game ${id} is ready.`,
+        action: START_GAME,
+      }));
+    }
+    return isReady;
+  };
 
 
 
@@ -123,6 +145,19 @@ class Games {
     }
   });
 
+  removeSetup = id => new Promise((resolve, reject) => {
+    const entry = this.oneEntry(id);
+    if (!entry) {
+      reject(Response.error({ msg: 'Game does not exist.' }));
+    } else {
+      store.dispatch(this.removeSetupAction(entry));
+      resolve(Response.success({
+        msg: `Removed setup from game ${id}.`,
+        action: REMOVE_GAME_SETUP,
+      }));
+    }
+  });
+
 
 
 
@@ -142,6 +177,11 @@ class Games {
     type: ADD_DESTINATIONS_TO_CHOOSE,
     index,
     destinations,
+  });
+
+  removeSetupAction = entry => ({
+    type: REMOVE_GAME_SETUP,
+    entry,
   });
 
 

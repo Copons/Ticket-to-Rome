@@ -7,13 +7,14 @@ import {
   DRAW_FROM_DECK,
   DRAW_FROM_PILE,
   DRAW_DESTINATION,
+  PICK_DESTINATIONS,
 } from '../actions';
 
 class Cards {
 
   // Helpers
 
-  drawFromDeckDispatch = () => (dispatch, getState) => {
+  drawFromDeckThunk = () => (dispatch, getState) => {
     const playerId = getState().player.get('id');
     const gameId = getState().game.get('id');
     IO.emit(DRAW_FROM_DECK, {
@@ -27,7 +28,7 @@ class Cards {
       });
   };
 
-  drawFromPileDispatch = card => (dispatch, getState) => {
+  drawFromPileThunk = card => (dispatch, getState) => {
     const playerId = getState().player.get('id');
     const gameId = getState().game.get('id');
     IO.emit(DRAW_FROM_PILE, {
@@ -46,7 +47,7 @@ class Cards {
       });
   };
 
-  drawDestinationDispatch = () => (dispatch, getState) => {
+  drawDestinationThunk = () => (dispatch, getState) => {
     const playerId = getState().player.get('id');
     const gameId = getState().game.get('id');
     IO.emit(DRAW_DESTINATION, {
@@ -59,6 +60,20 @@ class Cards {
         dispatch(Messages.addThunk(response));
       });
   };
+
+  pickDestinationsThunk = () => (dispatch, getState) => {
+    const playerId = getState().player.get('id');
+    const gameId = getState().game.get('id');
+    const destinations = getState().ui.get('tmpDestinations');
+    IO.emit(PICK_DESTINATIONS, {
+      playerId,
+      gameId,
+      destinations,
+    }).then(response => {
+      dispatch(Hand.multipleAddDestinationAction(response.payload));
+      dispatch(Messages.addThunk(response));
+    });
+  }
 
 }
 
