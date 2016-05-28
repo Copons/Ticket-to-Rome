@@ -46,9 +46,9 @@ export async function pickDestinations ({ playerId, gameId, destinations }, call
     callback(res);
     if (Games.emitIfGameIsReady(gameId, this.io)) {
       await Games.removeSetup(gameId);
-      console.log(JSON.stringify(Games.one(gameId)));
+      Games.emit(gameId, this.io);
+      Tables.emit(gameId, this.io);
     }
-    Games.emit(gameId, this.io);
   } catch (e) {
     console.error(e);
     callback(e);

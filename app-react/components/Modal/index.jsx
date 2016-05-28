@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { ChangeTurn } from './ChangeTurn';
-import PickDestination from './PickDestination';
+import PickDestinations from './PickDestinations';
 
 
 class Modal extends Component {
@@ -40,7 +40,7 @@ class Modal extends Component {
           <ChangeTurn /> : <div />
         }
         {this.state.pickDestination ?
-          <PickDestination
+          <PickDestinations
             destinations={this.game.get('setup').get('destinationsToChoose').filter(d =>
               d.player === this.player.get('id')
             )}

@@ -5,6 +5,7 @@ import { DECK } from '../config/deck';
 import { DESTINATIONS } from '../config/destinations';
 import { RULES } from '../config/rules';
 import Response from './Response';
+import Rooms from './Rooms';
 import Tables from './Tables';
 import {
   CREATE_DECK,
@@ -52,8 +53,8 @@ class Cards {
       const destinationDeck = [];
       for (const destination of DESTINATIONS) {
         destinationDeck.push({
-          id: uuid.v4(),
           ...destination,
+          id: uuid.v4(),
         });
       }
       store.dispatch(this.createDestinationDeckAction(entry, new List(destinationDeck)));
@@ -86,22 +87,27 @@ class Cards {
     }
   });
 
-  multipleDrawDestinations = (id, amount) => new Promise((resolve, reject) => {
-    const table = Tables.oneEntry(id);
-    if (!table) {
-      reject(Response.error({ msg: 'Table does not exist.' }));
-    } else {
-      const destinations = [];
-      const destinationDeck = table[1].get('destinations').toJS();
-      for (let i = 0; i < amount; i++) {
-        const destinationIndex = Math.floor(Math.random() * destinationDeck.length);
-        const destination = destinationDeck.splice(destinationIndex, 1)[0];
-        destinations.push(destination);
+  multipleDrawDestinations = (id, amount = 0) =>
+    new Promise((resolve, reject) => {
+      const table = Tables.oneEntry(id);
+      if (!table) {
+        reject(Response.error({ msg: 'Table does not exist.' }));
+      } else {
+        let actualAmount = amount;
+        if (amount === 0) {
+          const room = Rooms.one(id);
+          actualAmount = RULES.player.startingDestinations * room.get('players').size;
+        }
+        const destinations = [];
+        const destinationDeck = table[1].get('destinations').toJS();
+        for (let i = 0; i < actualAmount; i++) {
+          const destinationIndex = Math.floor(Math.random() * destinationDeck.length);
+          const destination = destinationDeck.splice(destinationIndex, 1)[0];
+          destinations.push(destination);
+        }
+        resolve(destinations);
       }
-      store.dispatch(this.multipleRemoveFromDestinationDeckAction(table[0], destinations));
-      resolve(destinations);
-    }
-  });
+    });
 
 
 
@@ -183,7 +189,7 @@ class Cards {
     state.setIn(
       [action.tableIndex, 'destinations'],
       state.get(action.tableIndex).get('destinations').filter(d =>
-        !action.destinations.find(destination => destination.id === d.id)
+        !action.destinations.find(destination => destination.get('id') === d.id)
     ));
 
 }

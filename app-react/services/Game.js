@@ -1,3 +1,4 @@
+import { Map, fromJS } from 'immutable';
 import store from '../store';
 import {
   SET_GAME,
@@ -43,6 +44,22 @@ class Game {
   removeSetupAction = () => ({
     type: REMOVE_GAME_SETUP,
   });
+
+
+
+
+  // Helpers
+
+  startSetupReducer = (state, action) => {
+    const playerId = store.getState().player.get('id');
+    const game = action.game;
+    const filteredDestinations = game.setup.destinationsToChoose.filter(d => d.player === playerId);
+    game.setup.destinationsToChoose = filteredDestinations;
+    return new Map(fromJS({
+      ...game,
+      actions: 0,
+    }));
+  };
 
 }
 

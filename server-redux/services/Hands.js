@@ -208,7 +208,8 @@ class Hands {
       reject(Response.error({ msg: 'Player does not exist.' }));
     } else {
       const player = Players.one(playerId);
-      store.dispatch(this.pickDestinationsAction(hand, fromJS(destinations)));
+      //store.dispatch(this.pickDestinationsAction(hand, fromJS(destinations)));
+      store.dispatch(this.pickDestinationsThunk(hand, fromJS(destinations), table[0]));
       resolve(Response.success({
         msg: `Player ${player.get('name')} picked ${destinations.length} new destination(s).`,
         action: PICK_DESTINATIONS,
@@ -302,6 +303,11 @@ class Hands {
     dispatch(Cards.removeFromDestinationDeckAction(tableIndex, destinationIndex));
     dispatch(this.drawDestinationAction(hand, destination));
   };
+
+  pickDestinationsThunk = (hand, destinations, tableIndex) => dispatch => {
+    dispatch(Cards.multipleRemoveFromDestinationDeckAction(tableIndex, destinations));
+    dispatch(this.pickDestinationsAction(hand, destinations));
+  }
 
   pickDestinationsReducer = (state, action) =>
     state.setIn(
