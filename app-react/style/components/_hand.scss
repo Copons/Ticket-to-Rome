@@ -1,7 +1,10 @@
 .hand {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  right: 0;
+  z-index: 5;
+  width: $table-width;
+  height: 40px;
   padding: $ui-padding;
   border-top: $ui-border solid $ui-dark;
   background-color: $ui-medium;
@@ -9,6 +12,25 @@
   font-family: 'Hammersmith One', Arial, sans-serif;
   font-size: 20px;
   text-align: center;
+  @extend %ttr-shadow-low;
+
+  @include ttr-transition('height');
+
+  &:hover {
+    height: 55px;
+  }
+
+  &.visible {
+    height: auto;
+  }
+
+  .title {
+    cursor: pointer;
+    @include ttr-transition('color');
+    &:hover {
+      color: $ui-black;
+    }
+  }
 
   .color {
     display: inline-block;
