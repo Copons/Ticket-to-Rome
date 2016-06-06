@@ -3,14 +3,12 @@
   bottom: 0;
   right: 0;
   z-index: 5;
-  width: $table-width;
+  width: $hand-width;
   height: 40px;
-  padding: $ui-padding;
+  padding-top: $ui-padding;
   border-top: $ui-border solid $ui-dark;
   background-color: $ui-medium;
-  color: $ui-dark;
   font-family: 'Hammersmith One', Arial, sans-serif;
-  font-size: 20px;
   text-align: center;
   @extend %ttr-shadow-low;
 
@@ -25,6 +23,9 @@
   }
 
   .title {
+    color: $ui-dark;
+    font-size: 20px;
+    text-align: center;
     cursor: pointer;
     @include ttr-transition('color');
     &:hover {
@@ -32,16 +33,21 @@
     }
   }
 
+
+}
+
+.hand .colors {
+  padding: 0 $ui-padding $ui-padding $ui-padding;
+  text-align: center;
+
   .color {
     display: inline-block;
     width: 35px;
     height: 20px;
     margin: 4px;
     @include text-with-shadow($ui-white, $ui-black);
-    font-family: 'Hammersmith One', Arial, sans-serif;
     font-size: 18px;
     line-height: 20px;
-    text-align: center;
 
     //@extend %ttr-shadow-low;
 
@@ -63,5 +69,41 @@
       @include text-with-shadow($ui-black, $ui-light);
     }
     &.wild { background: $wild-card; }
+  }
+}
+
+.hand .destinations {
+  border-top: $ui-border solid $ui-dark;
+
+  .destination {
+    padding: $ui-margin;
+    font-size: 14px;
+    
+    .start:after {
+      content: ' - ';
+    }
+
+    .points {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 0 0 $ui-margin;
+      padding: 2px 4px;
+      border-radius: $ui-border;
+      background-color: $ui-dark;
+      color: $ui-white;
+      font-size: 16px;
+      line-height: 1;
+      white-space: nowrap;
+
+      .icon {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin: 0 0 2px 4px;
+        background-image: url('../assets/ic_star_white_18px.svg');
+        background-position: center center;
+        vertical-align: middle;
+      }
+    }
   }
 }
