@@ -12,6 +12,23 @@ import {
 
 class Cards {
 
+  // Services
+
+  mapColors = hand => {
+    const colors = new Map();
+    if (hand.has('cards')) {
+      hand.get('cards').forEach(card => {
+        const type = card.get('type');
+        if (colors.has(type)) {
+          colors.set(type, colors.get(type) + 1);
+        } else {
+          colors.set(type, 1);
+        }
+      });
+    }
+    return colors;
+  }
+
   // Helpers
 
   drawFromDeckThunk = () => (dispatch, getState) => {

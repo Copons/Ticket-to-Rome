@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import Claims from './Claims';
 
 
 export class RoutePopup extends Component {
@@ -96,7 +97,11 @@ export class RoutePopup extends Component {
               <span key={i}></span>
             )}
           </div>
-          {this.popup.toString()}
+          <Claims
+            type={this.popup.get('route').get('type')}
+            parts={this.popup.get('route').get('parts')}
+            hand={this.props.hand}
+          />
         </div>
       </div>
     );
@@ -106,6 +111,7 @@ export class RoutePopup extends Component {
 
 RoutePopup.propTypes = {
   ui: PropTypes.object,
+  hand: PropTypes.object,
 };
 
 
@@ -113,6 +119,7 @@ RoutePopup.propTypes = {
 
 const mapStateToProps = state => ({
   ui: state.ui,
+  hand: state.hand,
 });
 
 export default connect(mapStateToProps)(RoutePopup);

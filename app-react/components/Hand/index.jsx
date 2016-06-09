@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import Cards from '../../services/Cards';
 import { Color } from './Color';
 import { Destinations } from './Destinations';
 
@@ -20,17 +21,7 @@ class Hand extends Component {
   }
 
   render() {
-    const colors = new Map();
-    if (this.props.hand.has('cards')) {
-      this.props.hand.get('cards').forEach(card => {
-        const type = card.get('type');
-        if (colors.has(type)) {
-          colors.set(type, colors.get(type) + 1);
-        } else {
-          colors.set(type, 1);
-        }
-      });
-    }
+    const colors = Cards.mapColors(this.props.hand);
     return (
       <div className={this.state.cssClasses} >
         <div
