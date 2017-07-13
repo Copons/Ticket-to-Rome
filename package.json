@@ -10,8 +10,8 @@
     "es2015"
   ],
   "engines": {
-    "node": "^6.0.0",
-    "npm": "^3.8.6"
+    "node": "^6.11.1",
+    "npm": "^3.10.10"
   },
   "author": "Copons",
   "license": "MIT",
